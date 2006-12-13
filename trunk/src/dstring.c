@@ -1,8 +1,8 @@
 
 /* ************************************************************************* *\
-   * File: alloc.c                                                         *
+   * File: dstring.c                                                       *
    * Purpose:                                                              *
-   *    Provides code for allocating and deallocating dstring_t objects    *
+   *    Provides misc functions for the DString Library                    *
    *************************************************************************
    * Project:    DString                                                   *
    * Programmer: James Colannino                                           *
@@ -33,93 +33,40 @@
    * Boston, MA 02110-1301 USA                                             * 
 \* ************************************************************************* */
 
-#include <stdlib.h>
-
-#include "static.h"
 #include "dstring.h"
 
-int dstralloc(dstring_t *strptr, size_t bytes) {
+/* error messages to accompany return codes */
+const char *errormsgs[] = {
+   "success",
+   "out of memory",
+   "invalid buffer length",
+   "dstring_t uninitialized",
+   "unopened file",
+   "eof has been reached",
+   "unknown error"
+};
 
-   /* check for invalid buflen value */
-   if (bytes < 0) {
-      return DSTR_INVALID_BUFLEN;
+
+const char *dstrerrormsg(int code) {
+
+   /* return the proper error message */
+   switch(code) {
+      case DSTR_SUCCESS:
+         return errormsgs[0];
+      case DSTR_NOMEM:
+         return errormsgs[1];
+      case DSTR_INVALID_BUFLEN:
+         return errormsgs[2];
+      case DSTR_UNINITIALIZED:
+         return errormsgs[3];
+      case DSTR_UNOPENED_FILE:
+         return errormsgs[4];
+      case DSTR_EOF:
+         return errormsgs[5];
+      default:
+         return errormsgs[6];
    }
 
-   /* if a value of 0 is given, we must free the string */
-   else if (bytes == 0) {
-      dstrfree(strptr);
-      return DSTR_SUCCESS;
-   }
-
-   /* attempt to allocate the structure itself */
-   if ((*strptr = (dstrptr)calloc(1, sizeof(dstr))) == NULL) {
-      return DSTR_NOMEM;
-   }
-
-   /* attempt to allocate space for the buffer inside str */
-   if ((DSTRBUF(*strptr) = calloc(bytes, sizeof(char))) == NULL) {
-      free(DSTRREF(*strptr)), *strptr = NULL;
-      return DSTR_NOMEM;
-   }
-
-   /* update the buflen data member */
-   DSTRBUFLEN(*strptr) = bytes;
-
-   /* the structure was initialized successfully */
-   return DSTR_SUCCESS;
-}
-
-
-int dstrealloc(dstring_t *strptr, size_t bytes) {
-
-   char *tmpbuf = DSTRBUF(*strptr);
-
-   /* check for invalid buflen value */
-   if (bytes < 0) {
-      return DSTR_INVALID_BUFLEN;
-   }
-
-   /* if a value of 0 is given, we must free the string */
-   else if (bytes == 0) {
-      dstrfree(strptr);
-      return DSTR_SUCCESS;
-   }
-
-   /* the size hasn't changed; nothing to do */
-   else if (DSTRBUFLEN(*strptr) == bytes) {
-      return DSTR_SUCCESS;
-   }
-
-   /* if it's an uninitialized string, realloc() won't do us much good... */
-   if (NULL == *strptr) {
-      return DSTR_UNINITIALIZED;
-   }
-
-   /* attempt to reallocate the buffer */
-   if ((tmpbuf = realloc(tmpbuf, bytes)) == NULL) {
-      /* whatever was in the string before remains untouched */
-      return DSTR_NOMEM;
-   }
-
-   /* update the buf and buflen members and return success */
-   DSTRBUF(*strptr) = tmpbuf;
-   DSTRBUFLEN(*strptr) = bytes;
-   return DSTR_SUCCESS;
-}
-
-
-int dstrfree(dstring_t *strptr) {
-
-   /* make sure it's not an uninitialized string */
-   if (NULL == *strptr) {
-      return DSTR_UNINITIALIZED;
-   }
-
-   /* free allocated memory */
-   free(DSTRBUF(*strptr));
-   free(DSTRREF(*strptr));
-
-   /* ensure that the caller's dstring_t is set to NULL upon return */
-   *strptr = NULL;
-   return DSTR_SUCCESS;
+   /* we shouldn't get here, but whatever... */
+   return errormsgs[6];
 }
