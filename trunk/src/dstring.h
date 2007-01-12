@@ -41,12 +41,8 @@
    function, the error will be immediately caught and signaled before any NULL
    pointer dereferences can occur. */
 
-/* security issue to take care of: if realloc to make string smaller,
-   auto NULL-terminate the string at the cutoff point to prevent out of bounds
-   issues when a function tries to read up to the previous NULL beyond the
-   shrunken buffer */
 
-
+/* dstring_t is actually a "black-box" type */
 typedef void * dstring_t;
 
 
@@ -72,7 +68,10 @@ enum {
    DSTR_UNOPENED_FILE = -4,
 
    /* returned when a dstring read function encounters EOF */
-   DSTR_EOF = -5
+   DSTR_EOF = -5,
+
+   /* returned when an index into a dstring_t is out of bounds */
+   DSTR_OUT_OF_BOUNDS = -6
 };
 
 
@@ -87,6 +86,8 @@ enum {
    space for the object as well as an initial buffer for string data.  If
    passed a size of 0 bytes, it will call dstrfree() to free the object and
    set it to NULL.
+
+   Found in alloc.c
 
    *************************************************************************
 
@@ -105,7 +106,12 @@ int dstralloc(dstring_t *strptr, size_t bytes);
 
    This function grows or shrinks the number of bytes allocated to the buffer
    of an initialized dstring_t.  Like dstralloc, a size of 0 bytes will
-   invoke dstrfree() to free the object and set it to NULL.
+   invoke dstrfree() to free the object and set it to NULL.  If an
+   uninitialized dstring_t is passed to dstrealloc, it will be passed to
+   dstralloc instead, where it will be initialized with the specified number
+   of bytes.
+
+   Found in alloc.c
 
    *************************************************************************
 
@@ -125,6 +131,8 @@ int dstrealloc(dstring_t *strptr, size_t bytes);
    This function frees all memory dynamically allocated to an object of type
    dstring_t and sets the variable to NULL (denoting an uninitialized
    state.)
+
+   Found in alloc.c
 
    *************************************************************************
 
@@ -149,6 +157,8 @@ int dstrfree(dstring_t *strptr);
    buffer inside of a dstring_t object that can in turn be passed to
    standard library functions such as printf, strlen, etc.
 
+   Found in access.c
+
    *************************************************************************
 
    Input:
@@ -159,14 +169,17 @@ int dstrfree(dstring_t *strptr);
       that the dstring_t object is uninitialized.
 
    ************************************************************************* */
-const char *dstrview(dstring_t str);
+const char * const dstrview(dstring_t str);
 
 
 /* **** dstrallocsize ******************************************************
 
    This function is an accessor function that returns the number of bytes
-   currently allocated to the string buffer of a dstring_t object (NOT THE
-   LENGTH OF THE STRING!)
+   currently allocated to the string buffer of a dstring_t object, NOT THE
+   LENGTH OF THE STRING!  To find the length of the string, see dstrlen
+   further below.
+
+   Found in access.c
 
    *************************************************************************
 
@@ -181,9 +194,9 @@ const char *dstrview(dstring_t str);
 size_t dstrallocsize(dstring_t str);
 
 
-/****************\
- * IO functions *
-\****************/
+/*****************\
+ * I/O functions *
+\*****************/
 
 
 /* **** dstrfreadl *********************************************************
@@ -193,6 +206,8 @@ size_t dstrallocsize(dstring_t str);
    stores it in the buffer of a dstring_t object.
 
    New data overwrites anything previously stored in the buffer.
+
+   Found in io.c
 
    *************************************************************************
 
@@ -211,6 +226,8 @@ int dstrfreadl(dstring_t dest, FILE *fp);
 
    This function is a wrapper for dstrfreadl that uses stdin as the input
    stream.  The exact same documentation applies.
+
+   Found in io.c
 
    *************************************************************************
 
@@ -233,6 +250,8 @@ int dstrreadl(dstring_t dest);
    New data overwrites anything previously stored in the buffer.  In the
    event of a DSTR_NOMEM error, the buffer will be empty.
 
+   Found in io.c
+
    *************************************************************************
 
    Input:
@@ -251,6 +270,8 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
 
    This function is a wrapper for dstrfreadn that uses stdin as the input
    buffer.  The same documentation applies.
+
+   Found in io.c
 
    *************************************************************************
 
@@ -283,6 +304,8 @@ int dstrcatn(dstring_t dest, size_t size);
    ordinary character array, up to one less than size characters (the last
    space being reserved for \0).
 
+   Found in convert.c
+
    *************************************************************************
 
    Input:
@@ -304,6 +327,8 @@ int dstrtocstr(char *dest, dstring_t src, size_t size);
 
    The source string overwrites any previous data stored in the dstring_t
    buffer.
+
+   Found in convert.c
 
    *************************************************************************
 
@@ -331,6 +356,8 @@ int dstrtrunc(dstring_t str, size_t size);
    This function takes as input an integer status (see enum above) and
    returns a constant read-only pointer to a string describing the error.
 
+   Found in dstring.c
+
    *************************************************************************
 
    Input:
@@ -340,4 +367,58 @@ int dstrtrunc(dstring_t str, size_t size);
       A read-only string describing the status code
 
    ************************************************************************* */
-const char *dstrerrormsg(int code);
+const char * const dstrerrormsg(int code);
+
+
+/* **** dstrlen ************************************************************
+
+   This function takes as an argument a dstring_t object and returns the
+   length of the string.  This is the dstring_t equivalent of strlen in the
+   standard library.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+
+   Output:
+      >= 0: the length of the string
+       < 0: an error code (see enum above)
+
+   ************************************************************************* */
+size_t dstrlen(dstring_t str);
+
+
+/* **** dstrboundscheck ****************************************************
+
+   This function checks an index and makes sure it's within the bounds of
+   a dstring_t buffer.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      int (index)
+
+   Output:
+      A status code (either DSTR_SUCCESS or DSTR_OUT_OF_BOUNDS; see enum
+      above)
+
+   ************************************************************************* */
+int dstrboundscheck(dstring_t str, int index);
+
+/* -- All functions below this line are UNIMPLEMENTED! -- */
+
+int dstrcat(dstring_t dest, dstring_t src);
+int dstrncat(dstring_t dest, dstring_t src, size_t size);
+int dstrcatcstr(dstring_t dest, const char *src);
+int dstrncatcstr(dstring_t dest, const char *src, size_t size);
+
+int dstrcpy(dstring_t dest, dstring_t src);
+int dstrncpy(dstring_t dest, dstring_t src, size_t size);
+int dstrcpycstr(dstring_t dest, const char *src);
+int dstrncpycstr(dstring_t dest, const char *src, size_t size);

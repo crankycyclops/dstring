@@ -72,7 +72,12 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
 
 int dstrealloc(dstring_t *strptr, size_t bytes) {
 
-   char *tmpbuf = DSTRBUF(*strptr);
+   char *tmpbuf;
+
+   /* if it's an uninitialized string, use dstralloc instead */
+   if (NULL == *strptr) {
+      return dstralloc(strptr, bytes);
+   }
 
    /* check for invalid buflen value */
    if (bytes < 0) {
@@ -90,16 +95,16 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
       return DSTR_SUCCESS;
    }
 
-   /* if it's an uninitialized string, realloc() won't do us much good... */
-   if (NULL == *strptr) {
-      return DSTR_UNINITIALIZED;
-   }
-
    /* attempt to reallocate the buffer */
+   tmpbuf = DSTRBUF(*strptr);
    if ((tmpbuf = realloc(tmpbuf, bytes)) == NULL) {
       /* whatever was in the string before remains untouched */
       return DSTR_NOMEM;
    }
+
+   /* make sure we update the NULL terminating char to ensure we don't try to
+      access out of bounds memory later if we are shrinking the buffer */
+   tmpbuf[bytes - 1] = '\0';
 
    /* update the buf and buflen members and return success */
    DSTRBUF(*strptr) = tmpbuf;

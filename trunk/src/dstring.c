@@ -47,7 +47,7 @@ const char *errormsgs[] = {
 };
 
 
-const char *dstrerrormsg(int code) {
+const char * const dstrerrormsg(int code) {
 
    /* return the proper error message */
    switch(code) {

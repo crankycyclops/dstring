@@ -36,14 +36,14 @@
 #include "static.h"
 #include "dstring.h"
 
-const char *dstrview(dstring_t str) {
+const char * const dstrview(dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
       return NULL;
    }
 
-   return (const char *)DSTRBUF(str);
+   return (const char * const)DSTRBUF(str);
 }
 
 size_t dstrallocsize(dstring_t str) {
