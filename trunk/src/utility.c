@@ -38,18 +38,40 @@
 #include "static.h"
 #include "dstring.h"
 
+
 size_t dstrlen(dstring_t str) {
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
 
    return strlen(DSTRBUF(str));
 }
 
-int dstrboundscheck(dstring_t str, int index) {
 
-   if (index >= 0 && index < DSTRBUFLEN(str)) {
+int dstrtrunc(dstring_t str, size_t size) {
+
+   int i;
+   size_t length;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* get the length of the string */
+   length = dstrlen(str);
+
+   /* if the specified size is greater than or equal to the length of the
+      string, there's nothing to do. */
+   if (size >= length) {
       return DSTR_SUCCESS;
    }
 
-   else {
-      return DSTR_OUT_OF_BOUNDS;
-   }
+   /* let's truncate, baby! */
+   for (i = 0; i < size; i++);
+   DSTRBUF(str)[i] = '\0';
+
+   return DSTR_SUCCESS;
 }

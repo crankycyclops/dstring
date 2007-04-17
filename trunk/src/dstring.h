@@ -55,7 +55,7 @@ enum {
    /* returned if a call is successful */
    DSTR_SUCCESS = 0,
 
-   /* returned if an operation fails due to lack of memory */   
+   /* returned if an operation fails due to lack of memory */
    DSTR_NOMEM = -1,
 
    /* returned if the caller passes an invalid size for the string's buffer */
@@ -224,10 +224,8 @@ int dstrfreadl(dstring_t dest, FILE *fp);
 
 /* **** dstrreadl **********************************************************
 
-   This function is a wrapper for dstrfreadl that uses stdin as the input
-   stream.  The exact same documentation applies.
-
-   Found in io.c
+   Implemented as a macro, this call wraps around dstrfreadl, using stdin
+   as the input file.
 
    *************************************************************************
 
@@ -238,7 +236,7 @@ int dstrfreadl(dstring_t dest, FILE *fp);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrreadl(dstring_t dest);
+#define dstrreadl(DEST) dstrfreadl(DEST, stdin)
 
 
 /* **** dstrfreadn *********************************************************
@@ -268,10 +266,8 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
 
 /* **** dstrreadn **********************************************************
 
-   This function is a wrapper for dstrfreadn that uses stdin as the input
-   buffer.  The same documentation applies.
-
-   Found in io.c
+   Implemented as a macro, this wraps around dstrfreadn, using stdin as the
+   input file.
 
    *************************************************************************
 
@@ -283,7 +279,7 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrreadn(dstring_t dest, size_t size);
+#define dstrreadn(DEST, SIZE) dstrfreadn(DEST, stdin, SIZE)
 
 
 /* -- all IO functions below this line are UNIMPLEMENTED! -- */
@@ -347,7 +343,24 @@ int cstrtodstr(dstring_t dest, const char *src);
  * utility functions *
 \*********************/
 
-/* truncates a string -- currently UNIMPLEMENTED! -- */
+
+/* **** dstrtrunc **********************************************************
+
+   This function truncates a string down to the specified number of
+   characters.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+      size_t (number of characters to keep in the string)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
 int dstrtrunc(dstring_t str, size_t size);
 
 

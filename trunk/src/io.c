@@ -132,15 +132,3 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size) {
       return DSTR_SUCCESS;
    }
 }
-
-
-/* implement as a dstring.h macro ??? */
-int dstrreadl(dstring_t dest) {
-
-   return(dstrfreadl(dest, stdin));
-}
-
-int dstrreadn(dstring_t dest, size_t size) {
-
-   return(dstrfreadn(dest, stdin, size));
-}
