@@ -14,6 +14,7 @@
 
 @SET_MAKE@
 
+
 VPATH = @srcdir@
 pkgdatadir = $(datadir)/@PACKAGE@
 pkglibdir = $(libdir)/@PACKAGE@
@@ -33,9 +34,10 @@ POST_UNINSTALL = :
 build_triplet = @build@
 host_triplet = @host@
 subdir = .
-DIST_COMMON = $(am__configure_deps) $(srcdir)/Makefile.am \
-	$(srcdir)/Makefile.in $(top_srcdir)/configure COPYING INSTALL \
-	config.guess config.sub depcomp install-sh ltmain.sh missing
+DIST_COMMON = $(am__configure_deps) $(libdstring_include_HEADERS) \
+	$(srcdir)/Makefile.am $(srcdir)/Makefile.in \
+	$(top_srcdir)/configure COPYING INSTALL config.guess \
+	config.sub depcomp install-sh ltmain.sh missing
 ACLOCAL_M4 = $(top_srcdir)/aclocal.m4
 am__aclocal_m4_deps = $(top_srcdir)/configure.in
 am__configure_deps = $(am__aclocal_m4_deps) $(CONFIGURE_DEPENDENCIES) \
@@ -50,7 +52,8 @@ am__vpath_adj = case $$p in \
     *) f=$$p;; \
   esac;
 am__strip_dir = `echo $$p | sed -e 's|^.*/||'`;
-am__installdirs = "$(DESTDIR)$(libdir)"
+am__installdirs = "$(DESTDIR)$(libdir)" \
+	"$(DESTDIR)$(libdstring_includedir)"
 libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libdstring_la_LIBADD =
@@ -74,6 +77,8 @@ LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) \
 	$(LDFLAGS) -o $@
 SOURCES = $(libdstring_la_SOURCES)
 DIST_SOURCES = $(libdstring_la_SOURCES)
+libdstring_includeHEADERS_INSTALL = $(INSTALL_HEADER)
+HEADERS = $(libdstring_include_HEADERS)
 ETAGS = etags
 CTAGS = ctags
 DISTFILES = $(DIST_COMMON) $(DIST_SOURCES) $(TEXINFOS) $(EXTRA_DIST)
@@ -198,6 +203,8 @@ top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libdstring.la
 libdstring_la_SOURCES = src/access.c src/alloc.c src/convert.c src/dstring.c src/io.c src/utility.c
 libdstring_la_LDFLAGS = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
+libdstring_includedir = $(includedir)
+libdstring_include_HEADERS = src/dstring.h
 all: all-am
 
 .SUFFIXES:
@@ -349,6 +356,23 @@ clean-libtool:
 
 distclean-libtool:
 	-rm -f libtool
+install-libdstring_includeHEADERS: $(libdstring_include_HEADERS)
+	@$(NORMAL_INSTALL)
+	test -z "$(libdstring_includedir)" || $(MKDIR_P) "$(DESTDIR)$(libdstring_includedir)"
+	@list='$(libdstring_include_HEADERS)'; for p in $$list; do \
+	  if test -f "$$p"; then d=; else d="$(srcdir)/"; fi; \
+	  f=$(am__strip_dir) \
+	  echo " $(libdstring_includeHEADERS_INSTALL) '$$d$$p' '$(DESTDIR)$(libdstring_includedir)/$$f'"; \
+	  $(libdstring_includeHEADERS_INSTALL) "$$d$$p" "$(DESTDIR)$(libdstring_includedir)/$$f"; \
+	done
+
+uninstall-libdstring_includeHEADERS:
+	@$(NORMAL_UNINSTALL)
+	@list='$(libdstring_include_HEADERS)'; for p in $$list; do \
+	  f=$(am__strip_dir) \
+	  echo " rm -f '$(DESTDIR)$(libdstring_includedir)/$$f'"; \
+	  rm -f "$(DESTDIR)$(libdstring_includedir)/$$f"; \
+	done
 
 ID: $(HEADERS) $(SOURCES) $(LISP) $(TAGS_FILES)
 	list='$(SOURCES) $(HEADERS) $(LISP) $(TAGS_FILES)'; \
@@ -525,9 +549,9 @@ distcleancheck: distclean
 	       exit 1; } >&2
 check-am: all-am
 check: check-am
-all-am: Makefile $(LTLIBRARIES)
+all-am: Makefile $(LTLIBRARIES) $(HEADERS)
 installdirs:
-	for dir in "$(DESTDIR)$(libdir)"; do \
+	for dir in "$(DESTDIR)$(libdir)" "$(DESTDIR)$(libdstring_includedir)"; do \
 	  test -z "$$dir" || $(MKDIR_P) "$$dir"; \
 	done
 install: install-am
@@ -576,7 +600,7 @@ info: info-am
 
 info-am:
 
-install-data-am:
+install-data-am: install-libdstring_includeHEADERS
 
 install-dvi: install-dvi-am
 
@@ -614,7 +638,8 @@ ps: ps-am
 
 ps-am:
 
-uninstall-am: uninstall-libLTLIBRARIES
+uninstall-am: uninstall-libLTLIBRARIES \
+	uninstall-libdstring_includeHEADERS
 
 .MAKE: install-am install-strip
 
@@ -627,12 +652,14 @@ uninstall-am: uninstall-libLTLIBRARIES
 	install install-am install-data install-data-am install-dvi \
 	install-dvi-am install-exec install-exec-am install-html \
 	install-html-am install-info install-info-am \
-	install-libLTLIBRARIES install-man install-pdf install-pdf-am \
-	install-ps install-ps-am install-strip installcheck \
-	installcheck-am installdirs maintainer-clean \
-	maintainer-clean-generic mostlyclean mostlyclean-compile \
-	mostlyclean-generic mostlyclean-libtool pdf pdf-am ps ps-am \
-	tags uninstall uninstall-am uninstall-libLTLIBRARIES
+	install-libLTLIBRARIES install-libdstring_includeHEADERS \
+	install-man install-pdf install-pdf-am install-ps \
+	install-ps-am install-strip installcheck installcheck-am \
+	installdirs maintainer-clean maintainer-clean-generic \
+	mostlyclean mostlyclean-compile mostlyclean-generic \
+	mostlyclean-libtool pdf pdf-am ps ps-am tags uninstall \
+	uninstall-am uninstall-libLTLIBRARIES \
+	uninstall-libdstring_includeHEADERS
 
 # Tell versions [3.59,3.63) of GNU make to not export all variables.
 # Otherwise a system limit (for SysV at least) may be exceeded.
