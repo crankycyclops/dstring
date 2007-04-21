@@ -1,0 +1,13 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: Dstring
+Description: Provides functions and data structures for dealing with
+dynamically allocated strings in C.
+
+Requires:
+Version: @VERSION@
+Libs: -L${libdir} -ldstring
+Cflags: -I${includedir}

@@ -3,3 +3,6 @@ libdstring_la_SOURCES      = src/access.c src/alloc.c src/convert.c src/dstring.
 libdstring_la_LDFLAGS      = -version-info @LIB_CURRENT@:@LIB_REVISION@:@LIB_AGE@
 libdstring_includedir      = $(includedir)
 libdstring_include_HEADERS = src/dstring.h
+
+pkgconfigdir   = $(libdir)/pkgconfig
+pkgconfig_DATA = dstring.pc
