@@ -1,10 +1,5 @@
 
 /* ************************************************************************* *\
-   * File: dstring.h                                                       *
-   * Purpose:                                                              *
-   *    Provides typedefs, macros and prototypes for interfacing with the  *
-   *    DString library                                                    *
-   *************************************************************************
    * Project:    DString                                                   *
    * Programmer: James Colannino                                           *
    * Email:      james@colannino.org                                       *
@@ -34,6 +29,12 @@
    * Boston, MA 02110-1301 USA                                             * 
 \* ************************************************************************* */
 
+/*! \file dstring.h
+
+    \brief Provides typdefs, macros and prototypes for interfacing with the
+           DString library
+*/
+
 #include <stdio.h>
 
 /* HINT: it's a VERY good idea to initialize newly declared dstring_t variables
@@ -50,7 +51,12 @@ typedef void * dstring_t;
  * status codes *
 \****************/
 
-enum {
+/*! \enum STATUS_CODES
+    \brief Most DString functions return status codes that let the programmer
+     know if a function call was successful.
+*/
+
+enum STATUS_CODES {
 
    /* returned if a call is successful */
    DSTR_SUCCESS = 0,

@@ -8,6 +8,6 @@ Description: Provides functions and data structures for dealing with
 dynamically allocated strings in C.
 
 Requires:
-Version: @VERSION@
+Version: @LIB_CURRENT@.@LIB_REVISION@.@LIB_AGE@
 Libs: -L${libdir} -ldstring
 Cflags: -I${includedir}
