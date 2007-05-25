@@ -22,7 +22,7 @@ AC_CHECK_TYPES([ptrdiff_t])
 
 # Checks for library functions.
 AC_FUNC_REALLOC
-AC_CHECK_FUNCS([fgets strlen calloc free])
+AC_CHECK_FUNCS([fgets strlen calloc realloc free])
 
 #Library version information
 LIB_CURRENT=0
