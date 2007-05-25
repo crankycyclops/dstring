@@ -40,7 +40,7 @@ int dstrtocstr(char *dest, dstring_t src, size_t size) {
 
    int i;
 
-   for (i = 0; DSTRBUF(src)[i] != '\0' && i < size; i++) {
+   for (i = 0; DSTRBUF(src)[i] != '\0' && i < size - 1; i++) {
       dest[i] = DSTRBUF(src)[i];
    }
 

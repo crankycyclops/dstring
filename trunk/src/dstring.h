@@ -29,11 +29,6 @@
    * Boston, MA 02110-1301 USA                                             * 
 \* ************************************************************************* */
 
-/*! \file dstring.h
-
-    \brief Provides typdefs, macros and prototypes for interfacing with the
-           DString library
-*/
 
 #include <stdio.h>
 
@@ -50,11 +45,6 @@ typedef void * dstring_t;
 /****************\
  * status codes *
 \****************/
-
-/*! \enum STATUS_CODES
-    \brief Most DString functions return status codes that let the programmer
-     know if a function call was successful.
-*/
 
 enum STATUS_CODES {
 
@@ -288,11 +278,86 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
 #define dstrreadn(DEST, SIZE) dstrfreadn(DEST, stdin, SIZE)
 
 
-/* -- all IO functions below this line are UNIMPLEMENTED! -- */
+/* **** dstrfcatl **********************************************************
+
+   This function reads an entire line of input from FILE *fp, terminated by
+   the '\n' character (the newline is included as part of the string), and
+   appends it to the buffer of a dstring_t object, overwriting the previous
+   '\n' character.
+
+   Found in io.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      FILE * (our input stream)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
 int dstrfcatl(dstring_t dest, FILE *fp);
-int dstrcatl(dstring_t dest);
+
+
+/* **** dstrcatl **********************************************************
+
+   Implemented as a macro, this call wraps around dstrfcatl, using stdin
+   as the input file.
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+#define dstrcatl(DEST) dstrfcatl(DEST, stdin)
+
+
+/* **** dstrfcatn **********************************************************
+
+   This function reads up to one less than n characters (the last space is
+   reserved for the NULL terminating character), including \n's, from FILE
+   *fp and appends them to the buffer of a dstring_t object.
+
+   New data is appended to anything previously stored in the buffer.  In
+   the event of a DSTR_NOMEM error, the buffer will be unmodified.
+
+   Found in io.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      FILE (our input stream)
+      size_t (the number of characters to read)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
 int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
-int dstrcatn(dstring_t dest, size_t size);
+
+
+/* **** dstrcatn ***********************************************************
+
+   Implemented as a macro, this wraps around dstrcatn, using stdin as the
+   input file.
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      size_t (the number of characters to read)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+#define dstrcatn(DEST, SIZE) dstrfcatn(DEST, stdin, SIZE)
 
 
 /************************\
@@ -436,8 +501,3 @@ int dstrcat(dstring_t dest, dstring_t src);
 int dstrncat(dstring_t dest, dstring_t src, size_t size);
 int dstrcatcstr(dstring_t dest, const char *src);
 int dstrncatcstr(dstring_t dest, const char *src, size_t size);
-
-int dstrcpy(dstring_t dest, dstring_t src);
-int dstrncpy(dstring_t dest, dstring_t src, size_t size);
-int dstrcpycstr(dstring_t dest, const char *src);
-int dstrncpycstr(dstring_t dest, const char *src, size_t size);

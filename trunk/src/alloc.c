@@ -46,9 +46,8 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
    }
 
    /* if a value of 0 is given, we must free the string */
-   else if (bytes == 0) {
-      dstrfree(strptr);
-      return DSTR_SUCCESS;
+   else if (0 == bytes) {
+      return dstrfree(strptr);
    }
 
    /* attempt to allocate the structure itself */
@@ -85,9 +84,8 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
    }
 
    /* if a value of 0 is given, we must free the string */
-   else if (bytes == 0) {
-      dstrfree(strptr);
-      return DSTR_SUCCESS;
+   else if (0 == bytes) {
+      return dstrfree(strptr);
    }
 
    /* the size hasn't changed; nothing to do */
