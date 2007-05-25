@@ -205,8 +205,9 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
    /* this will be the minimum new size of the dstring_t object */
    size_t newsize = size + strlen(DSTRBUF(dest));
 
-   /* this marks our current position at the end of the previous string */
-   char *bufpos = DSTRBUF(dest) + strlen(DSTRBUF(dest));
+   /* this marks our current position at the end of the previous string,
+      overwriting the previous '\n' character */
+   char *bufpos = DSTRBUF(dest) + strlen(DSTRBUF(dest)) - 1;
 
   /* make sure dest is initialized */
    if (NULL == dest) {
