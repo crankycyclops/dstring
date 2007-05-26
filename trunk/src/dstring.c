@@ -43,6 +43,7 @@ const char *errormsgs[] = {
    "dstring_t uninitialized",
    "unopened file",
    "eof has been reached",
+   "invalid argument",
    "unknown error"
 };
 
@@ -64,10 +65,12 @@ const char * const dstrerrormsg(int code) {
          return errormsgs[4];
       case DSTR_EOF:
          return errormsgs[5];
-      default:
+      case DSTR_INVALID_ARGUMENT:
          return errormsgs[6];
+      default:
+         return errormsgs[7];
    }
 
    /* we shouldn't get here, but whatever... */
-   return errormsgs[6];
+   return errormsgs[7];
 }

@@ -42,6 +42,17 @@ int dstrtocstr(char *dest, dstring_t src, size_t size) {
 
    int i;
 
+   /* make sure size is valid */
+   if (size < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* if size is 0, create an empty string */
+   if (0 == size) {
+      *dest = '\0';
+      return DSTR_SUCCESS;
+   }
+
    for (i = 0; DSTRBUF(src)[i] != '\0' && i < size - 1; i++) {
       dest[i] = DSTRBUF(src)[i];
    }

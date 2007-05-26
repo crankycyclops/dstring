@@ -115,6 +115,15 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size) {
       return DSTR_UNOPENED_FILE;
    }
 
+   /* make sure size is a valid digit (>= 0) */
+   if (size < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* if size is 0, return DSTR_SUCCESS without doing anything */
+   if (0 == size) {
+      return DSTR_SUCCESS;
+   }
 
    /* our current buffer won't accomodate the string; reallocate! */
    if (DSTRBUFLEN(dest) < size) {
@@ -223,6 +232,16 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
    /* make sure fp is an opened file */
    if (NULL == fp) {
       return DSTR_UNOPENED_FILE;
+   }
+
+   /* make sure size is a valid digit (>= 0) */
+   if (size < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* if size is 0, return DSTR_SUCCESS without doing anything */
+   if (0 == size) {
+      return DSTR_SUCCESS;
    }
 
    /* our current buffer won't accomodate the string; reallocate! */

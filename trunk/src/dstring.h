@@ -67,7 +67,10 @@ enum STATUS_CODES {
    DSTR_EOF = -5,
 
    /* returned when an index into a dstring_t is out of bounds */
-   DSTR_OUT_OF_BOUNDS = -6
+   DSTR_OUT_OF_BOUNDS = -6,
+
+   /* when an invalid argument is passed to a DString function */
+   DSTR_INVALID_ARGUMENT = -7
 };
 
 
@@ -241,6 +244,8 @@ int dstrfreadl(dstring_t dest, FILE *fp);
    reserved for the NULL terminating character), including \n's, from FILE
    *fp and stores them in the buffer of a dstring_t object.
 
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+
    New data overwrites anything previously stored in the buffer.  In the
    event of a DSTR_NOMEM error, the buffer will be empty.
 
@@ -264,6 +269,8 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
 
    Implemented as a macro, this wraps around dstrfreadn, using stdin as the
    input file.
+
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
 
    *************************************************************************
 
@@ -323,6 +330,8 @@ int dstrfcatl(dstring_t dest, FILE *fp);
    reserved for the NULL terminating character), including \n's, from FILE
    *fp and appends them to the buffer of a dstring_t object.
 
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+
    New data is appended to anything previously stored in the buffer.  In
    the event of a DSTR_NOMEM error, the buffer will be unmodified.
 
@@ -347,6 +356,8 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
    Implemented as a macro, this wraps around dstrcatn, using stdin as the
    input file.
 
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+
    *************************************************************************
 
    Input:
@@ -370,6 +381,9 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
    This function copies the string stored in a dstring_t buffer into an
    ordinary character array, up to one less than size characters (the last
    space being reserved for \0).
+
+   If size is 0, an empty string (just a single '\0') will be created and
+   DSTR_SUCCESS will be returned.
 
    Found in convert.c
 
@@ -419,6 +433,8 @@ int cstrtodstr(dstring_t dest, const char *src);
 
    This function truncates a string down to the specified number of
    characters.
+
+   If the size is 0, nothing will be done and DSTR_SUCCESS will be returned.
 
    Found in utility.c
 
@@ -475,26 +491,6 @@ const char * const dstrerrormsg(int code);
 size_t dstrlen(dstring_t str);
 
 
-/* **** dstrboundscheck ****************************************************
-
-   This function checks an index and makes sure it's within the bounds of
-   a dstring_t buffer.
-
-   Found in utility.c
-
-   *************************************************************************
-
-   Input:
-      dstring_t (our dstring_t object)
-      int (index)
-
-   Output:
-      A status code
-
-   ************************************************************************* */
-int dstrboundscheck(dstring_t str, int index);
-
-
 /* **** dstrdel ************************************************************
 
    This function removes a character from a dstring_t buffer at the
@@ -515,10 +511,12 @@ int dstrboundscheck(dstring_t str, int index);
 int dstrdel(dstring_t str, int index);
 
 
-/* **** dstrdeln ***********************************************************
+/* **** dstrndel ***********************************************************
 
    This function removes n characters from a dstring_t buffer at the
-   specified 0-based index
+   specified 0-based index.
+
+   If n is 0, nothing will be done and DSTR_SUCCESS will be returned.
 
    Found in utility.c
 
@@ -533,7 +531,7 @@ int dstrdel(dstring_t str, int index);
       A status code
 
    ************************************************************************* */
-int dstrdeln(dstring_t str, int index, int n);
+int dstrndel(dstring_t str, int index, int n);
 
 
 /* **** dstrinsertch *******************************************************
@@ -607,22 +605,80 @@ int dstrinsert(dstring_t dest, dstring_t src, int index);
 int dstrcinsert(dstring_t dest, const char *src, int index);
 
 
+/* **** dstrninsert ********************************************************
+
+   This function inserts n characters from a dstring_t object into another
+   at the specified 0-based index.  If n is larger than the number of
+   characters in the source string, then all characters up to, but not
+   including '\0', will be inserted.
+
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+
+   WARNING: It is the programmer's responsibility to delete any \n
+   characters in the source string that would cause undesired line breaks
+   if inserted into the destination string!
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      dstring_t (source)
+      int (index)
+      int (number of characters to insert)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrninsert(dstring_t dest, dstring_t src, int index, int n);
+
+
+/* **** dstrncinsert *******************************************************
+
+   This function inserts n characters from a C string into a dstring_t
+   object at the specified 0-based index.  If n is larger than the number
+   of characters in the C string, then all characters in the C string up to,
+   but not including '\0', will be inserted.
+
+   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+
+   WARNING: It is the programmer's responsibility to delete any \n
+   characters in the source string that would cause undesired line breaks
+   if inserted into the destination string!
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (source)
+      int (index)
+      int (number of characters to insert)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrncinsert(dstring_t dest, const char *src, int index, int n);
+
+
 /* -- All functions below this line are UNIMPLEMENTED! -- */
 
-/* NOTE: on insert and xchg functions, check for out of bounds! Also, cannot
-   modify \0 character! */
-
-/* these functions are like the ones above, except n specifies the number of
-   characters to take from src and insert into dest */
-int dstrinsertn(dstring_t dest, dstring_t src, int index, int n);
-int dstrcinsertn(dstring_t dest, const char *src, int index, int n);
+/* NOTE: on xchg function, check for out of bounds! */
 
 /* Exchanges the character at a 0-based index for another (old character is overwritten) */
 int dstrxchg(dstring_t str, int index, char c);
 
-/* also create functions for swapping strings... */
+/* also create functions for swapping strings? */
 
 int dstrcat(dstring_t dest, dstring_t src);
 int dstrncat(dstring_t dest, dstring_t src, size_t size);
 int dstrcatcstr(dstring_t dest, const char *src);
 int dstrncatcstr(dstring_t dest, const char *src, size_t size);
+
+/* NOT SURE IF I WANT THIS ONE... */
+/* checks to see if an index is within the bounds of a dstring_t object */
+int dstrboundscheck(dstring_t str, int index);
