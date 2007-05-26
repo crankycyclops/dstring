@@ -66,6 +66,9 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
    /* update the buflen data member */
    DSTRBUFLEN(*strptr) = bytes;
 
+   /* null terminate the buffer, so we start out with an "empty" string */
+   DSTRBUF(*strptr)[0] = '\0';
+
    /* the structure was initialized successfully */
    return DSTR_SUCCESS;
 }

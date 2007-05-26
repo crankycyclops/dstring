@@ -38,7 +38,7 @@
 
 /* ************************************************************************* */
 
-const char * const dstrview(dstring_t str) {
+const char * const dstrview(const dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
@@ -50,11 +50,11 @@ const char * const dstrview(dstring_t str) {
 
 /* ************************************************************************* */
 
-size_t dstrallocsize(dstring_t str) {
+size_t dstrallocsize(const dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
-      return -1;
+      return DSTR_UNINITIALIZED;
    }
 
    return DSTRBUFLEN(str);

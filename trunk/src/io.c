@@ -76,7 +76,7 @@ int dstrfreadl(dstring_t dest, FILE *fp) {
    }
 
    /* make sure bufpos points to our current position */
-   bufpos = start + strlen(DSTRBUF(dest));
+   bufpos = start + dstrlen(dest);
 
    /* need more memory to complete line */
    if (bufpos[-1] != '\n') {
@@ -88,7 +88,7 @@ int dstrfreadl(dstring_t dest, FILE *fp) {
 
       /* make sure you update start lest you suffer the wrath of glibc... */
       start = DSTRBUF(dest);
-      bufpos = start + strlen(DSTRBUF(dest));
+      bufpos = start + dstrlen(dest);
 
       /* the +1 at the end is to make sure the '\0' is counted */
       bufcount = bufpos - start + 1;
@@ -156,7 +156,7 @@ int dstrfcatl(dstring_t dest, FILE *fp) {
    char *bufpos;                    /* our current position in DSTRBUF(dest) */
    char *status;                    /* tests for NULL when we encounter EOF */
 
-   ptrdiff_t bufcount = strlen(DSTRBUF(dest));
+   ptrdiff_t bufcount = dstrlen(dest);
 
    int retval;                      /* returns the return value of dstrealloc() */
 
@@ -184,7 +184,7 @@ int dstrfcatl(dstring_t dest, FILE *fp) {
    }
 
    /* make sure bufpos points to our current position */
-   bufpos = start + strlen(DSTRBUF(dest));
+   bufpos = start + dstrlen(dest);
 
    /* need more memory to complete line */
    if (bufpos[-1] != '\n') {

@@ -40,18 +40,6 @@
 
 /* ************************************************************************* */
 
-size_t dstrlen(dstring_t str) {
-
-   /* make sure we're not dealing with an uninitialized string */
-   if (NULL == str) {
-      return DSTR_UNINITIALIZED;
-   }
-
-   return strlen(DSTRBUF(str));
-}
-
-/* ************************************************************************* */
-
 int dstrtrunc(dstring_t str, size_t size) {
 
    int i;
@@ -70,14 +58,63 @@ int dstrtrunc(dstring_t str, size_t size) {
    /* get the length of the string */
    length = dstrlen(str);
 
-   /* if the specified size is greater than or equal to the length of the
-      string, or if size is 0, there's nothing to do. */
-   if (size >= length || 0 == size) {
+   /* if the specified size is 0, there's nothing to do. */
+   if (0 == size) {
+      return DSTR_SUCCESS;
+   }
+
+   /* if the size is greater than or equal to the size of the string,
+      wipe out the whole string */
+   else if (size >= length) {
+      DSTRBUF(str)[0] = '\0';
       return DSTR_SUCCESS;
    }
 
    /* let's truncate, baby! */
    for (i = 0; i < size; i++);
+   DSTRBUF(str)[i] = '\0';
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrtruncleft(dstring_t str, size_t size) {
+
+   int i;
+   size_t length;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure size is valid */
+   if (size < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* get the length of the string */
+   length = dstrlen(str);
+
+   /* if the specified size is 0, there's nothing to do. */
+   if (0 == size) {
+      return DSTR_SUCCESS;
+   }
+
+   /* if the size is greater than or equal to the size of the string,
+      wipe out the whole string */
+   else if (size >= length) {
+      DSTRBUF(str)[0] = '\0';
+      return DSTR_SUCCESS;
+   }
+
+   /* truncate from the left */
+   for (i = 0; DSTRBUF(str)[i + size] != '\0'; i++) {
+      DSTRBUF(str)[i] = DSTRBUF(str)[i + size];
+   }
+
+   /* null terminate newly truncated string */
    DSTRBUF(str)[i] = '\0';
 
    return DSTR_SUCCESS;
@@ -134,7 +171,7 @@ int dstrndel(dstring_t str, int index, int n) {
    }
 
    /* If n is greater than the size of the string, zero it out */
-   if (n > strlen(DSTRBUF(str))) {
+   if (n > dstrlen(str)) {
       DSTRBUF(str)[0] = '\0';
       return DSTR_SUCCESS;
    }
@@ -231,7 +268,13 @@ srclen + 1))) {
 
 /* ************************************************************************* */
 
-int dstrinsert(dstring_t dest, dstring_t src, int index) {
+int dstrinsert(dstring_t dest, const dstring_t src, int index) {
+
+   /* dstrcinsert() will check to make sure dest is initialized, but we must
+      first make sure that src is also initialized! */
+   if (NULL == src) {
+      return DSTR_UNINITIALIZED;
+   }
 
    return dstrcinsert(dest, (const char *)DSTRBUF(src), index);
 }
@@ -297,7 +340,16 @@ srclen + 1))) {
 
 /* ************************************************************************* */
 
-int dstrninsert(dstring_t dest, dstring_t src, int index, int n) {
+int dstrninsert(dstring_t dest, const dstring_t src, int index, int n) {
+
+   /* dstrcinsert() will check to make sure dest is initialized, but we must
+      first make sure that src is also initialized! */
+   if (NULL == src) {
+      return DSTR_UNINITIALIZED;
+   }
 
    return dstrncinsert(dest, (const char *)DSTRBUF(src), index, n);
 }
+
+/* ************************************************************************* */
+

@@ -38,9 +38,14 @@
 
 /* ************************************************************************* */
 
-int dstrtocstr(char *dest, dstring_t src, size_t size) {
+int dstrtocstr(char *dest, const dstring_t src, size_t size) {
 
    int i;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == src) {
+      return DSTR_UNINITIALIZED;
+   }
 
    /* make sure size is valid */
    if (size < 0) {
@@ -67,6 +72,11 @@ int cstrtodstr(dstring_t dest, const char *src) {
 
    int i;
    int status;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
 
    for (i = 0; src[i] != '\0'; i++) {
       /* we're out of memory; allocate more */

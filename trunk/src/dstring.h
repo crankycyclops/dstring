@@ -168,7 +168,7 @@ int dstrfree(dstring_t *strptr);
       that the dstring_t object is uninitialized.
 
    ************************************************************************* */
-const char * const dstrview(dstring_t str);
+const char * const dstrview(const dstring_t str);
 
 
 /* **** dstrallocsize ******************************************************
@@ -186,11 +186,11 @@ const char * const dstrview(dstring_t str);
       dstring_t (our dstring_t object)
 
    Output:
-      The number of bytes allocated to the buffer of a dstring_t object, or
-      -1 to indicate that the dstring_t object is uninitialized.
+      >= 0: The number of bytes allocated to the buffer of a dstring_t object
+      < 0:  Error code (see enum above)
 
    ************************************************************************* */
-size_t dstrallocsize(dstring_t str);
+size_t dstrallocsize(const dstring_t str);
 
 
 /*****************\
@@ -398,7 +398,7 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrtocstr(char *dest, dstring_t src, size_t size);
+int dstrtocstr(char *dest, const dstring_t src, size_t size);
 
 
 /* **** cstrtodstr **********************************************************
@@ -422,6 +422,72 @@ int dstrtocstr(char *dest, dstring_t src, size_t size);
 
    ************************************************************************* */
 int cstrtodstr(dstring_t dest, const char *src);
+
+
+/**************************\
+ * C Library Replacements *
+\**************************/
+
+
+/* **** dstrlen ************************************************************
+
+   This function takes as an argument a dstring_t object and returns the
+   length of the string.  This is the dstring_t equivalent of strlen in the
+   standard library.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+
+   Output:
+      >= 0: the length of the string
+       < 0: an error code (see enum above)
+
+   ************************************************************************* */
+size_t dstrlen(const dstring_t str);
+
+
+/* **** dstrcat ************************************************************
+
+   This function emulates the behavior of the C standard library function
+   strcat() by appending one dstring_t object to another.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+      size_t (number of characters to keep in the string)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrcat(dstring_t dest, const dstring_t src);
+
+
+/* **** dstrncat ***********************************************************
+
+   This function emulates the behavior of the C standard library function
+   strncat() by appending one dstring_t object to another, up to n chars.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+      size_t (number of characters to keep in the string)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrncat(dstring_t dest, const dstring_t src, int n);
 
 
 /*********************\
@@ -451,44 +517,26 @@ int cstrtodstr(dstring_t dest, const char *src);
 int dstrtrunc(dstring_t str, size_t size);
 
 
-/* **** dstrerrormesg ******************************************************
+/* **** dstrtruncleft ******************************************************
 
-   This function takes as input an integer status (see enum above) and
-   returns a constant read-only pointer to a string describing the error.
+   This function truncates a string on the left side by the specified number
+   of characters.
 
-   Found in dstring.c
-
-   *************************************************************************
-
-   Input:
-      int (status code)
-
-   Output:
-      A read-only string describing the status code
-
-   ************************************************************************* */
-const char * const dstrerrormsg(int code);
-
-
-/* **** dstrlen ************************************************************
-
-   This function takes as an argument a dstring_t object and returns the
-   length of the string.  This is the dstring_t equivalent of strlen in the
-   standard library.
+   If the size is 0, nothing will be done and DSTR_SUCCESS will be returned.
 
    Found in utility.c
 
    *************************************************************************
 
    Input:
-      dstring_t (our dstring_t object)
+      dstring_t (string to truncate)
+      size_t (number of characters to keep in the string)
 
    Output:
-      >= 0: the length of the string
-       < 0: an error code (see enum above)
+      An integer status (see enum above)
 
    ************************************************************************* */
-size_t dstrlen(dstring_t str);
+int dstrtruncleft(dstring_t str, size_t size);
 
 
 /* **** dstrdel ************************************************************
@@ -577,7 +625,7 @@ int dstrinsertch(dstring_t dest, int index, char c);
       A status code
 
    ************************************************************************* */
-int dstrinsert(dstring_t dest, dstring_t src, int index);
+int dstrinsert(dstring_t dest, const dstring_t src, int index);
 
 
 /* **** dstrcinsert ********************************************************
@@ -632,7 +680,7 @@ int dstrcinsert(dstring_t dest, const char *src, int index);
       A status code
 
    ************************************************************************* */
-int dstrninsert(dstring_t dest, dstring_t src, int index, int n);
+int dstrninsert(dstring_t dest, const dstring_t src, int index, int n);
 
 
 /* **** dstrncinsert *******************************************************
@@ -665,6 +713,30 @@ int dstrninsert(dstring_t dest, dstring_t src, int index, int n);
 int dstrncinsert(dstring_t dest, const char *src, int index, int n);
 
 
+/*********************\
+ *  Misc. Functions  *
+\*********************/
+
+
+/* **** dstrerrormesg ******************************************************
+
+   This function takes as input an integer status (see enum above) and
+   returns a constant read-only pointer to a string describing the error.
+
+   Found in dstring.c
+
+   *************************************************************************
+
+   Input:
+      int (status code)
+
+   Output:
+      A read-only string describing the status code
+
+   ************************************************************************* */
+const char * const dstrerrormsg(int code);
+
+
 /* -- All functions below this line are UNIMPLEMENTED! -- */
 
 /* NOTE: on xchg function, check for out of bounds! */
@@ -672,12 +744,13 @@ int dstrncinsert(dstring_t dest, const char *src, int index, int n);
 /* Exchanges the character at a 0-based index for another (old character is overwritten) */
 int dstrxchg(dstring_t str, int index, char c);
 
-/* also create functions for swapping strings? */
+/* also create functions for exchanging strings? */
 
-int dstrcat(dstring_t dest, dstring_t src);
-int dstrncat(dstring_t dest, dstring_t src, size_t size);
-int dstrcatcstr(dstring_t dest, const char *src);
-int dstrncatcstr(dstring_t dest, const char *src, size_t size);
+int dstrcatc(dstring_t dest, const char *src);
+int dstrncatc(dstring_t dest, const char *src, size_t size);
+
+int dstrcpy(dstring_t dest, dstring_t src);
+int dstrncpy(dstring_t dest, const dstring_t src, int n);
 
 /* NOT SURE IF I WANT THIS ONE... */
 /* checks to see if an index is within the bounds of a dstring_t object */

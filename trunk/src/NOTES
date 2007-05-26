@@ -1,0 +1,4 @@
+When writing documentation, remember the following:
+  - warn the programmer to ALWAYS set newly declared dstring_t's to NULL!
+  - All read-only standard library functions can be used by using
+    dstrview(dstring_t)
