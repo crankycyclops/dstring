@@ -161,7 +161,7 @@ int dstrfree(dstring_t *strptr);
    *************************************************************************
 
    Input:
-      dstring_t (our dstring_t object)
+      const dstring_t (our dstring_t object)
 
    Output:
       A constant character pointer to the string buffer, or NULL to signal
@@ -183,7 +183,7 @@ const char * const dstrview(const dstring_t str);
    *************************************************************************
 
    Input:
-      dstring_t (our dstring_t object)
+      const dstring_t (our dstring_t object)
 
    Output:
       >= 0: The number of bytes allocated to the buffer of a dstring_t object
@@ -391,7 +391,7 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
 
    Input:
       char * (destination string)
-      dstring_t (source string)
+      const dstring_t (source string)
       size_t (number of characters to copy minus one)
 
    Output:
@@ -415,7 +415,7 @@ int dstrtocstr(char *dest, const dstring_t src, size_t size);
 
    Input:
       dstring_t (destination string)
-      char * (source string)
+      const char * (source string)
 
    Output:
       An integer status (see enum above)
@@ -460,8 +460,8 @@ size_t dstrlen(const dstring_t str);
    *************************************************************************
 
    Input:
-      dstring_t (string to truncate)
-      size_t (number of characters to keep in the string)
+      dstring_t (destination)
+      const dstring_t (source)
 
    Output:
       An integer status (see enum above)
@@ -480,8 +480,9 @@ int dstrcat(dstring_t dest, const dstring_t src);
    *************************************************************************
 
    Input:
-      dstring_t (string to truncate)
-      size_t (number of characters to keep in the string)
+      dstring_t (destination)
+      const dstring_t (source)
+      int (number of characters to concatenate in source)
 
    Output:
       An integer status (see enum above)
@@ -490,9 +491,120 @@ int dstrcat(dstring_t dest, const dstring_t src);
 int dstrncat(dstring_t dest, const dstring_t src, int n);
 
 
+/* **** dstrcatc ***********************************************************
+
+   This function emulates the behavior of the C standard library function
+   strncat() by appending an ordinary C string to a dstring_t object.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (source)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrcatc(dstring_t dest, const char *src);
+
+
+/* **** dstrncatc **********************************************************
+
+   This function emulates the behavior of the C standard library function
+   strncat() by appending a C string to a dstring_t object, up to n chars.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (source)
+      int (number of characters to concatenate in source)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrncatc(dstring_t dest, const char *src, int n);
+
+
+/* **** dstrcpy ************************************************************
+
+   This function emulates the behavior of the C standard library function
+   strcpy() by copying the contents of one initialized dstring_t object to
+   another.  Both dstring_t objects must be initialized.
+
+   Unlike strcpy(), dstrcpy() is safe, because the destination buffer will
+   grow to accomodate the required size.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const dstring_t (source)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrcpy(dstring_t dest, const dstring_t src);
+
+
+/* **** dstrncpy ************************************************************
+
+   This function emulates the behavior of the C standard library function
+   strncpy() by copying the contents of one initialized dstring_t object to
+   another, up to n characters.  Both dstring_t objects must be initialized.
+
+   If n is greater than the size of the source string, like strncpy(), the
+   remaining positions in the string will be padded with '\0' characters.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const dstring_t (source)
+      int (number of characters to copy)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrncpy(dstring_t dest, const dstring_t src, int n);
+
+
 /*********************\
  * utility functions *
 \*********************/
+
+
+/* **** dstrboundscheck ****************************************************
+
+   This function returns DSTR_SUCCESS if the specified index is within the
+   bounds of the passed dstring_t object, DSTR_OUT_OF_BOUNDS if it is not
+   and DSTR_INVALID_ARGUMENT if an invalid index is given (less than 0.)
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to check)
+      int (index)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrboundscheck(dstring_t str, int index);
 
 
 /* **** dstrtrunc **********************************************************
@@ -618,7 +730,7 @@ int dstrinsertch(dstring_t dest, int index, char c);
 
    Input:
       dstring_t (destination)
-      dstring_t (source)
+      const dstring_t (source)
       int (index)
 
    Output:
@@ -628,7 +740,7 @@ int dstrinsertch(dstring_t dest, int index, char c);
 int dstrinsert(dstring_t dest, const dstring_t src, int index);
 
 
-/* **** dstrcinsert ********************************************************
+/* **** dstrinsertc ********************************************************
 
    This function inserts one string into another at the specified 0-based
    index
@@ -650,7 +762,7 @@ int dstrinsert(dstring_t dest, const dstring_t src, int index);
       A status code
 
    ************************************************************************* */
-int dstrcinsert(dstring_t dest, const char *src, int index);
+int dstrinsertc(dstring_t dest, const char *src, int index);
 
 
 /* **** dstrninsert ********************************************************
@@ -672,7 +784,7 @@ int dstrcinsert(dstring_t dest, const char *src, int index);
 
    Input:
       dstring_t (destination)
-      dstring_t (source)
+      const dstring_t (source)
       int (index)
       int (number of characters to insert)
 
@@ -683,7 +795,7 @@ int dstrcinsert(dstring_t dest, const char *src, int index);
 int dstrninsert(dstring_t dest, const dstring_t src, int index, int n);
 
 
-/* **** dstrncinsert *******************************************************
+/* **** dstrninsertc *******************************************************
 
    This function inserts n characters from a C string into a dstring_t
    object at the specified 0-based index.  If n is larger than the number
@@ -710,7 +822,28 @@ int dstrninsert(dstring_t dest, const dstring_t src, int index, int n);
       A status code
 
    ************************************************************************* */
-int dstrncinsert(dstring_t dest, const char *src, int index, int n);
+int dstrninsertc(dstring_t dest, const char *src, int index, int n);
+
+
+/* **** dstrxchg **********************************************************
+
+   This function exchanges the character at the specified 0-based index for
+   another (old character is overwritten with the new.)
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      int (index)
+      char (character to exchange)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrxchg(dstring_t str, int index, char c);
 
 
 /*********************\
@@ -738,20 +871,3 @@ const char * const dstrerrormsg(int code);
 
 
 /* -- All functions below this line are UNIMPLEMENTED! -- */
-
-/* NOTE: on xchg function, check for out of bounds! */
-
-/* Exchanges the character at a 0-based index for another (old character is overwritten) */
-int dstrxchg(dstring_t str, int index, char c);
-
-/* also create functions for exchanging strings? */
-
-int dstrcatc(dstring_t dest, const char *src);
-int dstrncatc(dstring_t dest, const char *src, size_t size);
-
-int dstrcpy(dstring_t dest, dstring_t src);
-int dstrncpy(dstring_t dest, const dstring_t src, int n);
-
-/* NOT SURE IF I WANT THIS ONE... */
-/* checks to see if an index is within the bounds of a dstring_t object */
-int dstrboundscheck(dstring_t str, int index);

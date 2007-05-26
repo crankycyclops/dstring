@@ -150,3 +150,177 @@ n + 1))) {
 
    return DSTR_SUCCESS;
 }
+
+/* ************************************************************************* */
+
+int dstrcatc(dstring_t dest, const char *src) {
+
+   int i, j;
+   int retval;
+
+   /* make sure dest is initialized */
+   if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* nothing to do if the source string is empty */
+   if (0 == strlen(src)) {
+      return DSTR_SUCCESS;
+   }
+
+   /* if dest isn't big enough, we'll have to give it more memory */
+   if (DSTRBUFLEN(dest) <= dstrlen(dest) + strlen(src)) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
+strlen(src) + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* append src to dest */
+   for (i = dstrlen(dest), j = 0; src[j] != '\0'; i++, j++) {
+      DSTRBUF(dest)[i] = src[j];
+   }
+
+   /* null terminate the newly appended string */
+   DSTRBUF(dest)[i] = '\0';
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrncatc(dstring_t dest, const char *src, int n) {
+
+   int i, j;
+   int retval;
+
+   /* make sure dest is both initialized */
+   if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure n is a valid value (greater than or equal to 0) */
+   if (n < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* nothing to do if the source string is empty or if n is 0 */
+   if (0 == strlen(src) || 0 == n) {
+      return DSTR_SUCCESS;
+   }
+
+   /* if n is greater than the size of the string, just append all of src */
+   if (n > strlen(src)) {
+      n = strlen(src);
+   }
+
+   /* if dest isn't big enough, we'll have to give it more memory */
+   if (DSTRBUFLEN(dest) <= dstrlen(dest) + n) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
+n + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* append src to dest */
+   for (i = dstrlen(dest), j = 0; j < n; i++, j++) {
+      DSTRBUF(dest)[i] = src[j];
+   }
+
+   /* null terminate the newly appended string */
+   DSTRBUF(dest)[i] = '\0';
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrcpy(dstring_t dest, const dstring_t src) {
+
+   int i;
+   int retval;
+
+   /* make sure dest and src are both initialized */
+   if (NULL == src) {
+      return DSTR_UNINITIALIZED;
+   } else if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* nothing to do */
+   if (0 == dstrlen(src)) {
+      return DSTR_SUCCESS;
+   }
+
+   /* check to see if dest needs to "grow" */
+   if (DSTRBUFLEN(dest) <= dstrlen(src)) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
+dstrlen(src) + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+
+   }
+
+   /* copy source to destination */
+   for (i = 0; DSTRBUF(src)[i] != '\0'; i++) {
+      DSTRBUF(dest)[i] = DSTRBUF(src)[i];
+   }
+
+   /* NULL terminate the copied string */
+   DSTRBUF(dest)[i] = '\0';
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrncpy(dstring_t dest, const dstring_t src, int n) {
+
+   int i;
+   int retval;
+
+   /* make sure dest and src are both initialized */
+   if (NULL == src) {
+      return DSTR_UNINITIALIZED;
+   } else if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure n is a valid value (>= 0) */
+   if (n < 0) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* nothing to do */
+   if (0 == dstrlen(src) || 0 == n) {
+      return DSTR_SUCCESS;
+   }
+
+   /* check to see if dest needs to "grow" */
+   if (DSTRBUFLEN(dest) <= n) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
+n + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+
+   }
+
+   /* copy source to destination */
+   for (i = 0; i < n; i++) {
+      if (DSTRBUF(src)[i] == '\0') {
+         break;
+      }
+      DSTRBUF(dest)[i] = DSTRBUF(src)[i];
+   }
+
+   /* pad any remaining positions with '\0' characters */
+   for ( ; i <= n; i++) {
+      DSTRBUF(dest)[i] = '\0';
+   }
+
+   return DSTR_SUCCESS;
+}
