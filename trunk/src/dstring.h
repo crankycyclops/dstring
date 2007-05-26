@@ -489,13 +489,138 @@ size_t dstrlen(dstring_t str);
       int (index)
 
    Output:
-      A status code (either DSTR_SUCCESS or DSTR_OUT_OF_BOUNDS; see enum
-      above)
+      A status code
 
    ************************************************************************* */
 int dstrboundscheck(dstring_t str, int index);
 
+
+/* **** dstrdel ************************************************************
+
+   This function removes a character from a dstring_t buffer at the
+   specified 0-based index
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      int (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrdel(dstring_t str, int index);
+
+
+/* **** dstrdeln ***********************************************************
+
+   This function removes n characters from a dstring_t buffer at the
+   specified 0-based index
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (our dstring_t object)
+      int (index)
+      int (number of items to remove)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrdeln(dstring_t str, int index, int n);
+
+
+/* **** dstrinsertch *******************************************************
+
+   This function inserts a single character into a dstring object at the
+   specified 0-based index
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      int (index)
+      char (source)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrinsertch(dstring_t dest, int index, char c);
+
+
+/* **** dstrinsert *********************************************************
+
+   This function inserts one string into another at the specified 0-based
+   index
+
+   WARNING: It is the programmer's responsibility to delete any \n
+   characters in the source string that would cause undesired line breaks
+   if inserted into the destination string!
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      dstring_t (source)
+      int (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrinsert(dstring_t dest, dstring_t src, int index);
+
+
+/* **** dstrcinsert ********************************************************
+
+   This function inserts one string into another at the specified 0-based
+   index
+
+   WARNING: It is the programmer's responsibility to delete any \n
+   characters in the source string that would cause undesired line breaks
+   if inserted into the destination string!
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (source)
+      int (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrcinsert(dstring_t dest, const char *src, int index);
+
+
 /* -- All functions below this line are UNIMPLEMENTED! -- */
+
+/* NOTE: on insert and xchg functions, check for out of bounds! Also, cannot
+   modify \0 character! */
+
+/* these functions are like the ones above, except n specifies the number of
+   characters to take from src and insert into dest */
+int dstrinsertn(dstring_t dest, dstring_t src, int index, int n);
+int dstrcinsertn(dstring_t dest, const char *src, int index, int n);
+
+/* Exchanges the character at a 0-based index for another (old character is overwritten) */
+int dstrxchg(dstring_t str, int index, char c);
+
+/* also create functions for swapping strings... */
 
 int dstrcat(dstring_t dest, dstring_t src);
 int dstrncat(dstring_t dest, dstring_t src, size_t size);

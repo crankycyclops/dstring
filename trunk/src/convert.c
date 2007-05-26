@@ -36,6 +36,8 @@
 #include "static.h"
 #include "dstring.h"
 
+/* ************************************************************************* */
+
 int dstrtocstr(char *dest, dstring_t src, size_t size) {
 
    int i;
@@ -48,6 +50,7 @@ int dstrtocstr(char *dest, dstring_t src, size_t size) {
    return DSTR_SUCCESS;
 }
 
+/* ************************************************************************* */
 
 int cstrtodstr(dstring_t dest, const char *src) {
 

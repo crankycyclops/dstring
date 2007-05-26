@@ -38,6 +38,7 @@
 #include "static.h"
 #include "dstring.h"
 
+/* ************************************************************************* */
 
 size_t dstrlen(dstring_t str) {
 
@@ -49,6 +50,7 @@ size_t dstrlen(dstring_t str) {
    return strlen(DSTRBUF(str));
 }
 
+/* ************************************************************************* */
 
 int dstrtrunc(dstring_t str, size_t size) {
 
@@ -74,4 +76,141 @@ int dstrtrunc(dstring_t str, size_t size) {
    DSTRBUF(str)[i] = '\0';
 
    return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrdel(dstring_t str, int index) {
+
+   int i;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(str) || index < 0) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* starting at index, move each character left one position */
+   for (i = index; '\0' != DSTRBUF(str)[i]; i++) {
+      DSTRBUF(str)[i] = DSTRBUF(str)[i + 1];
+   }
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrdeln(dstring_t str, int index, int n) {
+
+   int i;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(str) || index < 0) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* starting at index, move each character left n positions */
+   for (i = index; '\0' != DSTRBUF(str)[i]; i++) {
+      DSTRBUF(str)[i] = DSTRBUF(str)[i + n];
+      if ('\0' == DSTRBUF(str)[i]) {
+         break;
+      }
+   }
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrinsertch(dstring_t dest, int index, char c) {
+
+   int i;
+   int retval;          /* for the return value of dstrealloc() */
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(dest) || index < 0) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* is our current allocation big enough? */
+   if (DSTRBUFLEN(dest) <= dstrlen(dest) + 2) {
+      /* if not, we need to add extra space */
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + 10 ))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* shift everything over one unit to the right, including the '\0' */
+   for (i = dstrlen(dest); i >= index; i--) {
+      DSTRBUF(dest)[i + 1] = DSTRBUF(dest)[i];
+   }
+
+   /* insert our character at the specified index */
+   DSTRBUF(dest)[index] = c;
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrcinsert(dstring_t dest, const char *src, int index) {
+
+   int i, j;
+   int retval;          /* for the return value of dstrealloc() */
+
+   int srclen = strlen(src);
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == dest) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(dest) || index < 0) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* is our current allocation big enough? */
+   if (DSTRBUFLEN(dest) <= dstrlen(dest) + srclen + 1) {
+      /* if not, we need to add extra space */
+      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
+srclen + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* shift everything over srclen units to the right, including '\0' */
+   for (i = dstrlen(dest); i >= index; i--) {
+      DSTRBUF(dest)[i + srclen] = DSTRBUF(dest)[i];
+   }
+
+   /* insert the source string in dest at the proper position */
+   for (i = index, j = 0; j < srclen; i++, j++) {
+      DSTRBUF(dest)[i] = src[j];
+   }
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrinsert(dstring_t dest, dstring_t src, int index) {
+
+   return dstrcinsert(dest, (const char *)DSTRBUF(src), index);
 }

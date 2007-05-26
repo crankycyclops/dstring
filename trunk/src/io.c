@@ -39,6 +39,7 @@
 #include "static.h"
 #include "dstring.h"
 
+/* ************************************************************************* */
 
 int dstrfreadl(dstring_t dest, FILE *fp) {
 
@@ -97,6 +98,7 @@ int dstrfreadl(dstring_t dest, FILE *fp) {
    return DSTR_SUCCESS;
 }
 
+/* ************************************************************************* */
 
 int dstrfreadn(dstring_t dest, FILE *fp, size_t size) {
 
@@ -133,10 +135,12 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size) {
    }
 }
 
+/* ************************************************************************* */
 
 /* Note that this function is almost a complete cut and paste of dstrfreadl(),
    except for the fact that bufpos is initialized to point to the end of the
    currently allocated string and bufcount to its size. */
+
 int dstrfcatl(dstring_t dest, FILE *fp) {
 
    char *start;                     /* points to beginning of buffer */
@@ -193,10 +197,12 @@ int dstrfcatl(dstring_t dest, FILE *fp) {
    return DSTR_SUCCESS;
 }
 
+/* ************************************************************************* */
 
 /* like dtrfcatl(), this function is mostly copy and paste from dstrfreadn(),
    except for the fact that it is modified to append new data to the end of
    the buffer instead of overwriting it. */
+
 int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
 
    char *status;     /* lets us know when we hit EOF */
@@ -218,7 +224,6 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
    if (NULL == fp) {
       return DSTR_UNOPENED_FILE;
    }
-
 
    /* our current buffer won't accomodate the string; reallocate! */
    if (DSTRBUFLEN(dest) < newsize) {

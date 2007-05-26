@@ -46,6 +46,7 @@ const char *errormsgs[] = {
    "unknown error"
 };
 
+/* ************************************************************************* */
 
 const char * const dstrerrormsg(int code) {
 

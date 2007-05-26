@@ -38,6 +38,8 @@
 #include "static.h"
 #include "dstring.h"
 
+/* ************************************************************************* */
+
 int dstralloc(dstring_t *strptr, size_t bytes) {
 
    /* check for invalid buflen value */
@@ -68,6 +70,7 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
    return DSTR_SUCCESS;
 }
 
+/* ************************************************************************* */
 
 int dstrealloc(dstring_t *strptr, size_t bytes) {
 
@@ -110,6 +113,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
    return DSTR_SUCCESS;
 }
 
+/* ************************************************************************* */
 
 int dstrfree(dstring_t *strptr) {
 
