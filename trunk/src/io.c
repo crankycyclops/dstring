@@ -100,7 +100,7 @@ int dstrfreadl(dstring_t dest, FILE *fp) {
 
 /* ************************************************************************* */
 
-int dstrfreadn(dstring_t dest, FILE *fp, size_t size) {
+int dstrfreadn(dstring_t dest, FILE *fp, int size) {
 
    char *status;     /* lets us know when we hit EOF */
    int   retval;     /* stores the return value of dstrealloc() */
@@ -171,9 +171,7 @@ int dstrfcatl(dstring_t dest, FILE *fp) {
    }
 
    start  = DSTRBUF(dest);
-
-   /* the -1 is so that we will overwrite the previous '\n' */
-   bufpos = start + bufcount - 1;
+   bufpos = start + bufcount;
 
    read:
    status = fgets(bufpos, DSTRBUFLEN(dest) - bufcount, fp);
@@ -212,7 +210,7 @@ int dstrfcatl(dstring_t dest, FILE *fp) {
    except for the fact that it is modified to append new data to the end of
    the buffer instead of overwriting it. */
 
-int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
+int dstrfcatn(dstring_t dest, FILE *fp, int size) {
 
    char *status;     /* lets us know when we hit EOF */
    int   retval;     /* stores the return value of dstrealloc() */
@@ -220,9 +218,8 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size) {
    /* this will be the minimum new size of the dstring_t object */
    size_t newsize = size + strlen(DSTRBUF(dest));
 
-   /* this marks our current position at the end of the previous string,
-      overwriting the previous '\n' character */
-   char *bufpos = DSTRBUF(dest) + strlen(DSTRBUF(dest)) - 1;
+   /* this marks our current position at the end of the previous string */
+   char *bufpos = DSTRBUF(dest) + strlen(DSTRBUF(dest));
 
   /* make sure dest is initialized */
    if (NULL == dest) {

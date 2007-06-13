@@ -38,8 +38,18 @@
    pointer dereferences can occur. */
 
 
+
+/* ************************************************************************* */
+
+
+
 /* dstring_t is actually a "black-box" type */
 typedef void * dstring_t;
+
+
+
+/* ************************************************************************* */
+
 
 
 /****************\
@@ -72,6 +82,11 @@ enum STATUS_CODES {
    /* when an invalid argument is passed to a DString function */
    DSTR_INVALID_ARGUMENT = -7
 };
+
+
+
+/* ************************************************************************* */
+
 
 
 /************************\
@@ -178,6 +193,11 @@ const char * const dstrview(const dstring_t str);
    LENGTH OF THE STRING!  To find the length of the string, see dstrlen
    further below.
 
+   Since size_t is an unsigned type, it cannot return a status code.
+   However, it is also a convenient fact that an initialized dstring_t
+   object will always have an allocation greater than 0.  Thus, if the
+   return value was 0, it means the object was not initialized.
+
    Found in access.c
 
    *************************************************************************
@@ -186,8 +206,8 @@ const char * const dstrview(const dstring_t str);
       const dstring_t (our dstring_t object)
 
    Output:
-      >= 0: The number of bytes allocated to the buffer of a dstring_t object
-      < 0:  Error code (see enum above)
+      > 0: The number of bytes allocated to the buffer of a dstring_t object
+     == 0:  The dstring_t object was not initialized
 
    ************************************************************************* */
 size_t dstrallocsize(const dstring_t str);
@@ -235,7 +255,7 @@ int dstrfreadl(dstring_t dest, FILE *fp);
       An integer status (see enum above)
 
    ************************************************************************* */
-#define dstrreadl(DEST) dstrfreadl(DEST, stdin)
+#define dstreadl(DEST) dstrfreadl(DEST, stdin)
 
 
 /* **** dstrfreadn *********************************************************
@@ -256,13 +276,13 @@ int dstrfreadl(dstring_t dest, FILE *fp);
    Input:
       dstring_t (our dstring_t object)
       FILE (our input stream)
-      size_t (the number of characters to read)
+      int (the number of characters to read)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
+int dstrfreadn(dstring_t dest, FILE *fp, int size);
 
 
 /* **** dstrreadn **********************************************************
@@ -276,13 +296,13 @@ int dstrfreadn(dstring_t dest, FILE *fp, size_t size);
 
    Input:
       dstring_t (our dstring_t object)
-      size_t (the number of characters to read)
+      int (the number of characters to read)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-#define dstrreadn(DEST, SIZE) dstrfreadn(DEST, stdin, SIZE)
+#define dstreadn(DEST, SIZE) dstrfreadn(DEST, stdin, SIZE)
 
 
 /* **** dstrfcatl **********************************************************
@@ -342,13 +362,13 @@ int dstrfcatl(dstring_t dest, FILE *fp);
    Input:
       dstring_t (our dstring_t object)
       FILE (our input stream)
-      size_t (the number of characters to read)
+      int (the number of characters to read)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
+int dstrfcatn(dstring_t dest, FILE *fp, int size);
 
 
 /* **** dstrcatn ***********************************************************
@@ -362,7 +382,7 @@ int dstrfcatn(dstring_t dest, FILE *fp, size_t size);
 
    Input:
       dstring_t (our dstring_t object)
-      size_t (the number of characters to read)
+      int (the number of characters to read)
 
    Output:
       An integer status (see enum above)
@@ -443,8 +463,10 @@ int cstrtodstr(dstring_t dest, const char *src);
       dstring_t (our dstring_t object)
 
    Output:
-      >= 0: the length of the string
-       < 0: an error code (see enum above)
+      The length of the string
+      (BE CAREFUL! A size of 0 is an ambiguous case; since size_t is
+       unsigned, we can't return a status code.  Thus, 0 could indicate a
+       size of 0 OR the fact that the dstring_t object is uninitialized.)
 
    ************************************************************************* */
 size_t dstrlen(const dstring_t str);
@@ -454,6 +476,9 @@ size_t dstrlen(const dstring_t str);
 
    This function emulates the behavior of the C standard library function
    strcat() by appending one dstring_t object to another.
+
+   dstrcat() is safe, unlike strcat(), because the destination buffer will
+   grow to accomodate the required size.
 
    Found in cstdlib.c
 
@@ -482,16 +507,16 @@ int dstrcat(dstring_t dest, const dstring_t src);
    Input:
       dstring_t (destination)
       const dstring_t (source)
-      int (number of characters to concatenate in source)
+      size_t (number of characters to concatenate in source)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrncat(dstring_t dest, const dstring_t src, int n);
+int dstrncat(dstring_t dest, const dstring_t src, size_t n);
 
 
-/* **** dstrcatc ***********************************************************
+/* **** dstrcatcs **********************************************************
 
    This function emulates the behavior of the C standard library function
    strncat() by appending an ordinary C string to a dstring_t object.
@@ -508,10 +533,10 @@ int dstrncat(dstring_t dest, const dstring_t src, int n);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrcatc(dstring_t dest, const char *src);
+int dstrcatcs(dstring_t dest, const char *src);
 
 
-/* **** dstrncatc **********************************************************
+/* **** dstrncatcs *********************************************************
 
    This function emulates the behavior of the C standard library function
    strncat() by appending a C string to a dstring_t object, up to n chars.
@@ -523,13 +548,13 @@ int dstrcatc(dstring_t dest, const char *src);
    Input:
       dstring_t (destination)
       const char * (source)
-      int (number of characters to concatenate in source)
+      size_t (number of characters to concatenate in source)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrncatc(dstring_t dest, const char *src, int n);
+int dstrncatcs(dstring_t dest, const char *src, size_t n);
 
 
 /* **** dstrcpy ************************************************************
@@ -572,13 +597,13 @@ int dstrcpy(dstring_t dest, const dstring_t src);
    Input:
       dstring_t (destination)
       const dstring_t (source)
-      int (number of characters to copy)
+      size_t (number of characters to copy)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrncpy(dstring_t dest, const dstring_t src, int n);
+int dstrncpy(dstring_t dest, const dstring_t src, size_t n);
 
 
 /*********************\
@@ -598,13 +623,13 @@ int dstrncpy(dstring_t dest, const dstring_t src, int n);
 
    Input:
       dstring_t (string to check)
-      int (index)
+      size_t (index)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrboundscheck(dstring_t str, int index);
+int dstrboundscheck(dstring_t str, size_t index);
 
 
 /* **** dstrtrunc **********************************************************
@@ -662,13 +687,13 @@ int dstrtruncleft(dstring_t str, size_t size);
 
    Input:
       dstring_t (our dstring_t object)
-      int (index)
+      size_t (index)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrdel(dstring_t str, int index);
+int dstrdel(dstring_t str, size_t index);
 
 
 /* **** dstrndel ***********************************************************
@@ -684,20 +709,21 @@ int dstrdel(dstring_t str, int index);
 
    Input:
       dstring_t (our dstring_t object)
-      int (index)
-      int (number of items to remove)
+      size_t (index)
+      size_t (number of items to remove)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrndel(dstring_t str, int index, int n);
+int dstrndel(dstring_t str, size_t index, size_t n);
 
 
-/* **** dstrinsertch *******************************************************
+/* **** dstrinsertc ********************************************************
 
    This function inserts a single character into a dstring object at the
-   specified 0-based index
+   specified 0-based index.  Inserting \0's is not allowed and will result
+   in a return value of DSTR_INVALID_ARGUMENT if attempted.
 
    Found in utility.c
 
@@ -705,20 +731,20 @@ int dstrndel(dstring_t str, int index, int n);
 
    Input:
       dstring_t (destination)
-      int (index)
+      size_t (index)
       char (source)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrinsertch(dstring_t dest, int index, char c);
+int dstrinsertc(dstring_t dest, size_t index, char c);
 
 
-/* **** dstrinsert *********************************************************
+/* **** dstrinserts ********************************************************
 
    This function inserts one string into another at the specified 0-based
-   index
+   index.
 
    WARNING: It is the programmer's responsibility to delete any \n
    characters in the source string that would cause undesired line breaks
@@ -731,19 +757,19 @@ int dstrinsertch(dstring_t dest, int index, char c);
    Input:
       dstring_t (destination)
       const dstring_t (source)
-      int (index)
+      size_t (index)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrinsert(dstring_t dest, const dstring_t src, int index);
+int dstrinserts(dstring_t dest, const dstring_t src, size_t index);
 
 
-/* **** dstrinsertc ********************************************************
+/* **** dstrinsertcs *******************************************************
 
-   This function inserts one string into another at the specified 0-based
-   index
+   This function inserts a C string into a dstring_t object at the specified
+   0-based index.
 
    WARNING: It is the programmer's responsibility to delete any \n
    characters in the source string that would cause undesired line breaks
@@ -756,16 +782,16 @@ int dstrinsert(dstring_t dest, const dstring_t src, int index);
    Input:
       dstring_t (destination)
       const char * (source)
-      int (index)
+      size_t (index)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrinsertc(dstring_t dest, const char *src, int index);
+int dstrinsertcs(dstring_t dest, const char *src, size_t index);
 
 
-/* **** dstrninsert ********************************************************
+/* **** dstrninserts *******************************************************
 
    This function inserts n characters from a dstring_t object into another
    at the specified 0-based index.  If n is larger than the number of
@@ -785,17 +811,17 @@ int dstrinsertc(dstring_t dest, const char *src, int index);
    Input:
       dstring_t (destination)
       const dstring_t (source)
-      int (index)
-      int (number of characters to insert)
+      size_t (index)
+      size_t (number of characters to insert)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrninsert(dstring_t dest, const dstring_t src, int index, int n);
+int dstrninserts(dstring_t dest, const dstring_t src, size_t index, size_t n);
 
 
-/* **** dstrninsertc *******************************************************
+/* **** dstrninsertcs ******************************************************
 
    This function inserts n characters from a C string into a dstring_t
    object at the specified 0-based index.  If n is larger than the number
@@ -815,20 +841,22 @@ int dstrninsert(dstring_t dest, const dstring_t src, int index, int n);
    Input:
       dstring_t (destination)
       const char * (source)
-      int (index)
-      int (number of characters to insert)
+      size_t (index)
+      size_t (number of characters to insert)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrninsertc(dstring_t dest, const char *src, int index, int n);
+int dstrninsertcs(dstring_t dest, const char *src, size_t index, size_t n);
 
 
 /* **** dstrxchg **********************************************************
 
    This function exchanges the character at the specified 0-based index for
-   another (old character is overwritten with the new.)
+   another (old character is overwritten with the new.)   \0's cannot be
+   inserted into the string.  Attempting to do so will not work and will
+   result in a return value of DSTR_INVALID_ARGUMENT.
 
    Found in utility.c
 
@@ -836,14 +864,220 @@ int dstrninsertc(dstring_t dest, const char *src, int index, int n);
 
    Input:
       dstring_t
-      int (index)
+      size_t (index)
       char (character to exchange)
 
    Output:
       A status code
 
    ************************************************************************* */
-int dstrxchg(dstring_t str, int index, char c);
+int dstrxchg(dstring_t str, size_t index, char c);
+
+
+/* **** dstrgetc ***********************************************************
+
+   This function returns the character found at the specified index in the
+   passed dstring_t object.  If the index is less than 0, a return value of
+   DSTR_INVALID_ARGUMENT will be returned.  If the index is out of bounds,
+   a value of DSTR_OUT_OF_BOUNDS will be returned.
+
+   The programmer should note that the index of the \0 character is
+   considered out of bounds.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      > 0: a character
+      < 0: status code indicating some failure
+
+   ************************************************************************* */
+int dstrgetc(dstring_t str, size_t index);
+
+
+/* **** dstryankc **********************************************************
+
+   This function returns the character found at the specified index in the
+   passed dstring_t object and removes it from the string.  If the index is
+   less than 0, a return value of DSTR_INVALID_ARGUMENT will be returned.
+   If the index is out of bounds, a value of DSTR_OUT_OF_BOUNDS will be
+   returned.
+
+   The programmer should note that the index of the \0 character is
+   considered out of bounds.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      > 0: a character
+      < 0: status code indicating some failure
+
+   ************************************************************************* */
+int dstryankc(dstring_t str, size_t index);
+
+
+/* **** dstrreplacec *******************************************************
+
+   This function combs through an entire dstring_t object, replacing all
+   instances of the character contained in oldc with the character contained
+   in newc.  If there are no instances of oldc in the dstring_t object, the
+   function will do nothing and will return DSTR_SUCCESS.
+
+   Attempting to pass \0 as either oldc or newc will result in the function
+   doing nothing and returning DSTR_INVALID_ARGUMENT.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      char (old character to change)
+      char (new character to swap in place of the old)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstreplacec(dstring_t str, char oldc, char newc);
+
+
+/*************************\
+ *  Formatting Functions  *
+\**************************/
+
+
+/* **** dstrpadl ***********************************************************
+
+   This function pads the left side of a string with n amount of the
+   specified fill character.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (number of padding characters)
+      char (pad character)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrpadl(dstring_t str, size_t n, char c);
+
+
+/* **** dstrpadr ***********************************************************
+
+   This function pads the right side of a string with n amount of the
+   specified fill character.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (number of padding characters)
+      char (pad character)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrpadr(dstring_t str, size_t n, char c);
+
+
+
+/* **** dstrcenter *********************************************************
+
+   This function will center justify non-whitespace text assuming a max
+   width of len and will fill the surrounding whitespace with space
+   characters.
+
+   If len is less than the number of characters in the string, the function
+   will do nothing and will return DSTR_SUCCESS.
+
+   If a single string contains more than one line (more than a single \n),
+   each one will be center justified.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (max width in which the non-whitespace text will be centered)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrcenter(dstring_t str, size_t len);
+
+
+/* **** dstrright **********************************************************
+
+   This function will right justify non-whitespace text assuming a max
+   width of len and will fill the whitespace on the left with spaces.
+
+   If len is less than the number of characters in the string, the function
+   will do nothing and will return DSTR_SUCCESS.
+
+   If a single string contains more than one line (more than a single \n),
+   each one will be right justified.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (max width in which the non-whitespace text will be centered)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrright(dstring_t str, size_t len);
+
+
+/* **** dstrleft ***********************************************************
+
+   This function will left justify non-whitespace text assuming a max width
+   of len and will fill the whitespace on the right with spaces.
+
+   If len is less than the number of characters in the string, the function
+   will do nothing and will return DSTR_SUCCESS.
+
+   If a single string contains more than one line (more than a single \n),
+   each one will be left justified.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (max width in which the non-whitespace text will be centered)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrleft(dstring_t str, size_t len);
 
 
 /*********************\
@@ -870,4 +1104,12 @@ int dstrxchg(dstring_t str, int index, char c);
 const char * const dstrerrormsg(int code);
 
 
-/* -- All functions below this line are UNIMPLEMENTED! -- */
+/* IMPLEMENT! */
+
+/* Utility */
+int dstreplaces(dstring_t str, const char *old, const char *new);
+
+/* Format */
+int dstrtoupper(dstring_t str);
+int dstrtolower(dstring_t str);
+/* more in format.c that need prototypes to be made */

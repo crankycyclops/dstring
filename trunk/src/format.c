@@ -1,8 +1,8 @@
 
 /* ************************************************************************* *\
-   * File: io.c                                                            *
+   * File: format.c                                                        *
    * Purpose:                                                              *
-   *    Provides input and output facilities for dstring_t objects         *
+   *    Provides functions for formatting strings                          *
    *************************************************************************
    * Project:    DString                                                   *
    * Programmer: James Colannino                                           *
@@ -33,59 +33,117 @@
    * Boston, MA 02110-1301 USA                                             * 
 \* ************************************************************************* */
 
+#include <string.h>
+
 #include "static.h"
 #include "dstring.h"
 
 /* ************************************************************************* */
 
-int dstrtocstr(char *dest, const dstring_t src, size_t size) {
+int dstrpadl(dstring_t str, size_t n, char c) {
 
    size_t i;
+   int retval;
 
-   /* make sure we're not dealing with an uninitialized string */
-   if (NULL == src) {
+   size_t oldstrlen = dstrlen(str);
+
+   /* make sure str is initialized */
+   if (NULL == str) {
       return DSTR_UNINITIALIZED;
    }
 
-   /* if size is 0, create an empty string */
-   if (0 == size) {
-      *dest = '\0';
+   /* if n is 0, do nothing */
+   if (0 == n) {
       return DSTR_SUCCESS;
    }
 
-   for (i = 0; DSTRBUF(src)[i] != '\0' && i < size - 1; i++) {
-      dest[i] = DSTRBUF(src)[i];
+   /* we can't insert '\0' characters */
+   if ('\0' == c) {
+      return DSTR_INVALID_ARGUMENT;
    }
 
-   dest[++i] = '\0';
+   /* make sure we have enough space in the string */
+   if (DSTRBUFLEN(str) <= oldstrlen + n) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&str, DSTRBUFLEN(str) + n + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* shift everything to the left n places */
+   for (i = oldstrlen + n - 1; i >= n; i--) {
+      DSTRBUF(str)[i] = DSTRBUF(str)[i - n];
+   }
+
+   /* insert the padding characters at the left */
+   for (i = 0; i < n; i++) {
+      DSTRBUF(str)[i] = c;
+   }
+
+   /* NULL terminate new string */
+   DSTRBUF(str)[oldstrlen + n] = '\0';
+
    return DSTR_SUCCESS;
 }
 
 /* ************************************************************************* */
 
-int cstrtodstr(dstring_t dest, const char *src) {
+int dstrpadr(dstring_t str, size_t n, char c) {
 
-   size_t i;
-   int status;
+   size_t i, j;
+   int retval;
 
-   /* make sure we're not dealing with an uninitialized string */
-   if (NULL == dest) {
+   /* make sure str is initialized */
+   if (NULL == str) {
       return DSTR_UNINITIALIZED;
    }
 
-   for (i = 0; src[i] != '\0'; i++) {
-      /* we're out of memory; allocate more */
-      if (i >= (DSTRBUFLEN(dest) - 1)) {
-         if (DSTR_SUCCESS != \
-(status = dstrealloc(&dest, DSTRBUFLEN(dest) * 2))) {
-            /* NULL terminate what we were able to get and return */
-            DSTRBUF(dest)[i] = '\0';
-            return status;
-         }
-      }
-      DSTRBUF(dest)[i] = src[i];
+   /* if n is 0, do nothing */
+   if (0 == n) {
+      return DSTR_SUCCESS;
    }
 
-   DSTRBUF(dest)[++i] = '\0';
+   /* we can't insert '\0' characters */
+   if ('\0' == c) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* make sure we have enough space in the string */
+   if (DSTRBUFLEN(str) <= dstrlen(str) + n) {
+      if (DSTR_SUCCESS != (retval = dstrealloc(&str, DSTRBUFLEN(str) + n + 1))) {
+         /* if the allocation was not successful, the string is untouched */
+         return retval;
+      }
+   }
+
+   /* append n fill characters to the end of the string */
+   for (i = dstrlen(str), j = 0; j < n; i++, j++) {
+       DSTRBUF(str)[i] = c;
+   }
+
+   /* NULL terminate the string */
+   DSTRBUF(str)[i] = '\0';
+
    return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrcenter(dstring_t str, size_t len) {
+
+
+}
+
+/* ************************************************************************* */
+
+int dstrright(dstring_t str, size_t len) {
+
+
+}
+
+/* ************************************************************************* */
+
+int dstrleft(dstring_t str, size_t len) {
+
+
 }

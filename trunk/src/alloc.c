@@ -34,6 +34,7 @@
 \* ************************************************************************* */
 
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "static.h"
 #include "dstring.h"
@@ -42,13 +43,8 @@
 
 int dstralloc(dstring_t *strptr, size_t bytes) {
 
-   /* check for invalid buflen value */
-   if (bytes < 0) {
-      return DSTR_INVALID_BUFLEN;
-   }
-
    /* if a value of 0 is given, we must free the string */
-   else if (0 == bytes) {
+   if (0 == bytes) {
       return dstrfree(strptr);
    }
 
@@ -84,13 +80,8 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
       return dstralloc(strptr, bytes);
    }
 
-   /* check for invalid buflen value */
-   if (bytes < 0) {
-      return DSTR_INVALID_BUFLEN;
-   }
-
    /* if a value of 0 is given, we must free the string */
-   else if (0 == bytes) {
+   if (0 == bytes) {
       return dstrfree(strptr);
    }
 

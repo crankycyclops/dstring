@@ -50,11 +50,11 @@
 
 size_t dstrlen(const dstring_t str) {
 
-   int count;
+   size_t count;
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
-      return DSTR_UNINITIALIZED;
+      return 0;
    }
 
    /* get the size of the string */
@@ -67,7 +67,7 @@ size_t dstrlen(const dstring_t str) {
 
 int dstrcat(dstring_t dest, const dstring_t src) {
 
-   int i, j;
+   size_t i, j;
    int retval;
 
    /* make sure dest and src are both initialized */
@@ -104,9 +104,9 @@ dstrlen(src) + 1))) {
 
 /* ************************************************************************* */
 
-int dstrncat(dstring_t dest, const dstring_t src, int n) {
+int dstrncat(dstring_t dest, const dstring_t src, size_t n) {
 
-   int i, j;
+   size_t i, j;
    int retval;
 
    /* make sure dest and src are both initialized */
@@ -114,11 +114,6 @@ int dstrncat(dstring_t dest, const dstring_t src, int n) {
       return DSTR_UNINITIALIZED;
    } else if (NULL == dest) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure n is a valid value (greater than or equal to 0) */
-   if (n < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* nothing to do if the source string is empty or if n is 0 */
@@ -153,9 +148,9 @@ n + 1))) {
 
 /* ************************************************************************* */
 
-int dstrcatc(dstring_t dest, const char *src) {
+int dstrcatcs(dstring_t dest, const char *src) {
 
-   int i, j;
+   size_t i, j;
    int retval;
 
    /* make sure dest is initialized */
@@ -190,19 +185,14 @@ strlen(src) + 1))) {
 
 /* ************************************************************************* */
 
-int dstrncatc(dstring_t dest, const char *src, int n) {
+int dstrncatcs(dstring_t dest, const char *src, size_t n) {
 
-   int i, j;
+   size_t i, j;
    int retval;
 
-   /* make sure dest is both initialized */
+   /* make sure dest is initialized */
    if (NULL == dest) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure n is a valid value (greater than or equal to 0) */
-   if (n < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* nothing to do if the source string is empty or if n is 0 */
@@ -239,7 +229,7 @@ n + 1))) {
 
 int dstrcpy(dstring_t dest, const dstring_t src) {
 
-   int i;
+   size_t i;
    int retval;
 
    /* make sure dest and src are both initialized */
@@ -277,9 +267,9 @@ dstrlen(src) + 1))) {
 
 /* ************************************************************************* */
 
-int dstrncpy(dstring_t dest, const dstring_t src, int n) {
+int dstrncpy(dstring_t dest, const dstring_t src, size_t n) {
 
-   int i;
+   size_t i;
    int retval;
 
    /* make sure dest and src are both initialized */
@@ -289,9 +279,9 @@ int dstrncpy(dstring_t dest, const dstring_t src, int n) {
       return DSTR_UNINITIALIZED;
    }
 
-   /* make sure n is a valid value (>= 0) */
-   if (n < 0) {
-      return DSTR_INVALID_ARGUMENT;
+   /* if n is larger than the size of src, just append all of src */
+   if (n > dstrlen(src)) {
+      n = dstrlen(src);
    }
 
    /* nothing to do */
@@ -310,17 +300,12 @@ n + 1))) {
    }
 
    /* copy source to destination */
-   for (i = 0; i < n; i++) {
-      if (DSTRBUF(src)[i] == '\0') {
-         break;
-      }
+   for (i = 0; DSTRBUF(src)[i] != '\0'; i++) {
       DSTRBUF(dest)[i] = DSTRBUF(src)[i];
    }
 
-   /* pad any remaining positions with '\0' characters */
-   for ( ; i <= n; i++) {
-      DSTRBUF(dest)[i] = '\0';
-   }
+   /* NULL terminate the newly appended string */
+   DSTRBUF(dest)[i] = '\0';
 
    return DSTR_SUCCESS;
 }

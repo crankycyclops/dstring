@@ -40,16 +40,11 @@
 
 /* ************************************************************************* */
 
-int dstrboundscheck(dstring_t str, int index) {
+int dstrboundscheck(dstring_t str, size_t index) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* invalid index */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* out of bounds */
@@ -65,17 +60,12 @@ int dstrboundscheck(dstring_t str, int index) {
 
 int dstrtrunc(dstring_t str, size_t size) {
 
-   int i;
+   size_t i;
    size_t length;
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure size is valid */
-   if (size < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* get the length of the string */
@@ -104,17 +94,12 @@ int dstrtrunc(dstring_t str, size_t size) {
 
 int dstrtruncleft(dstring_t str, size_t size) {
 
-   int i;
+   size_t i;
    size_t length;
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure size is valid */
-   if (size < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* get the length of the string */
@@ -145,18 +130,13 @@ int dstrtruncleft(dstring_t str, size_t size) {
 
 /* ************************************************************************* */
 
-int dstrdel(dstring_t str, int index) {
+int dstrdel(dstring_t str, size_t index) {
 
-   int i;
+   size_t i;
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* check to see if the index is out of bounds */
@@ -174,18 +154,13 @@ int dstrdel(dstring_t str, int index) {
 
 /* ************************************************************************* */
 
-int dstrndel(dstring_t str, int index, int n) {
+int dstrndel(dstring_t str, size_t index, size_t n) {
 
-   int i;
+   size_t i;
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* check to see if the index is out of bounds */
@@ -222,9 +197,9 @@ int dstrndel(dstring_t str, int index, int n) {
 
 /* ************************************************************************* */
 
-int dstrinsertch(dstring_t dest, int index, char c) {
+int dstrinsertc(dstring_t dest, size_t index, char c) {
 
-   int i;
+   size_t i;
    int retval;          /* for the return value of dstrealloc() */
 
    /* make sure we're not dealing with an uninitialized string */
@@ -232,14 +207,14 @@ int dstrinsertch(dstring_t dest, int index, char c) {
       return DSTR_UNINITIALIZED;
    }
 
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
-   }
-
    /* check to see if the index is out of bounds */
    if (index >= dstrlen(dest)) {
       return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* make sure we're not attempting to insert a \0 */
+   if ('\0' == c) {
+      return DSTR_INVALID_ARGUMENT;
    }
 
    /* is our current allocation big enough? */
@@ -264,9 +239,9 @@ int dstrinsertch(dstring_t dest, int index, char c) {
 
 /* ************************************************************************* */
 
-int dstrinsertc(dstring_t dest, const char *src, int index) {
+int dstrinsertcs(dstring_t dest, const char *src, size_t index) {
 
-   int i, j;
+   size_t i, j;
    int retval;          /* for the return value of dstrealloc() */
 
    int srclen = strlen(src);
@@ -274,11 +249,6 @@ int dstrinsertc(dstring_t dest, const char *src, int index) {
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == dest) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* check to see if the index is out of bounds */
@@ -311,7 +281,7 @@ srclen + 1))) {
 
 /* ************************************************************************* */
 
-int dstrinsert(dstring_t dest, const dstring_t src, int index) {
+int dstrinserts(dstring_t dest, const dstring_t src, size_t index) {
 
    /* dstrcinsert() will check to make sure dest is initialized, but we must
       first make sure that src is also initialized! */
@@ -319,36 +289,26 @@ int dstrinsert(dstring_t dest, const dstring_t src, int index) {
       return DSTR_UNINITIALIZED;
    }
 
-   return dstrinsertc(dest, (const char *)DSTRBUF(src), index);
+   return dstrinsertcs(dest, (const char *)DSTRBUF(src), index);
 }
 
 /* ************************************************************************* */
 
-int dstrninsertc(dstring_t dest, const char *src, int index, int n) {
+int dstrninsertcs(dstring_t dest, const char *src, size_t index, size_t n) {
 
-   int i, j;
+   size_t i, j;
    int retval;          /* for the return value of dstrealloc() */
 
-   int srclen;          /* number of chars in src to insert */
+   size_t srclen;       /* number of chars in src to insert */
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == dest) {
       return DSTR_UNINITIALIZED;
    }
 
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
-   }
-
    /* check to see if the index is out of bounds */
    if (index >= dstrlen(dest)) {
       return DSTR_OUT_OF_BOUNDS;
-   }
-
-   /* make sure n is valid */ 
-   if (n < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* if n is 0, return DSTR_SUCCESS without doing anything */
@@ -388,7 +348,7 @@ srclen + 1))) {
 
 /* ************************************************************************* */
 
-int dstrninsert(dstring_t dest, const dstring_t src, int index, int n) {
+int dstrninserts(dstring_t dest, const dstring_t src, size_t index, size_t n) {
 
    /* dstrcinsert() will check to make sure dest is initialized, but we must
       first make sure that src is also initialized! */
@@ -396,21 +356,16 @@ int dstrninsert(dstring_t dest, const dstring_t src, int index, int n) {
       return DSTR_UNINITIALIZED;
    }
 
-   return dstrninsertc(dest, (const char *)DSTRBUF(src), index, n);
+   return dstrninsertcs(dest, (const char *)DSTRBUF(src), index, n);
 }
 
 /* ************************************************************************* */
 
-int dstrxchg(dstring_t str, int index, char c) {
+int dstrxchg(dstring_t str, size_t index, char c) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       return DSTR_UNINITIALIZED;
-   }
-
-   /* make sure index is a valid value (>= 0) */
-   if (index < 0) {
-      return DSTR_INVALID_ARGUMENT;
    }
 
    /* check to see if the index is out of bounds */
@@ -418,8 +373,82 @@ int dstrxchg(dstring_t str, int index, char c) {
       return DSTR_OUT_OF_BOUNDS;
    }
 
+   /* make sure we're not attempting to insert a \0 */
+   if ('\0' == c) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
    /* exchange the old character for the new */
    DSTRBUF(str)[index] = c;
+
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrgetc(dstring_t str, size_t index) {
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(str)) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   return DSTRBUF(str)[index];
+}
+
+/* ************************************************************************* */
+
+int dstryankc(dstring_t str, size_t index) {
+
+   size_t i;
+   char returnval;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* check to see if the index is out of bounds */
+   if (index >= dstrlen(str)) {
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* this is the value we'll return */
+   returnval = DSTRBUF(str)[index];
+
+   /* now, we must remove this character from the string */
+   dstrdel(str, index);
+
+   return returnval;
+}
+
+/* ************************************************************************* */
+
+int dstreplacec(dstring_t str, char oldc, char newc) {
+
+   size_t i;
+
+   /* make sure we're not dealing with an uninitialized string */
+   if (NULL == str) {
+      return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure we're not trying to remove or insert \0's */
+   if ('\0' == oldc || '\0' == newc) {
+      return DSTR_INVALID_ARGUMENT;
+   }
+
+   /* replace all instances of oldc with newc */
+   for (i = 0; i < dstrlen(str); i++) {
+      if (oldc == DSTRBUF(str)[i]) {
+         DSTRBUF(str)[i] = newc;
+      }
+   }
 
    return DSTR_SUCCESS;
 }

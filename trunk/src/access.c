@@ -54,7 +54,7 @@ size_t dstrallocsize(const dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
-      return DSTR_UNINITIALIZED;
+      return 0;
    }
 
    return DSTRBUFLEN(str);
