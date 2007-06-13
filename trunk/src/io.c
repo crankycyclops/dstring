@@ -258,3 +258,4 @@ int dstrfcatn(dstring_t dest, FILE *fp, int size) {
       return DSTR_SUCCESS;
    }
 }
+
