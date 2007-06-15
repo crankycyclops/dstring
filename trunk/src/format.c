@@ -49,24 +49,28 @@ int dstrpadl(dstring_t str, size_t n, char c) {
 
    /* make sure str is initialized */
    if (NULL == str) {
-      return DSTR_UNINITIALIZED;
+      dstrerrno = DSTR_UNINITIALIZED;
+      return oldstrlen;
    }
 
    /* if n is 0, do nothing */
    if (0 == n) {
-      return DSTR_SUCCESS;
+      dstrerrno = DSTR_SUCCESS;
+      return oldstrlen;
    }
 
    /* we can't insert '\0' characters */
    if ('\0' == c) {
-      return DSTR_INVALID_ARGUMENT;
+      dstrerrno = DSTR_INVALID_ARGUMENT;
+      return oldstrlen;
    }
 
    /* make sure we have enough space in the string */
    if (DSTRBUFLEN(str) <= oldstrlen + n) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&str, DSTRBUFLEN(str) + n + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         return retval;
+         dstrerrno = retval;
+         return oldstrlen;
       }
    }
 
@@ -83,7 +87,9 @@ int dstrpadl(dstring_t str, size_t n, char c) {
    /* NULL terminate new string */
    DSTRBUF(str)[oldstrlen + n] = '\0';
 
-   return DSTR_SUCCESS;
+   /* indicate success and return */
+   dstrerrno = DSTR_SUCCESS;
+   return dstrlen(str);
 }
 
 /* ************************************************************************* */
@@ -95,24 +101,28 @@ int dstrpadr(dstring_t str, size_t n, char c) {
 
    /* make sure str is initialized */
    if (NULL == str) {
-      return DSTR_UNINITIALIZED;
+      dstrerrno = DSTR_UNINITIALIZED;
+      return dstrlen(str);
    }
 
    /* if n is 0, do nothing */
    if (0 == n) {
-      return DSTR_SUCCESS;
+      dstrerrno = DSTR_SUCCESS;
+      return dstrlen(str);
    }
 
    /* we can't insert '\0' characters */
    if ('\0' == c) {
-      return DSTR_INVALID_ARGUMENT;
+      dstrerrno = DSTR_INVALID_ARGUMENT;
+      return dstrlen(str);
    }
 
    /* make sure we have enough space in the string */
    if (DSTRBUFLEN(str) <= dstrlen(str) + n) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&str, DSTRBUFLEN(str) + n + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         return retval;
+         dstrerrno = retval;
+         return dstrlen(str);
       }
    }
 
@@ -124,7 +134,9 @@ int dstrpadr(dstring_t str, size_t n, char c) {
    /* NULL terminate the string */
    DSTRBUF(str)[i] = '\0';
 
-   return DSTR_SUCCESS;
+   /* indicate success and return */
+   dstrerrno = DSTR_SUCCESS;
+   return dstrlen(str);
 }
 
 /* ************************************************************************* */

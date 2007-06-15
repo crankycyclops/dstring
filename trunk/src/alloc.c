@@ -50,12 +50,14 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
 
    /* attempt to allocate the structure itself */
    if ((*strptr = (dstrptr)calloc(1, sizeof(dstr))) == NULL) {
+      dstrerrno = DSTR_NOMEM;
       return DSTR_NOMEM;
    }
 
    /* attempt to allocate space for the buffer inside str */
    if ((DSTRBUF(*strptr) = calloc(bytes, sizeof(char))) == NULL) {
       free(DSTRREF(*strptr)), *strptr = NULL;
+      dstrerrno = DSTR_NOMEM;
       return DSTR_NOMEM;
    }
 
@@ -66,6 +68,7 @@ int dstralloc(dstring_t *strptr, size_t bytes) {
    DSTRBUF(*strptr)[0] = '\0';
 
    /* the structure was initialized successfully */
+   dstrerrno = DSTR_SUCCESS;
    return DSTR_SUCCESS;
 }
 
@@ -87,6 +90,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
 
    /* the size hasn't changed; nothing to do */
    else if (DSTRBUFLEN(*strptr) == bytes) {
+      dstrerrno = DSTR_SUCCESS;
       return DSTR_SUCCESS;
    }
 
@@ -94,6 +98,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
    tmpbuf = DSTRBUF(*strptr);
    if ((tmpbuf = realloc(tmpbuf, bytes)) == NULL) {
       /* whatever was in the string before remains untouched */
+      dstrerrno = DSTR_NOMEM;
       return DSTR_NOMEM;
    }
 
@@ -104,6 +109,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
    /* update the buf and buflen members and return success */
    DSTRBUF(*strptr) = tmpbuf;
    DSTRBUFLEN(*strptr) = bytes;
+   dstrerrno = DSTR_SUCCESS;
    return DSTR_SUCCESS;
 }
 
@@ -113,6 +119,7 @@ int dstrfree(dstring_t *strptr) {
 
    /* make sure it's not an uninitialized string */
    if (NULL == *strptr) {
+      dstrerrno = DSTR_UNINITIALIZED;
       return DSTR_UNINITIALIZED;
    }
 
@@ -122,5 +129,6 @@ int dstrfree(dstring_t *strptr) {
 
    /* ensure that the caller's dstring_t is set to NULL upon return */
    *strptr = NULL;
+   dstrerrno = DSTR_SUCCESS;
    return DSTR_SUCCESS;
 }

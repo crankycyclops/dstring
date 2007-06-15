@@ -35,6 +35,10 @@
 
 #include "dstring.h"
 
+
+int dstrerrno;
+
+
 /* error messages to accompany return codes */
 const char *errormsgs[] = {
    "success",
@@ -43,6 +47,8 @@ const char *errormsgs[] = {
    "dstring_t uninitialized",
    "unopened file",
    "eof has been reached",
+   "error reading file",
+   "out of bounds",
    "invalid argument",
    "unknown error"
 };
@@ -51,26 +57,9 @@ const char *errormsgs[] = {
 
 const char * const dstrerrormsg(int code) {
 
-   /* return the proper error message */
-   switch(code) {
-      case DSTR_SUCCESS:
-         return errormsgs[0];
-      case DSTR_NOMEM:
-         return errormsgs[1];
-      case DSTR_INVALID_BUFLEN:
-         return errormsgs[2];
-      case DSTR_UNINITIALIZED:
-         return errormsgs[3];
-      case DSTR_UNOPENED_FILE:
-         return errormsgs[4];
-      case DSTR_EOF:
-         return errormsgs[5];
-      case DSTR_INVALID_ARGUMENT:
-         return errormsgs[6];
-      default:
-         return errormsgs[7];
+   if (abs(code) > 8) {
+      return errormsgs[9];
+   } else {
+      return errormsgs[abs(code)];
    }
-
-   /* we shouldn't get here, but whatever... */
-   return errormsgs[7];
 }

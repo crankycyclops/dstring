@@ -44,12 +44,14 @@ int dstrtocstr(char *dest, const dstring_t src, size_t size) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == src) {
+      dstrerrno = DSTR_UNINITIALIZED;
       return DSTR_UNINITIALIZED;
    }
 
    /* if size is 0, create an empty string */
    if (0 == size) {
       *dest = '\0';
+      dstrerrno = DSTR_SUCCESS;
       return DSTR_SUCCESS;
    }
 
@@ -58,6 +60,7 @@ int dstrtocstr(char *dest, const dstring_t src, size_t size) {
    }
 
    dest[++i] = '\0';
+   dstrerrno = DSTR_SUCCESS;
    return DSTR_SUCCESS;
 }
 
@@ -70,6 +73,7 @@ int cstrtodstr(dstring_t dest, const char *src) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == dest) {
+      dstrerrno = DSTR_UNINITIALIZED;
       return DSTR_UNINITIALIZED;
    }
 
@@ -80,6 +84,7 @@ int cstrtodstr(dstring_t dest, const char *src) {
 (status = dstrealloc(&dest, DSTRBUFLEN(dest) * 2))) {
             /* NULL terminate what we were able to get and return */
             DSTRBUF(dest)[i] = '\0';
+            dstrerrno = status;
             return status;
          }
       }
@@ -87,5 +92,6 @@ int cstrtodstr(dstring_t dest, const char *src) {
    }
 
    DSTRBUF(dest)[++i] = '\0';
+   dstrerrno = DSTR_SUCCESS;
    return DSTR_SUCCESS;
 }

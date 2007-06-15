@@ -2,3 +2,9 @@ When writing documentation, remember the following:
   - warn the programmer to ALWAYS set newly declared dstring_t's to NULL!
   - All read-only standard library functions can be used by using
     dstrview(dstring_t)
+
+If you're low on memory, can reduce mem used by doing:
+   dstrealloc(&str, dstrlen(str)), since allocation can be much greater
+than the size of the actual string
+
+dstrdel() will return char that was removed, so can use this like a "pop"
