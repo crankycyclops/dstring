@@ -41,16 +41,14 @@
 
 /* ************************************************************************* */
 
-int dstrfreadl(dstring_t dest, FILE *fp) {
+size_t dstrfreadl(dstring_t dest, FILE *fp) {
 
-   char *start;                     /* points to beginning of buffer */
-   char *bufpos;                    /* our current position in DSTRBUF(dest) */
-   char *status;                    /* tests for NULL when we encounter EOF */
-
+   char     *start;                 /* points to beginning of buffer */
+   char     *bufpos;                /* our current position in DSTRBUF(dest) */
+   char     *status;                /* tests for NULL when we encounter EOF */
    ptrdiff_t bufcount = 0;          /* how many characters we've read so far */
 
-   int retval;                      /* returns the return value of dstrealloc() */
-
+   int       retval;                /* returns the return value of dstrealloc() */
    dstring_t temp;                  /* temporary dstring_t object */
 
    /* make sure dest is initialized */
@@ -140,7 +138,7 @@ int dstrfreadl(dstring_t dest, FILE *fp) {
 
 /* ************************************************************************* */
 
-int dstrfreadn(dstring_t dest, FILE *fp, int n) {
+size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
    int   count;      /* number of characters read from fp */
    int   c;          /* temporary storage for a character */
@@ -203,116 +201,71 @@ int dstrfreadn(dstring_t dest, FILE *fp, int n) {
 
 /* ************************************************************************* */
 
-/* Note that this function is almost a complete cut and paste of dstrfreadl(),
-   except for the fact that bufpos is initialized to point to the end of the
-   currently allocated string and bufcount to its size. */
+size_t dstrfcatl(dstring_t dest, FILE *fp) {
 
-int dstrfcatl(dstring_t dest, FILE *fp) {
+   size_t    count;  /* number of characters successfully read from fp */
+   dstring_t temp;   /* will store the string which will be appended to dest */
 
-   char *start;                     /* points to beginning of buffer */
-   char *bufpos;                    /* our current position in DSTRBUF(dest) */
-   char *status;                    /* tests for NULL when we encounter EOF */
-
-   ptrdiff_t bufcount = dstrlen(dest);
-
-   int retval;                      /* returns the return value of dstrealloc() */
-
-   /* make sure dest is initialized */
-   if (NULL == dest) {
-      return DSTR_UNINITIALIZED;
+   /* allocate space for our temporary string */
+   if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
+      /* 0 items are successfully read if we can't get the memory ;)
+         dstrerrno should have been set by dstralloc() */
+      return 0;
    }
 
-   /* make sure fp is an opened file */
-   if (NULL == fp) {
-      return DSTR_UNOPENED_FILE;
+   /* read a line of input from the file */
+   count = dstrfreadl(temp, fp);
+   if (DSTR_SUCCESS != dstrerrno) {
+      dstrfree(&temp);
+      return 0;
    }
 
-   start  = DSTRBUF(dest);
-   bufpos = start + bufcount;
-
-   read:
-   status = fgets(bufpos, DSTRBUFLEN(dest) - bufcount, fp);
-
-   /* EOF encountered */
-   if (status == NULL) {
-      return DSTR_EOF;
+   /* cat temp to dest - dstrcat will see if dest is initialized for us :) */
+   dstrcat(dest, temp);
+   if (DSTR_SUCCESS != dstrerrno) {
+      dstrfree(&temp);
+      return 0;
    }
 
-   /* make sure bufpos points to our current position */
-   bufpos = start + dstrlen(dest);
-
-   /* need more memory to complete line */
-   if (bufpos[-1] != '\n') {
-
-      /* if we can't get more memory, we can't finish the line */
-      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) * 2))) {
-         return retval;
-      }
-
-      /* make sure you update start lest you suffer the wrath of glibc... */
-      start = DSTRBUF(dest);
-      bufpos = start + strlen(DSTRBUF(dest));
-
-      /* the +1 at the end is to make sure the '\0' is counted */
-      bufcount = bufpos - start + 1;
-      goto read;
-   };
-
-   return DSTR_SUCCESS;
+   /* free our temp string and return successfully */
+   dstrfree(&temp);
+   dstrerrno = DSTR_SUCCESS;
+   return count;
 }
 
 /* ************************************************************************* */
 
-/* like dtrfcatl(), this function is mostly copy and paste from dstrfreadn(),
-   except for the fact that it is modified to append new data to the end of
-   the buffer instead of overwriting it. */
+/* the only difference between this function and dstrfcatl() is that we call
+   dstrfreadn() instead of dstrfreadl() */
 
-int dstrfcatn(dstring_t dest, FILE *fp, int size) {
+size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
 
-   char *status;     /* lets us know when we hit EOF */
-   int   retval;     /* stores the return value of dstrealloc() */
+   size_t    count;  /* number of characters successfully read from fp */
+   dstring_t temp;   /* will store the string which will be appended to dest */
 
-   /* this will be the minimum new size of the dstring_t object */
-   size_t newsize = size + strlen(DSTRBUF(dest));
-
-   /* this marks our current position at the end of the previous string */
-   char *bufpos = DSTRBUF(dest) + strlen(DSTRBUF(dest));
-
-  /* make sure dest is initialized */
-   if (NULL == dest) {
-      return DSTR_UNINITIALIZED;
+   /* allocate space for our temporary string */
+   if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
+      /* 0 items are successfully read if we can't get the memory ;)
+         dstrerrno should have been set by dstralloc() */
+      return 0;
    }
 
-   /* make sure fp is an opened file */
-   if (NULL == fp) {
-      return DSTR_UNOPENED_FILE;
+   /* read a line of input from the file */
+   count = dstrfreadn(temp, fp, n);
+   if (DSTR_SUCCESS != dstrerrno) {
+      dstrfree(&temp);
+      return 0;
    }
 
-   /* make sure size is a valid digit (>= 0) */
-   if (size < 0) {
-      return DSTR_INVALID_ARGUMENT;
+   /* cat temp to dest - dstrcat will see if dest is initialized for us :) */
+   dstrcat(dest, temp);
+   if (DSTR_SUCCESS != dstrerrno) {
+      dstrfree(&temp);
+      return 0;
    }
 
-   /* if size is 0, return DSTR_SUCCESS without doing anything */
-   if (0 == size) {
-      return DSTR_SUCCESS;
-   }
-
-   /* our current buffer won't accomodate the string; reallocate! */
-   if (DSTRBUFLEN(dest) < newsize) {
-      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, newsize))) {
-         return retval;
-      }
-   }
-
-   /* now, append the new string to the old one */
-   status = fgets(bufpos, size, fp);
-
-   /* if we got EOF, let the caller know */
-   if (status == NULL) {
-      return DSTR_EOF;
-   } else {
-      return DSTR_SUCCESS;
-   }
+   /* free our temp string and return successfully */
+   dstrfree(&temp);
+   dstrerrno = DSTR_SUCCESS;
+   return count;
 }
-

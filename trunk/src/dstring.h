@@ -270,7 +270,7 @@ size_t dstrallocsize(const dstring_t str);
       dstrerrno)
 
    ************************************************************************* */
-int dstrfreadl(dstring_t dest, FILE *fp);
+size_t dstrfreadl(dstring_t dest, FILE *fp);
 
 
 /* **** dstrreadl **********************************************************
@@ -315,14 +315,14 @@ int dstrfreadl(dstring_t dest, FILE *fp);
    Input:
       dstring_t (our dstring_t object)
       FILE (our input stream)
-      int (the number of characters to read)
+      size_t (the number of characters to read)
 
    Output:
       Number of characters successfully read (0 if size = 0, or on EOF or
       error - check dstrerrno)
 
    ************************************************************************* */
-int dstrfreadn(dstring_t dest, FILE *fp, int size);
+size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n);
 
 
 /* **** dstrreadn **********************************************************
@@ -336,10 +336,11 @@ int dstrfreadn(dstring_t dest, FILE *fp, int size);
 
    Input:
       dstring_t (our dstring_t object)
-      int (the number of characters to read)
+      size_t (the number of characters to read)
 
    Output:
-      An integer status (see enum above)
+      Number of characters successfully read (0 if size = 0, or on EOF or
+      error - check dstrerrno)
 
    ************************************************************************* */
 #define dstreadn(DEST, SIZE) dstrfreadn(DEST, stdin, SIZE)
@@ -361,10 +362,11 @@ int dstrfreadn(dstring_t dest, FILE *fp, int size);
       FILE * (our input stream)
 
    Output:
-      An integer status (see enum above)
+      Number of characters successfully read (0 on error or EOF - check
+      dstrerrno)
 
    ************************************************************************* */
-int dstrfcatl(dstring_t dest, FILE *fp);
+size_t dstrfcatl(dstring_t dest, FILE *fp);
 
 
 /* **** dstrcatl **********************************************************
@@ -402,13 +404,13 @@ int dstrfcatl(dstring_t dest, FILE *fp);
    Input:
       dstring_t (our dstring_t object)
       FILE (our input stream)
-      int (the number of characters to read)
+      size_t (the number of characters to read)
 
    Output:
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrfcatn(dstring_t dest, FILE *fp, int size);
+size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);
 
 
 /* **** dstrcatn ***********************************************************
@@ -422,7 +424,7 @@ int dstrfcatn(dstring_t dest, FILE *fp, int size);
 
    Input:
       dstring_t (our dstring_t object)
-      int (the number of characters to read)
+      size_t (the number of characters to read)
 
    Output:
       An integer status (see enum above)
