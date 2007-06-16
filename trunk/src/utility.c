@@ -458,7 +458,7 @@ int dstreplacec(dstring_t str, char oldc, char newc) {
 
    /* make sure we're not trying to remove or insert \0's */
    if ('\0' == oldc || '\0' == newc) {
-      dstrerrno DSTR_INVALID_ARGUMENT;
+      dstrerrno = DSTR_INVALID_ARGUMENT;
       return 0;
    }
 
