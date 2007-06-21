@@ -94,7 +94,10 @@ enum STATUS_CODES {
    DSTR_OUT_OF_BOUNDS = -7,
 
    /* when an invalid argument is passed to a DString function */
-   DSTR_INVALID_ARGUMENT = -8
+   DSTR_INVALID_ARGUMENT = -8,
+
+   /* when a NULL char * is passed to a function that expects a string */
+   DSTR_NULL_CPTR = -9
 };
 
 
@@ -450,6 +453,8 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);
    dstrerrno will be set to indicate success or failure, matching the return
    value.
 
+   If dest is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
+
    Found in convert.c
 
    *************************************************************************
@@ -476,6 +481,8 @@ int dstrtocstr(char *dest, const dstring_t src, size_t size);
 
    dstrerrno will be set to indicate success or failure, matching the return
    value.
+
+   If src is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
 
    Found in convert.c
 
@@ -579,6 +586,8 @@ int dstrncat(dstring_t dest, const dstring_t src, size_t n);
 
    dstrerrno will be set to indicate success or the type of error.
 
+   If src is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
+
    Found in cstdlib.c
 
    *************************************************************************
@@ -600,6 +609,8 @@ int dstrcatcs(dstring_t dest, const char *src);
    strncat() by appending a C string to a dstring_t object, up to n chars.
 
    dstrerrno will be set to indicate success or the type of error.
+
+   If src is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
 
    Found in cstdlib.c
 
@@ -857,6 +868,8 @@ int dstrinserts(dstring_t dest, const dstring_t src, size_t index);
 
    dstrerrno will be set to indicate success or the type of error.
 
+   If src is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
+
    WARNING: It is the programmer's responsibility to delete any \n
    characters in the source string that would cause undesired line breaks
    if inserted into the destination string!
@@ -920,6 +933,8 @@ int dstrninserts(dstring_t dest, const dstring_t src, size_t index, size_t n);
    dstrerrno will be set to indicate success or type of error.
 
    If n is 0, nothing will be done and dstrerrno will be set to DSTR_SUCCESS.
+
+   If src is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR.
 
    WARNING: It is the programmer's responsibility to delete any \n
    characters in the source string that would cause undesired line breaks
@@ -1022,6 +1037,41 @@ int dstrgetc(dstring_t str, size_t index);
 
    ************************************************************************* */
 int dstreplacec(dstring_t str, char oldc, char newc);
+
+
+/* **** dstrreplaces *******************************************************
+
+   This function combs through an entire dstring_t object, replacing all
+   instances of the substring contained in olds with the substring contained
+   in news.  If there are no instances of olds in the dstring_t object, the
+   function will return 0 and dstrerrno will be set to DSTR_SUCCESS.
+
+   dstrerrno will be set to indicate success or type of error.
+
+   If either olds or news are NULL pointers, dstrerrno will be set to
+   DSTR_NULL_CPTR.
+
+   Passing a 0-length string as news is legal and will simply result in the
+   removal of all instances of olds from the dstring_t object. Passing a
+   0-length string as olds is illegal, and will result in the function
+   returning 0 and dstrerrno being set to DSTR_INVALID_ARGUMENT.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      const char * (old substring)
+      const char * (new char (new substring)
+
+   Output:
+      number of substrings replaced
+
+   ************************************************************************* */
+int dstreplaces(dstring_t str, const char *olds, const char *news);
+
+#define dstremoves(STR, const char SUBSTR) dstreplaces(STR, SUBSTR, "\0")
 
 
 /*************************\
@@ -1180,10 +1230,6 @@ const char * const dstrerrormsg(int code);
 
 
 /* IMPLEMENT! */
-
-/* Utility */
-int dstreplaces(dstring_t str, const char *old, const char *new);
-
 /* Format */
 int dstrtoupper(dstring_t str);
 int dstrtolower(dstring_t str);

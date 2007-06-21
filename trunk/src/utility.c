@@ -275,6 +275,12 @@ int dstrinsertcs(dstring_t dest, const char *src, size_t index) {
       return dstrlen(dest);
    }
 
+   /* make sure src is not a NULL pointer */
+   if (NULL == src) {
+      dstrerrno = DSTR_NULL_CPTR;
+      return dstrlen(dest);
+   }
+
    /* check to see if the index is out of bounds */
    if (index >= dstrlen(dest)) {
       dstrerrno = DSTR_OUT_OF_BOUNDS;
@@ -332,6 +338,12 @@ int dstrninsertcs(dstring_t dest, const char *src, size_t index, size_t n) {
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == dest) {
       dstrerrno = DSTR_UNINITIALIZED;
+      return dstrlen(dest);
+   }
+
+   /* make sure src is not a NULL pointer */
+   if (NULL == src) {
+      dstrerrno = DSTR_NULL_CPTR;
       return dstrlen(dest);
    }
 

@@ -36,6 +36,7 @@
 #include "dstring.h"
 
 
+/* used to indicate success or the nature of a failure */
 int dstrerrno;
 
 
@@ -50,6 +51,7 @@ const char *errormsgs[] = {
    "error reading file",
    "out of bounds",
    "invalid argument",
+   "pointer to char is NULL",
    "unknown error"
 };
 
@@ -57,8 +59,8 @@ const char *errormsgs[] = {
 
 const char * const dstrerrormsg(int code) {
 
-   if (abs(code) > 8) {
-      return errormsgs[9];
+   if (abs(code) > 9) {
+      return errormsgs[10];
    } else {
       return errormsgs[abs(code)];
    }

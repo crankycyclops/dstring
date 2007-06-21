@@ -174,6 +174,12 @@ int dstrcatcs(dstring_t dest, const char *src) {
       return 0;
    }
 
+   /* make sure src is not a NULL pointer */
+   if (NULL == src) {
+      dstrerrno = DSTR_NULL_CPTR;
+      return 0;
+   }
+
    /* nothing to do if the source string is empty */
    if (0 == strlen(src)) {
       dstrerrno = DSTR_SUCCESS;
@@ -213,6 +219,12 @@ int dstrncatcs(dstring_t dest, const char *src, size_t n) {
    /* make sure dest is initialized */
    if (NULL == dest) {
       dstrerrno = DSTR_UNINITIALIZED;
+      return 0;
+   }
+
+   /* make sure src is not a NULL pointer */
+   if (NULL == src) {
+      dstrerrno = DSTR_NULL_CPTR;
       return 0;
    }
 

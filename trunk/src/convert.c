@@ -42,10 +42,16 @@ int dstrtocstr(char *dest, const dstring_t src, size_t size) {
 
    size_t i;
 
-   /* make sure we're not dealing with an uninitialized string */
+   /* make sure we're not dealing with an uninitialized dstring */
    if (NULL == src) {
       dstrerrno = DSTR_UNINITIALIZED;
       return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure dest is not a NULL pointer, which would cause a crash */
+   if (NULL == dest) {
+      dstrerrno = DSTR_NULL_CPTR;
+      return DSTR_NULL_CPTR;
    }
 
    /* if size is 0, create an empty string */
@@ -75,6 +81,12 @@ int cstrtodstr(dstring_t dest, const char *src) {
    if (NULL == dest) {
       dstrerrno = DSTR_UNINITIALIZED;
       return DSTR_UNINITIALIZED;
+   }
+
+   /* make sure src is not a NULL pointer, which would cause a crash */
+   if (NULL == src) {
+      dstrerrno = DSTR_NULL_CPTR;
+      return DSTR_NULL_CPTR;
    }
 
    for (i = 0; src[i] != '\0'; i++) {
