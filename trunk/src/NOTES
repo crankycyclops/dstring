@@ -8,3 +8,8 @@ If you're low on memory, can reduce mem used by doing:
 than the size of the actual string
 
 dstrdel() will return char that was removed, so can use this like a "pop"
+
+In general, setting newly declared pointers to NULL is a good programming
+practice.  Libdstring will do its part to reward you by checking arguments
+(both dstring_t objects and char *) to make sure they really point to
+something.

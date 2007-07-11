@@ -1,0 +1,64 @@
+.TH "dstring.h" 0 "July 2007" "dstring.h" "Dstring Library"
+
+.SH NAME
+dstring.h - data types and functions that support the easy creation and \
+manipulation of dynamically allocated C character strings
+
+.SH SYNOPSIS
+#include <dstring.h>
+
+.SH DSTRERRNO
+
+The dstring.h header file makes the external variable "int dstrerrno" \
+available, which is guaranteed to be set by every call to a dstring.h \
+function and will indicate success or the nature of the error.  The \
+following status codes are possible dstrerrno values:
+
+.B "DSTR_SUCCESS"
+Success
+
+.B "DSTR_NOMEM"
+Insufficient memory
+
+.B "DSTR_INVALID_BUFLEN"
+The caller passed an invalid buffer length (less than 0)
+
+.B "DSTR_UNINITIALIZED"
+The caller tried to pass an uninitialized dstring_t object (HINT: it's a \
+VERY good idea to immediately set all newly declared dstring_t variables to \
+NULL; this is the only way a dstring function can tell whether or not an \
+object has been initialized!)
+
+.B "DSTR_UNOPENED_FILE"
+A NULL FILE pointer was passed
+
+.B "DSTR_EOF"
+End of file has been reached for a file stream (not necessarily an error)
+
+.B "DSTR_FILE_ERROR"
+A read error (not EOF) was encountered when trying to read from a file stream
+
+.B "DSTR_OUT_OF_BOUNDS"
+The specified index in a dstring_t object is out of bounds
+
+.B "DSTR_INVALID_ARGUMENT"
+An invalid argument was passed to a dstring.h function
+
+.B "DSTR_NULL_CPTR"
+a NULL character pointer was discovered where a C string was expected
+
+.SH DATATYPES
+.B "dstring_t"
+A dstring object containing a single dynamically allocated string
+
+.SH FUNCTIONS
+Note that each function below has a corresponding man page:
+
+Allocation Functions
+
+.B "int dstralloc(dstring_t *, size_t)"
+.br
+.B "int dstrealloc(dstring_t *, size_t)"
+
+.SH SEE ALSO
+<wdstring.h>
