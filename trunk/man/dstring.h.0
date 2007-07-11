@@ -1,8 +1,9 @@
-.TH "dstring.h" 0 "July 2007" "dstring.h" "Dstring Library"
+.TH "dstring.h" 0 "11 July 2007" "dstring.h" "Dstring Library"
 
 .SH NAME
-dstring.h - data types and functions that support the easy creation and \
-manipulation of dynamically allocated C character strings
+dstring.h - data types and functions for the C Programming Language that \
+support the convenient creation and manipulation of dynamically allocated \
+character strings
 
 .SH SYNOPSIS
 #include <dstring.h>
@@ -51,14 +52,141 @@ a NULL character pointer was discovered where a C string was expected
 .B "dstring_t"
 A dstring object containing a single dynamically allocated string
 
-.SH FUNCTIONS
-Note that each function below has a corresponding man page:
+.SH FUNCTIONS AND MACROS
+Note that everything listed below is a function unless labeled otherwise. \
+Also note that every function and macro listed below has its own man page.
 
 Allocation Functions
 
-.B "int dstralloc(dstring_t *, size_t)"
+.B "int dstralloc(dstring_t *dstrptr, size_t bytes);"
 .br
-.B "int dstrealloc(dstring_t *, size_t)"
+.B "int dstrealloc(dstring_t *dstrptr, size_t bytes);"
+.br
+.B "int dstrfree(dstring_t *dstrptr);"
+.br
+
+Accessor Functions
+
+.B "const char * const dstrview(const dstring_t str);"
+.br
+.B "size_t dstrallocsize(const dstring_t dstr);"
+.br
+
+I/O Functions
+
+.B "size_t dstrfreadl(dstring_t dest, FILE *fp);"
+.br
+.B "size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n);"
+.br
+.B "size_t dstrfcatl(dstring_t dest, FILE *fp);"
+.br
+.B "size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);"
+.br
+.B "size_t dstreadl(dstring_t dest);"
+/* MACRO */
+.br
+.B "size_t dstreadn(dstring_t dest, size_t n);"
+/* MACRO */
+.br
+.B "size_t dstrcatl(dstring_t dest);"
+/* MACRO */
+.br
+.B "size_t dstrcatn(dstring_t dest, size_t n);"
+/* MACRO */
+.br
+
+Conversion Functions
+
+.B "int dstrtocstr(char *dest, const dstring_t src, size_t size);"
+.br
+.B "int cstrtodstr(dstring_t dest, const char *src);"
+.br
+
+Standard C Library Equivalents
+
+.B "size_t dstrlen(const dstring_t str);"
+.br
+.B "int dstrcat(dstring_t dest, const dstring_t src);"
+.br
+.B "int dstrncat(dstring_t dest, const dstring_t src, size_t n);"
+.br
+.B "int dstrcatcs(dstring_t dest, const char *src);"
+.br
+.B "int dstrncatcs(dstring_t dest, const char *src, size_t n);"
+.br
+.B "int dstrcpy(dstring_t dest, const dstring_t src);"
+.br
+.B "int dstrncpy(dstring_t dest, const dstring_t src, size_t n);"
+.br
+
+Utility Functions
+
+.B "int dstrboundscheck(dstring_t str, size_t index);"
+.br
+.B "int dstrtrunc(dstring_t str, size_t size);"
+.br
+.B "int dstrtrimleft(dstring_t str, size_t n);"
+.br
+.B "int dstrdel(dstring_t str, size_t index);"
+.br
+.B "int dstrndel(dstring_t str, size_t index, size_t n);"
+.br
+.B "int dstrinsertc(dstring_t dest, size_t index, char c);"
+.br
+.B "int dstrinserts(dstring_t dest, const dstring_t src, size_t index);"
+.br
+.B "int dstrinsertcs(dstring_t dest, const char *src, size_t index);"
+.br
+.B "int dstrninserts(dstring_t dest, const dstring_t src, size_t index, \
+size_t n);"
+.br
+.B "int dstrninsertcs(dstring_t dest, const char *src, size_t index, \
+size_t n);"
+.br
+.B "int dstrxchg(dstring_t str, size_t index, char c);"
+.br
+.B "int dstrgetc(dstring_t str, size_t index);"
+.br
+.B "int dstreplacec(dstring_t str, char oldc, char newc);"
+.br
+.B "int dstreplaces(dstring_t str, const char *olds, const char *news);"
+.br
+.B "int dstremoves(dstring_t str, const char *olds);"
+/* MACRO */
+.br
+
+Formatting Functions
+
+.B "int dstrpadl(dstring_t str, size_t n, char c);"
+.br
+.B "int dstrpadr(dstring_t str, size_t n, char c);"
+.br
+.B "int dstrpadi(dstring_t str, size_t index, size_t n, char c);"
+.br
+.B "int dstrcenter(dstring_t str, size_t len);"
+.br
+.B "int dstrright(dstring_t str, size_t len);"
+.br
+.B "int dstrleft(dstring_t str, size_t len);"
+.br
+.B "int dstrtoupper(dstring_t str);"
+.br
+.B "int dstrntoupper(dstring_t str, size_t n);"
+.br
+.B "int dstrtolower(dstring_t str);"
+.br
+.B "int dstrntolower(dstring_t str, size_t n);"
+.br
+
+Other Functions
+
+.B "const char * const dstrerrormsg(int code);"
+.br
 
 .SH SEE ALSO
-<wdstring.h>
+.BR <wdstring.h> (0),
+.BR dstralloc (3),
+.BR dstrealloc (3),
+.BR dstrfree (3),
+.BR dstrview (3),
+.BR dstrallocsize (3)
