@@ -249,9 +249,12 @@ int dstrinsertc(dstring_t dest, size_t index, char c) {
    }
 
    /* shift everything over one unit to the right, including the '\0' */
-   for (i = dstrlen(dest); i >= index; i--) {
+   for (i = dstrlen(dest); i > index; i--) {
       DSTRBUF(dest)[i + 1] = DSTRBUF(dest)[i];
    }
+   /* i can only be decremented down to 0 before overflowing, since it's
+      unsigned; thus, we must execute the loop body one more time */
+   DSTRBUF(dest)[i + 1] = DSTRBUF(dest)[i];
 
    /* insert our character at the specified index */
    DSTRBUF(dest)[index] = c;
@@ -299,9 +302,12 @@ srclen + 1))) {
    }
 
    /* shift everything over srclen units to the right, including '\0' */
-   for (i = dstrlen(dest); i >= index; i--) {
+   for (i = dstrlen(dest); i > index; i--) {
       DSTRBUF(dest)[i + srclen] = DSTRBUF(dest)[i];
    }
+   /* we can't let i be less than 0, since it's of type size_t (unsigned);
+      thus, we execute the for loop statement one more time */
+   DSTRBUF(dest)[i + srclen] = DSTRBUF(dest)[i];
 
    /* insert the source string in dest at the proper position */
    for (i = index, j = 0; j < srclen; i++, j++) {
@@ -378,9 +384,12 @@ srclen + 1))) {
    }
 
    /* shift everything over srclen units to the right, including '\0' */
-   for (i = dstrlen(dest); i >= index; i--) {
+   for (i = dstrlen(dest); i > index; i--) {
       DSTRBUF(dest)[i + srclen] = DSTRBUF(dest)[i];
    }
+   /* above test can only decrement down to 0, because i is unsigned; so we
+      execute the inner statements of the loop just one more time */
+   DSTRBUF(dest)[i + srclen] = DSTRBUF(dest)[i];
 
    /* insert the source string in dest at the proper position */
    for (i = index, j = 0; j < srclen; i++, j++) {
@@ -482,6 +491,66 @@ int dstreplacec(dstring_t str, char oldc, char newc) {
       }
    }
 
+   dstrerrno = DSTR_SUCCESS;
+   return replacements;
+}
+
+/* ************************************************************************* */
+
+int dstreplaces(dstring_t str, const char *olds, const char *news) {
+
+   dstring_t temp;          /* temporary string */
+   char *match;             /* points to next occurence of olds in str */
+
+   int i, j;                /* for loop indices */
+   int replacements = 0;    /* number of replacements made */
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      dstrerrno = DSTR_UNINITIALIZED;
+      return 0;
+   }
+
+   /* make sure olds points to something */
+   if (NULL == olds) {
+      dstrerrno = DSTR_NULL_CPTR;
+      return 0;
+   }
+
+   /* allocate space for temp */
+   if (DSTR_SUCCESS != (dstrerrno = dstralloc(&temp, dstrlen(str)))) {
+      return 0;
+   }
+
+   /* make a temporary copy of the string */
+   dstrcpy(temp, str);
+   if (dstrerrno != DSTR_SUCCESS) {
+      dstrfree(&temp);
+      return 0;
+   }
+
+   /* replace or remove all instances of olds from the string */
+   while (NULL != (match = strstr(DSTRBUF(temp), olds))) {
+      dstrndel(temp, match - DSTRBUF(temp), strlen(olds));
+      if (dstrerrno != DSTR_SUCCESS) {
+         dstrfree(&temp);
+	 return 0;
+      }
+      dstrinsertcs(temp, news, match - DSTRBUF(temp));
+      if (dstrerrno != DSTR_SUCCESS) {
+         dstrfree(&temp);
+	 return 0;
+      }
+      replacements++;
+   }
+
+   /* copy the temporary string back to str */
+   dstrcpy(str, temp);
+   if (dstrerrno != DSTR_SUCCESS) {
+      return 0;
+   }
+
+   dstrfree(&temp);
    dstrerrno = DSTR_SUCCESS;
    return replacements;
 }

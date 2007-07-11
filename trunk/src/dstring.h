@@ -34,10 +34,10 @@
 
 #include <stdio.h>
 
-/* HINT: it's a VERY good idea to initialize newly declared dstring_t variables
-   to NULL.  If you do so, and you later accidentally pass it to a dstring
-   function, the error will be immediately caught and signaled before any NULL
-   pointer dereferences can occur. */
+/* HINT: it's a VERY good idea to set newly declared and uninitialized
+   dstring_t variables to NULL.  If you do so, and you later accidentally
+   pass it to a dstring function, the error will be immediately caught and
+   signaled before any NULL pointer dereferences can occur. */
 
 
 
@@ -1048,8 +1048,13 @@ int dstreplacec(dstring_t str, char oldc, char newc);
 
    dstrerrno will be set to indicate success or type of error.
 
-   If either olds or news are NULL pointers, dstrerrno will be set to
-   DSTR_NULL_CPTR.
+   If olds is a NULL pointer, dstrerrno will be set to DSTR_NULL_CPTR and
+   a value of 0 will be returned.
+
+   If news is set to NULL, or if it points to an empty string ("\0"), all
+   instances of olds will be removed from the dstring_t object.  This
+   functionality is taken advantage of by dstremoves(), which is actually
+   a macro that wraps around this function.
 
    Passing a 0-length string as news is legal and will simply result in the
    removal of all instances of olds from the dstring_t object. Passing a
@@ -1071,7 +1076,7 @@ int dstreplacec(dstring_t str, char oldc, char newc);
    ************************************************************************* */
 int dstreplaces(dstring_t str, const char *olds, const char *news);
 
-#define dstremoves(STR, const char SUBSTR) dstreplaces(STR, SUBSTR, "\0")
+#define dstremoves(STR, SUBSTR) dstreplaces(STR, SUBSTR, "\0")
 
 
 /*************************\
@@ -1170,7 +1175,7 @@ int dstrcenter(dstring_t str, size_t len);
 
    Input:
       dstring_t
-      size_t (max width in which the non-whitespace text will be centered)
+      size_t (max width in which the non-whitespace text will be justified)
 
    Output:
       A status code
@@ -1196,7 +1201,7 @@ int dstrright(dstring_t str, size_t len);
 
    Input:
       dstring_t
-      size_t (max width in which the non-whitespace text will be centered)
+      size_t (max width in which the non-whitespace text will be justified)
 
    Output:
       A status code

@@ -73,11 +73,20 @@ int main(int argc, char *argv[]) {
    printf("\tTest 1: Check for correct handling of uninitialized string\n");
    printf("\tPassing NULL to dstrview()\n");
    printf("\tExpected return value: NULL\n");
+   printf("\tExpected error message: %s\n", dstrerrormsg(DSTR_UNINITIALIZED));
    printf("\tActual return value: ");
 
+   /* make sure NULL is the return value */
    if (NULL == (retvalstr = dstrview(NULL))) {
       printf("NULL\n");
-      printf("\tPASS\n");
+      printf("\tActual error message: %s\n", dstrerrormsg(dstrerrno));
+      /* make sure dstrerrno is set to DSTR_UNINITIALIZED */
+      if (DSTR_UNINITIALIZED != dstrerrno) {
+         status = FAIL;
+         printf("FAIL\n");
+      } else {
+         printf("\tPASS\n");
+      }
    } else {
       printf("%p\n", retvalstr);
       printf("\tFAIL\n");
