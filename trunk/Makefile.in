@@ -61,7 +61,7 @@ libLTLIBRARIES_INSTALL = $(INSTALL)
 LTLIBRARIES = $(lib_LTLIBRARIES)
 libdstring_la_LIBADD =
 am_libdstring_la_OBJECTS = access.lo alloc.lo convert.lo dstring.lo \
-	io.lo utility.lo dstrerrno.lo
+	io.lo utility.lo
 libdstring_la_OBJECTS = $(am_libdstring_la_OBJECTS)
 libdstring_la_LINK = $(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) \
 	$(LIBTOOLFLAGS) --mode=link $(CCLD) $(AM_CFLAGS) $(CFLAGS) \
@@ -212,7 +212,7 @@ top_builddir = @top_builddir@
 top_srcdir = @top_srcdir@
 lib_LTLIBRARIES = libdstring.la
 libdstring_la_SOURCES = src/access.c src/alloc.c src/convert.c \
-src/dstring.c src/io.c src/utility.c src/dstrerrno.c
+src/dstring.c src/io.c src/utility.c
 
 man_MANS = man/dstring.h.0 man/wdstring.h.0 man/dstralloc.3 \
 man/dstrealloc.3 man/dstrfree.3
@@ -300,7 +300,6 @@ distclean-compile:
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/access.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/alloc.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/convert.Plo@am__quote@
-@AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dstrerrno.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/dstring.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/io.Plo@am__quote@
 @AMDEP_TRUE@@am__include@ @am__quote@./$(DEPDIR)/utility.Plo@am__quote@
@@ -367,13 +366,6 @@ utility.lo: src/utility.c
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/utility.c' object='utility.lo' libtool=yes @AMDEPBACKSLASH@
 @AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
 @am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o utility.lo `test -f 'src/utility.c' || echo '$(srcdir)/'`src/utility.c
-
-dstrerrno.lo: src/dstrerrno.c
-@am__fastdepCC_TRUE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -MT dstrerrno.lo -MD -MP -MF $(DEPDIR)/dstrerrno.Tpo -c -o dstrerrno.lo `test -f 'src/dstrerrno.c' || echo '$(srcdir)/'`src/dstrerrno.c
-@am__fastdepCC_TRUE@	mv -f $(DEPDIR)/dstrerrno.Tpo $(DEPDIR)/dstrerrno.Plo
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	source='src/dstrerrno.c' object='dstrerrno.lo' libtool=yes @AMDEPBACKSLASH@
-@AMDEP_TRUE@@am__fastdepCC_FALSE@	DEPDIR=$(DEPDIR) $(CCDEPMODE) $(depcomp) @AMDEPBACKSLASH@
-@am__fastdepCC_FALSE@	$(LIBTOOL) --tag=CC $(AM_LIBTOOLFLAGS) $(LIBTOOLFLAGS) --mode=compile $(CC) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(AM_CPPFLAGS) $(CPPFLAGS) $(AM_CFLAGS) $(CFLAGS) -c -o dstrerrno.lo `test -f 'src/dstrerrno.c' || echo '$(srcdir)/'`src/dstrerrno.c
 
 mostlyclean-libtool:
 	-rm -f *.lo
