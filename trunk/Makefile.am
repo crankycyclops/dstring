@@ -1,6 +1,6 @@
 lib_LTLIBRARIES            = libdstring.la
 libdstring_la_SOURCES      = src/access.c src/alloc.c src/convert.c \
-src/dstring.c src/io.c src/utility.c src/dstrerrno.c
+src/dstring.c src/io.c src/utility.c
 
 man_MANS                   = man/dstring.h.0 man/wdstring.h.0 man/dstralloc.3 \
 man/dstrealloc.3 man/dstrfree.3
