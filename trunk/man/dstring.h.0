@@ -1,4 +1,4 @@
-.TH "dstring.h" 0 "11 July 2007" "dstring.h" "Dstring Library"
+.TH "dstring.h" 0 "12 July 2007" "dstring.h" "Dstring Library"
 
 .SH NAME
 dstring.h - data types and functions for the C Programming Language that \
@@ -8,49 +8,17 @@ character strings
 .SH SYNOPSIS
 #include <dstring.h>
 
-.SH DSTRERRNO
-
-The dstring.h header file makes the external variable "int dstrerrno" \
-available, which is guaranteed to be set by every call to a dstring.h \
-function and will indicate success or the nature of the error.  The \
-following status codes are possible dstrerrno values:
-
-.B "DSTR_SUCCESS"
-Success
-
-.B "DSTR_NOMEM"
-Insufficient memory
-
-.B "DSTR_INVALID_BUFLEN"
-The caller passed an invalid buffer length (less than 0)
-
-.B "DSTR_UNINITIALIZED"
-The caller tried to pass an uninitialized dstring_t object (HINT: it's a \
-VERY good idea to immediately set all newly declared dstring_t variables to \
-NULL; this is the only way a dstring function can tell whether or not an \
-object has been initialized!)
-
-.B "DSTR_UNOPENED_FILE"
-A NULL FILE pointer was passed
-
-.B "DSTR_EOF"
-End of file has been reached for a file stream (not necessarily an error)
-
-.B "DSTR_FILE_ERROR"
-A read error (not EOF) was encountered when trying to read from a file stream
-
-.B "DSTR_OUT_OF_BOUNDS"
-The specified index in a dstring_t object is out of bounds
-
-.B "DSTR_INVALID_ARGUMENT"
-An invalid argument was passed to a dstring.h function
-
-.B "DSTR_NULL_CPTR"
-a NULL character pointer was discovered where a C string was expected
-
 .SH DATATYPES
 .B "dstring_t"
 A dstring object containing a single dynamically allocated string
+
+.SH EXTERNAL VARIABLES
+
+.B "extern int dstrerrno;"
+.br
+(for more information on this variable, see
+.B "dstrerrno(3)"
+.
 
 .SH FUNCTIONS AND MACROS
 Note that everything listed below is a function unless labeled otherwise. \
@@ -184,9 +152,26 @@ Other Functions
 .br
 
 .SH SEE ALSO
-.BR <wdstring.h> (0),
+.BR dstrerrno (3),
 .BR dstralloc (3),
 .BR dstrealloc (3),
 .BR dstrfree (3),
 .BR dstrview (3),
-.BR dstrallocsize (3)
+.BR dstrallocsize (3),
+.BR dstrfreadl (3),
+.BR dstrfreadn (3),
+.BR dstreadl (3),
+.BR dstreadn (3),
+.BR dstrfcatl (3),
+.BR dstrfcatn (3),
+.BR dstrcatl (3),
+.BR dstrcatn (3),
+.BR dstrtocstr (3),
+.BR cstrtodstr (3),
+.BR dstrlen (3),
+.BR dstrcat (3),
+.BR dstrncat (3),
+.BR dstrcatcs (3),
+.BR dstrncatcs (3),
+.BR dstrcpy (3),
+.BR dstrncpy (3)

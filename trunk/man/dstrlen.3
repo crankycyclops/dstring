@@ -1,0 +1,30 @@
+.TH "dstrlen" 3 "12 July 2007" "dstrlen" "Dstring Library"
+
+.SH NAME
+dstrlen - Convert C strings to dstring_t objects and vice versa
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "size_t dstrlen(const dstring_t str);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrlen()"
+returns the length of the string.  This is the dstring equivalent of strlen \
+in the standard library.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+This function returns the length of the string stored in the dstring_t object \
+passed to it.  If the return value is 0, that could either mean that the \
+string is empty or that an error occured.  To find out which condition is \
+true, dstrerrno should be examined.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrallocsize (3)

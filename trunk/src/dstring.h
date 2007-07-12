@@ -298,16 +298,19 @@ size_t dstrfreadl(dstring_t dest, FILE *fp);
 
 /* **** dstrfreadn *********************************************************
 
-   This function reads up to one less than n characters (the last space is
-   reserved for the NULL terminating character), including \n's, from FILE
-   *fp and stores them in the buffer of a dstring_t object.
+   This function reads up to one less than n characters (this does NOT
+   include the NULL terminating character), including \n's, from FILE *fp
+   and stores them in the buffer of a dstring_t object.
 
    If size is 0, nothing will be done and dstrerrno will be set to
    DSTR_SUCCESS.
 
    New data overwrites anything previously stored in the buffer.  In the
    event of a DSTR_NOMEM error, whatever was contained in the buffer
-   before the function call is preserved.
+   before the function call is preserved.  If EOF is encountered before
+   any data can be read, the contents of dest will be preserved.  Otherwise,
+   it will be overwritten by whatever was successfully read from fp, even
+   when EOF is encountered.
 
    dstrerrno will be set to indicate success or failure.
 
@@ -353,8 +356,8 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n);
 
    This function reads an entire line of input from FILE *fp, terminated by
    the '\n' character (the newline is included as part of the string), and
-   appends it to the buffer of a dstring_t object, overwriting the previous
-   '\n' character.
+   appends it to the buffer of a dstring_t object (does NOT overwrite the
+   previous '\n' character if there is one.)
 
    Found in io.c
 
@@ -383,7 +386,8 @@ size_t dstrfcatl(dstring_t dest, FILE *fp);
       dstring_t (our dstring_t object)
 
    Output:
-      An integer status (see enum above)
+      Number of characters successfully read (0 on error or EOF - check
+      dstrerrno)
 
    ************************************************************************* */
 #define dstrcatl(DEST) dstrfcatl(DEST, stdin)
@@ -391,9 +395,9 @@ size_t dstrfcatl(dstring_t dest, FILE *fp);
 
 /* **** dstrfcatn **********************************************************
 
-   This function reads up to one less than n characters (the last space is
-   reserved for the NULL terminating character), including \n's, from FILE
-   *fp and appends them to the buffer of a dstring_t object.
+   This function reads up to one less than n characters (not including the
+   NULL terminating character), including \n's, from FILE *fp and appends
+   them to the buffer of a dstring_t object.
 
    If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
 
@@ -410,7 +414,8 @@ size_t dstrfcatl(dstring_t dest, FILE *fp);
       size_t (the number of characters to read)
 
    Output:
-      An integer status (see enum above)
+      Number of characters successfully read (0 on error or EOF - check
+      dstrerrno)
 
    ************************************************************************* */
 size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);
@@ -430,7 +435,8 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);
       size_t (the number of characters to read)
 
    Output:
-      An integer status (see enum above)
+      Number of characters successfully read (0 on error or EOF - check
+      dstrerrno)
 
    ************************************************************************* */
 #define dstrcatn(DEST, SIZE) dstrfcatn(DEST, stdin, SIZE)

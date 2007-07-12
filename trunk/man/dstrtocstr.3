@@ -1,0 +1,40 @@
+.TH "dstrtocstr" 3 "12 July 2007" "dstrtocstr" "Dstring Library"
+
+.SH NAME
+dstrtocstr, cstrtodstr - Convert C strings to dstring_t objects and vice versa
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrtocstr(char *dest, const dstring_t src, size_t size);"
+.br
+.B "int cstrtodstr(dstring_t dest, const char *src);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrtocstr()"
+copies the string stored in a dstring_t buffer into an ordinary character \
+array, up to one less than size characters (the last space is reserved for \
+\\0).
+
+If size is 0, an empty string (containing only a NULL terminating character) \
+will be created and dstrerrno will be set to DSTR_SUCCESS.
+
+.B "cstrtodstr()"
+copies the string stored in the ordinary character array src into the buffer \
+of a dstring_t object.  The source string overwrites any previous data \
+stored in the object.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+All of the above functions return the status code that dstrerrno is set to. \
+Thus, one may check either the return value or the value of dstrerrno upon \
+completion of a call to dstrtocstr() or cstrtodstr().  Note that this return \
+value is NOT typical of most dstring functions.
+
+.SH SEE ALSO
+.BR <dstring.h> (0)

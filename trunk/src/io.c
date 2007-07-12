@@ -48,7 +48,6 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
    char     *status;                /* tests for NULL when we encounter EOF */
    ptrdiff_t bufcount = 0;          /* how many characters we've read so far */
 
-   int       retval;                /* returns the return value of dstrealloc() */
    dstring_t temp;                  /* temporary dstring_t object */
 
    /* make sure dest is initialized */
@@ -65,7 +64,6 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
 
    /* allocate space for temp */
    if (DSTR_SUCCESS != dstralloc(&temp, dstrallocsize(dest))) {
-      dstrerrno = DSTR_NOMEM;
       return 0;
    }
 
@@ -106,8 +104,7 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
       }
 
       /* if we can't get more memory, we can't finish the line */
-      if (DSTR_SUCCESS != (retval = dstrealloc(&temp, DSTRBUFLEN(temp) * 2))) {
-         dstrerrno = retval;
+      if (DSTR_SUCCESS != dstrealloc(&temp, DSTRBUFLEN(temp) * 2)) {
          dstrfree(&temp);
          return 0;
       }
@@ -120,15 +117,21 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
       bufcount = bufpos - start + 1;
    }
 
-   /* make sure dest has enough space to store our new string */
-   if (DSTR_SUCCESS != (retval = dstrealloc(&dest, dstrlen(temp) + 1))) {
-      dstrerrno = retval;
-      dstrfree(&temp);
-      return 0;
+   /* copy our new string into dest only if we read something */
+   if (dstrlen(temp) > 0) {
+      /* does dest need more space than it already has? */
+      if (DSTRBUFLEN(dest) < dstrlen(temp) + 1) {
+         if (DSTR_SUCCESS != dstrealloc(&dest, dstrlen(temp) + 1)) {
+            dstrfree(&temp);
+            return 0;
+         }
+      }
+      dstrcpy(dest, temp);
+      if (DSTR_SUCCESS != dstrerrno) {
+         dstrfree(&temp);
+         return 0;
+      }
    }
-
-   /* copy our new string into dest */
-   dstrcpy(dest, temp);
 
    /* indicate success and return */
    dstrerrno = DSTR_SUCCESS;
@@ -142,7 +145,6 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
    int   count;      /* number of characters read from fp */
    int   c;          /* temporary storage for a character */
-   int   retval;
 
   /* make sure dest is initialized */
    if (NULL == dest) {
@@ -168,10 +170,9 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
       return 0;
    }
 
-   /* our current buffer won't accomodate the string; reallocate! */
-   if (DSTRBUFLEN(dest) < n) {
-      if (DSTR_SUCCESS != (retval = dstrealloc(&dest, n))) {
-         dstrerrno = retval;
+   /* make sure dest's buffer is big enough */
+   if (DSTRBUFLEN(dest) < n + 1) {
+      if (DSTR_SUCCESS != dstrealloc(&dest, n + 1)) {
          return 0;
       }
    }
@@ -191,7 +192,7 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
    /* NULL terminate the new string */
    if (count > 0) {
-      DSTRBUF(dest)[count] = '\0';
+      DSTRBUF(temp)[count] = '\0';
    }
 
    /* indicate success and return */
@@ -206,6 +207,8 @@ size_t dstrfcatl(dstring_t dest, FILE *fp) {
    size_t    count;  /* number of characters successfully read from fp */
    dstring_t temp;   /* will store the string which will be appended to dest */
 
+   int olddstrerrno; /* saves dstrerrno value from call to dstrfreadn() */
+
    /* allocate space for our temporary string */
    if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
       /* 0 items are successfully read if we can't get the memory ;)
@@ -213,12 +216,19 @@ size_t dstrfcatl(dstring_t dest, FILE *fp) {
       return 0;
    }
 
-   /* read a line of input from the file */
+   /* read a line of input from the file, and make sure dstrerrno will be
+      set properly */
    count = dstrfreadl(temp, fp);
    if (DSTR_SUCCESS != dstrerrno) {
-      dstrfree(&temp);
-      return 0;
+      if (0 == dstrlen(temp)) {
+         dstrfree(&temp);
+         return 0;
+      }
    }
+
+   /* save dstrerrno value at this point, so that any file read errors
+      will be reported */
+   olddstrerrno = dstrerrno;
 
    /* cat temp to dest - dstrcat will see if dest is initialized for us :) */
    dstrcat(dest, temp);
@@ -229,7 +239,7 @@ size_t dstrfcatl(dstring_t dest, FILE *fp) {
 
    /* free our temp string and return successfully */
    dstrfree(&temp);
-   dstrerrno = DSTR_SUCCESS;
+   dstrerrno = olddstrerrno;
    return count;
 }
 
@@ -243,6 +253,8 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
    size_t    count;  /* number of characters successfully read from fp */
    dstring_t temp;   /* will store the string which will be appended to dest */
 
+   int olddstrerrno; /* saves dstrerrno value from call to dstrfreadn() */
+
    /* allocate space for our temporary string */
    if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
       /* 0 items are successfully read if we can't get the memory ;)
@@ -250,12 +262,19 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
       return 0;
    }
 
-   /* read a line of input from the file */
+   /* read a line of input from the file, and make sure dstrerrno will be
+      set properly */
    count = dstrfreadn(temp, fp, n);
    if (DSTR_SUCCESS != dstrerrno) {
-      dstrfree(&temp);
-      return 0;
+      if (0 == dstrlen(temp)) {
+         dstrfree(&temp);
+         return 0;
+      }
    }
+
+   /* save dstrerrno value at this point, so that any file read errors
+      will be reported */
+   olddstrerrno = dstrerrno;
 
    /* cat temp to dest - dstrcat will see if dest is initialized for us :) */
    dstrcat(dest, temp);
@@ -266,6 +285,6 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
 
    /* free our temp string and return successfully */
    dstrfree(&temp);
-   dstrerrno = DSTR_SUCCESS;
+   dstrerrno = olddstrerrno;
    return count;
 }

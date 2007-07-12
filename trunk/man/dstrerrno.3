@@ -1,0 +1,68 @@
+.TH "dstrerrno" 3 "12 July 2007" "dstrerrno" "Dstring Library"
+
+.SH NAME
+dstrerrno - external variable of type int, designed to signify success or the \
+nature of the error after a call to a dstring function.
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+
+.SH DESCRIPTION
+
+The dstring.h header file makes the external variable "int dstrerrno" \
+available, which is guaranteed to be set by every call to a dstring \
+function and will indicate success or the nature of the error.
+
+.B "WARNING:"
+dstrerrno is NOT thread safe!  Thus, reliable multithreaded code \
+MUST make effective use of locking in order to ensure that only one thread \
+is granted access to dstrerrno at any one time.  Later versions of this \
+library will employ a thread-safe version of dstrerrno, rendering this extra \
+step unnecessary.
+
+The possible error codes that dstrerrno can be set to are as follows:
+
+.B "DSTR_SUCCESS"
+Success
+
+.B "DSTR_NOMEM"
+Insufficient memory
+
+.B "DSTR_INVALID_BUFLEN"
+The caller passed an invalid buffer length (less than 0)
+
+.B "DSTR_UNINITIALIZED"
+The caller tried to pass an uninitialized dstring_t object (HINT: it's a \
+VERY good idea to immediately set all newly declared dstring_t variables to \
+NULL; this is the only way a dstring function can tell whether or not an \
+object has been initialized!)
+
+.B "DSTR_UNOPENED_FILE"
+A NULL FILE pointer was passed
+
+.B "DSTR_EOF"
+End of file has been reached for a file stream (not necessarily an error)
+
+.B "DSTR_FILE_ERROR"
+A read error (not EOF) was encountered when trying to read from a file stream
+
+.B "DSTR_OUT_OF_BOUNDS"
+The specified index in a dstring_t object is out of bounds
+
+.B "DSTR_INVALID_ARGUMENT"
+An invalid argument was passed to a dstring.h function
+
+.B "DSTR_NULL_CPTR"
+a NULL character pointer was discovered where a C string was expected
+
+The function
+.B "dstrerrormsg(3)"
+can be called with the current value of dstrerrno to return a constant C \
+string describing the nature of the error.  Thus, to print a more "friendly" \
+representation of dstrerrno, one may do something like this:
+
+printf("error: %s\\n", dstrerrormsg(dstrerrno));
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrerrormsg (3)

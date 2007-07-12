@@ -1,0 +1,61 @@
+.TH "dstrfcatl" 3 "12 July 2007" "dstrfcatl" "Dstring Library"
+
+.SH NAME
+dstrfcatl, dstrfcatn, dstrcatl, dstrcatn - Reads ASCII data from a file stream and concatenates it to the end of a dstring_t object
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "size_t dstrfcatl(dstring_t dest, FILE *fp);"
+.br
+.B "size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n);"
+.br
+.B "size_t dstrcatl(dstring_t dest);"
+/* MACRO */
+.br
+.B "size_t dstrcatn(dstring_t dest, size_t n);"
+/* MACRO */
+.br
+
+.SH DESCRIPTION
+
+.B "dstrfcatl()"
+reads an entire line of input from FILE *fp, terminated by the '\\n' \
+character (the '\\n' is included as part of the string), and appends it to \
+the buffer of a dstring_t object (does NOT overwrite the previous '\\n' \
+character if there is one.)
+
+.B "dstrcatl()"
+is a macro that calls dstrfcatl() with *fp pointing to stdin.  Thus, this \
+macro is ordinarily used to read n characters of input from the keyboard.
+
+.B "dstrfcatn()"
+reads up to one less than n characters (not including the NULL terminating \
+character), including \\n's, from FILE *fp and appends them to the buffer of \
+a dstring_t object.
+
+If size is 0, nothing will be done and DSTR_SUCCESS will be returned.  New \
+data is appended to anything previously stored in the buffer.  In the event \
+of an error, the buffer will be left untouched.
+
+.B "dstrcatn()"
+is a macro that calls dstrfcatn() with *fp pointing to stdin.  Thus, this \
+macro is ordinarily used to read a line of input from the keyboard.
+
+dstrerrno will be set to indicate success or the nature of the failure.
+
+.SH RETURN VALUE
+
+All of the above functions return the number of characters successfully read \
+from FILE *fp, or stdin in the case of dstrcatl() and dstrcatn().  In the \
+even of an error or EOF before any data could be read, this value will be 0. \
+In this case, dstrerrno can be used to further investigate the nature of the \
+error.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrfreadl (3),
+.BR dstrfreadn (3),
+.BR dstreadl (3),
+.BR dstreadn (3)

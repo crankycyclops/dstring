@@ -1,0 +1,70 @@
+.TH "dstrfreadl" 3 "12 July 2007" "dstrfreadl" "Dstring Library"
+
+.SH NAME
+dstrfreadl, dstrfreadn, dstreadl, dstreadn - Reads ASCII data from a file stream and copies it to a dstring_t object
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "size_t dstrfreadl(dstring_t dest, FILE *fp);"
+.br
+.B "size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n);"
+.br
+.B "size_t dstreadl(dstring_t dest);"
+/* MACRO */
+.br
+.B "size_t dstreadn(dstring_t dest, size_t n);"
+/* MACRO */
+.br
+
+.SH DESCRIPTION
+
+.B "dstrfreadl()"
+reads an entire line of input from FILE *fp, terminated by the '\\n' \
+character (which is included as part of the string), and stores it in the \
+buffer of a dstring_t object.  New data overwrites anything previously \
+stored in the buffer.
+
+If EOF is encountered before any data can be read, the previous string will \
+remain untouched.  Otherwise, the dstring_t object will include all data \
+that was read up to but not including EOF.
+
+.B "dstreadl()"
+is a macro that calls dstrfreadl() with *fp pointing to stdin.  Thus, this \
+macro is ordinarily used to read a line of input from the keyboard.
+
+.B "dstrfreadn()"
+reads up to n characters (the buffer will actually be at least the size of \
+n + 1, to accomodate the NULL terminating character), including \\n's, from \
+FILE *fp and stores them in the buffer of a dstring_t object.
+
+If n is 0, nothing will be done and dstrerrno will be set to DSTR_SUCCESS.
+
+New data overwrites anything previously stored in the buffer.  In the event \
+of an error, whatever was contained in the buffer before the function call is \
+preserved.  If EOF is encountered before any data can be read, the contents \
+of dest will again be preserved.  If EOF is encountered after data was \
+successfully read from *fp, the contents of the string  will be overwritten \
+by whatever was successfully read from the file, up to but not including EOF.
+
+.B "dstreadn()"
+is a macro that calls dstrfreadn() with *fp pointing to stdin.  Thus, this \
+macro is ordinarily used to read a line of input from the keyboard.
+
+dstrerrno will be set to indicate success or the nature of the failure.
+
+.SH RETURN VALUE
+
+All of the above functions return the number of characters successfully read \
+from FILE *fp, or stdin in the case of dstreadl() and dstreadn().  In the \
+even of an error or EOF before any data could be read, this value will be 0. \
+In this case, dstrerrno can be used to further investigate the nature of the \
+error.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrfcatl (3),
+.BR dstrfcatn (3),
+.BR dstrcatl (3),
+.BR dstrcatn (3)
