@@ -1,0 +1,36 @@
+.TH "dstrallocsize" 3 "11 July 2007" "dstrallocsize" "Dstring Library"
+
+.SH NAME
+dstrallocsize - Returns the number of bytes allocated to a dstring_t object
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "size_t dstrallocsize(const dstring_t dstr);"
+
+.SH DESCRIPTION
+
+.B "dstrallocsize()"
+returns the number of bytes currently allocated to the string buffer of a \
+dstring_t object, NOT THE LENGTH OF THE STRING!  To find the length of the \
+string, see
+.B dstrlen(3).
+
+dstrerrno will be set to indicate success or the nature of the failure.
+
+.SH RETURN VALUE
+
+Since an initialized dstring_t object will always have an allocation greater \
+than 0, a return value greater than 0 denotes the size of the string buffer's \
+allocation in bytes, while a return value of 0 denotes an error.  Of course, \
+in the event of an error, dstrerrno will be set as well to further specify \
+what went wrong.  If the call is successful, dstrerrno will be set to \
+DSTR_SUCCESS.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrlen (3),
+.BR dstralloc (3),
+.BR dstrealloc (3),
+.BR dstrfree (3)

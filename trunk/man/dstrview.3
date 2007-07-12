@@ -1,0 +1,40 @@
+.TH "dstrview" 3 "11 July 2007" "dstrview" "Dstring Library"
+
+.SH NAME
+dstrview - Returns an ordinary C string representation (read-only) of \
+the string stored in a dstring_t object
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "const char * const dstrview(const dstring_t str);"
+
+.SH DESCRIPTION
+
+.B "dstrview()"
+returns a read-only constant character pointer to the buffer inside of a \
+dstring_t object that can in turn be passed to standard library functions \
+such as printf.
+
+.B "Example:"
+.br
+
+printf("%s", dstrview(dstr));
+
+Note that in this particular example, passing an uninitialized dstring_t \
+object to dstrview() would cause printf() to make a NULL pointer \
+dereference, which would in turn result in a crash.  Thus, the programmer \
+should either be certain that the dstring_t object is initialized or \
+include an extra step for error-checking.
+
+dstrerrno will be set to indicate success or the nature of the failure.
+
+.SH RETURN VALUE
+
+A constant pointer to the string stored in the dstring_t object or NULL on \
+error.  In the event of an error, dstrerrno can be checked for further \
+clarification.  Otherwise, it will be set to DSTR_SUCCESS.
+
+.SH SEE ALSO
+.BR <dstring.h> (0)
