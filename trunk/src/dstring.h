@@ -133,7 +133,7 @@ enum STATUS_CODES {
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstralloc(dstring_t *strptr, size_t bytes);
+int dstralloc(dstring_t *dstrptr, size_t bytes);
 
 
 /* **** dstrealloc **********************************************************
@@ -160,7 +160,7 @@ int dstralloc(dstring_t *strptr, size_t bytes);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrealloc(dstring_t *strptr, size_t bytes);
+int dstrealloc(dstring_t *dstrptr, size_t bytes);
 
 
 /* **** dstrfree ***********************************************************
@@ -183,7 +183,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes);
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstrfree(dstring_t *strptr);
+int dstrfree(dstring_t *dstrptr);
 
 
 /**********************\
@@ -211,7 +211,7 @@ int dstrfree(dstring_t *strptr);
       error (check dstrerrno)
 
    ************************************************************************* */
-const char * const dstrview(const dstring_t str);
+const char * const dstrview(const dstring_t dstr);
 
 
 /* **** dstrallocsize ******************************************************
@@ -240,7 +240,7 @@ const char * const dstrview(const dstring_t str);
      == 0:  error (check dstrerrno)
 
    ************************************************************************* */
-size_t dstrallocsize(const dstring_t str);
+size_t dstrallocsize(const dstring_t dstr);
 
 
 /*****************\
@@ -328,7 +328,7 @@ size_t dstrfreadl(dstring_t dest, FILE *fp);
 size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n);
 
 
-/* **** dstrreadn **********************************************************
+/* **** dstreadn **********************************************************
 
    Implemented as a macro, this wraps around dstrfreadn, using stdin as the
    input file.
@@ -1236,8 +1236,14 @@ const char * const dstrerrormsg(int code);
 
 /* IMPLEMENT! */
 /* Format */
+
+/* fills in n characters starting at a specified index */
+int dstrfill(dstring_t str, size_t index, size_t n, char c); 
+
 int dstrtoupper(dstring_t str);
+int dstrntoupper(dstring_t str, size_t n);
 int dstrtolower(dstring_t str);
+int dstrntolower(dstring_t str, size_t n);
 /* more in format.c that need prototypes to be made */
 
 #endif

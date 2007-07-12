@@ -1,0 +1,54 @@
+.TH "dstralloc" 3 "11 July 2007" "dstralloc" "Dstring Library"
+
+.SH NAME
+dstralloc, dstrealloc, dstrfree - Allocate and free dynamic memory for \
+dstring_t objects
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstralloc(dstring_t *dstrptr, size_t bytes);"
+.br
+.B "int dstrealloc(dstring_t *dstrptr, size_t bytes);"
+.br
+.B "int dstrfree(dstring_t *dstrptr);"
+
+.SH DESCRIPTION
+
+.B "dstralloc()"
+initializes a variable of type dstring_t by allocating memory for the \
+dstring_t object, including the specified number of bytes for the string \
+buffer.  If passed a size of 0 bytes, it will call dstrfree() to free the \
+object and set it to NULL, which signals to other functions in the library \
+that the string is in an uninitialized state.  dstralloc() MUST NOT be \
+called on an object that has already been initialized; doing so will \
+result in undefined (and most likely undesirable) behavior.
+
+.B "dstrealloc()"
+grows or shrinks the number of bytes allocated to the buffer of a previously \
+initialized dstring_t object.  Like dstralloc(), a size of 0 bytes will \
+invoke dstrfree(), which will free the memory allocated to the object  and \
+set it to NULL, signaling to other functions that the object is now in an \
+uninitialized state.  If an uninitialized dstring_t is passed to \
+dstrealloc(), it will automatically be passed to dstralloc() instead, where \
+it will be initialized with the specified number of bytes.
+
+.B "dstrfree()"
+frees all memory dynamically allocated to an object of type dstring_t and \
+sets the variable to NULL, making all other dstring functions aware that \
+the object is now in an uninitialized state.
+
+For all three functions, dstrerrno is set to indicate success or the nature \
+of the error.
+
+.SH RETURN VALUE
+
+All three functions return the status code that dstrerrno is set to.  Thus, \
+in the case of the allocation functions (this behavior is NOT typical of \
+most dstring functions), dstrerrno can be disregarded (although it will \
+still be set) and the return value can be checked instead.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrallocsize (3)

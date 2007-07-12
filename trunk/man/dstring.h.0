@@ -161,7 +161,7 @@ Formatting Functions
 .br
 .B "int dstrpadr(dstring_t str, size_t n, char c);"
 .br
-.B "int dstrpadi(dstring_t str, size_t index, size_t n, char c);"
+.B "int dstrfill(dstring_t str, size_t index, size_t n, char c);"
 .br
 .B "int dstrcenter(dstring_t str, size_t len);"
 .br
