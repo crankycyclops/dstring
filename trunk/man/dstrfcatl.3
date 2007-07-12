@@ -35,9 +35,9 @@ reads up to one less than n characters (not including the NULL terminating \
 character), including \\n's, from FILE *fp and appends them to the buffer of \
 a dstring_t object.
 
-If size is 0, nothing will be done and DSTR_SUCCESS will be returned.  New \
-data is appended to anything previously stored in the buffer.  In the event \
-of an error, the buffer will be left untouched.
+If size is 0, nothing will be done and dstrerrno will be set to DSTR_SUCCESS. \
+New data is appended to anything previously stored in the buffer.  In the \
+event of an error, the buffer will be left untouched.
 
 .B "dstrcatn()"
 is a macro that calls dstrfcatn() with *fp pointing to stdin.  Thus, this \

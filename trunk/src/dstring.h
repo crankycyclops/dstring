@@ -399,7 +399,8 @@ size_t dstrfcatl(dstring_t dest, FILE *fp);
    NULL terminating character), including \n's, from FILE *fp and appends
    them to the buffer of a dstring_t object.
 
-   If size is 0, nothing will be done and DSTR_SUCCESS will be returned.
+   If size is 0, nothing will be done and dstrerrno will be set to
+   DSTR_SUCCESS.
 
    New data is appended to anything previously stored in the buffer.  In
    the event of a DSTR_NOMEM error, the buffer will be unmodified.
@@ -588,7 +589,7 @@ int dstrncat(dstring_t dest, const dstring_t src, size_t n);
 /* **** dstrcatcs **********************************************************
 
    This function emulates the behavior of the C standard library function
-   strncat() by appending an ordinary C string to a dstring_t object.
+   strcat() by appending an ordinary C string to a dstring_t object.
 
    dstrerrno will be set to indicate success or the type of error.
 

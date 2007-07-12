@@ -1,0 +1,42 @@
+.TH "dstrcpy" 3 "12 July 2007" "dstrcpy" "Dstring Library"
+
+.SH NAME
+dstrcpy, dstrncpy - The strcpy() and strncpy() equivalents for dstring_t \
+objects
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrcpy(dstring_t dest, const dstring_t src);"
+.br
+.B "int dstrncpy(dstring_t dest, const dstring_t src, size_t n);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrcpy()"
+emulates the behavior of the C standard library function strcpy() by copying \
+the contents of one initialized dstring_t object to another.  Both dstring_t \
+objects must be initialized.  Unlike strcpy(), dstrcpy() is safe, because the \
+destination buffer will grow to accomodate the required size.
+
+.B "dstrncpy()"
+emulates the behavior of the C standard library function strncpy() by copying \
+the contents of one initialized dstring_t object to another, up to n \
+characters.  Both dstring_t objects must be initialized.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+Both functions return the number of characters successfully copied to dest, \
+and generally, a return value of 0 denotes an error.  If this is the return \
+value, dstrerrno can be examined for further analysis.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrcat (3),
+.BR dstrncat (3),
+.BR dstrcatcs (3),
+.BR dstrncatcs (3)

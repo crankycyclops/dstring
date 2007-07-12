@@ -1,0 +1,51 @@
+.TH "dstrcat" 3 "12 July 2007" "dstrcat" "Dstring Library"
+
+.SH NAME
+dstrcat, dstrncat, dstrcatcs, dstrncatcs - The strcat() and strncat() \
+equivalents for dstring_t objects
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrcat(dstring_t dest, const dstring_t src);"
+.br
+.B "int dstrncat(dstring_t dest, const dstring_t src, size_t n);"
+.br
+.B "int dstrcatcs(dstring_t dest, const char *src);"
+.br
+.B "int dstrncatcs(dstring_t dest, const char *src, size_t n);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrcat()"
+emulates the behavior of the C standard library function strcat() by \
+appending one dstring_t object to another.  dstrcat() is safe, unlike \
+strcat(), because the destination buffer will grow to accomodate the required \
+size.
+
+.B "dstrncat()"
+emulates the behavior of the C standard library function strncat() by \
+appending one dstring_t object to another, up to n chars.
+
+.B "dstrcatcs()"
+is similiar to dstrcat(), except that it takes as the source an ordinary \
+C string.
+
+.B "dstrncatcs()"
+is similiar to dstrncat(), except that, like dstrcatcs(), it takes as the \
+source an ordinary C string.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+All four of these functions return the number of characters successfully \
+appended to dest, and generally, a return value of 0 denotes an error.  \
+If this is the return value, dstrerrno can be examined for further analysis.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrcpy (3),
+.BR dstrncpy (3)
