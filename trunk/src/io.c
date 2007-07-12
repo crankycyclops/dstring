@@ -192,7 +192,7 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
    /* NULL terminate the new string */
    if (count > 0) {
-      DSTRBUF(temp)[count] = '\0';
+      DSTRBUF(dest)[count] = '\0';
    }
 
    /* indicate success and return */
