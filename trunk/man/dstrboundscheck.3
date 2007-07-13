@@ -1,0 +1,29 @@
+.TH "dstrboundscheck" 3 "12 July 2007" "dstrboundscheck" "Dstring Library"
+
+.SH NAME
+dstrboundscheck - Checks an index to see if it's within the bounds of a \
+dstring_t buffer
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrboundscheck(dstring_t str, size_t index);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrboundscheck()"
+checks to see if a given index is or isn't within bounds of a dstring_t buffer.
+
+dstrerrno will be set.
+
+.SH RETURN VALUE
+
+This function returns the value of dstrerrno, which will be DSTR_SUCCESS if \
+the index is within bounds, DSTR_OUT_OF_BOUNDS if it is not and \
+DSTR_INVALID_ARGUMENT if the index is invalid (a valid index is greater than \
+or equal to 0.)
+
+.SH SEE ALSO
+None.

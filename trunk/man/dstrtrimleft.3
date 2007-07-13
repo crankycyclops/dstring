@@ -1,0 +1,30 @@
+.TH "dstrtrimleft" 3 "12 July 2007" "dstrtrimleft" "Dstring Library"
+
+.SH NAME
+dstrtrimleft - Trims n characters from the left side of the string
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrtrimleft(dstring_t str, size_t n);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrtrimleft()"
+trims n characters from the left side of the string.  If n is 0, nothing \
+will be done and dstrerrno will be set to DSTR_SUCCESS.  If n is greater \
+than the length of the string, the string will become an empty (NULL) string.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+This function returns the new length of the string.  If an error occurs, the \
+string will be left unmodified, and the original length of the string will be \
+returned.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrtrunc (3)

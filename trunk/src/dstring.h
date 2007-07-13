@@ -747,7 +747,8 @@ int dstrtrunc(dstring_t str, size_t size);
    This function trims n characters off the left of a string.
 
    If n is 0, nothing will be done and dstrerrno will be set to
-   DSTR_SUCCESS.
+   DSTR_SUCCESS.  If n is greater than the length of the string, the string
+   will become an empty (NULL) string.
 
    Found in utility.c
 

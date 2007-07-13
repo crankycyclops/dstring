@@ -1,0 +1,31 @@
+.TH "dstrtrunc" 3 "12 July 2007" "dstrtrunc" "Dstring Library"
+
+.SH NAME
+dstrtrunc - Truncates a dstring_t object down to the specified length
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrtrunc(dstring_t str, size_t size);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrtrunc()"
+truncates a string down to the specified number of characters.  If the size \
+passed is greater than or equal to the length of the string already in the \
+buffer, nothing will be truncated, and dstrerrno will be set to DSTR_SUCCESS. \
+0 is a valid size, and if passed will result in an empty (NULL) string.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+This function returns the new length of the string after truncation.  If an \
+error occurs, the string will be left unmodified, and the original length \
+of the string will be returned.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrtrimleft (3)
