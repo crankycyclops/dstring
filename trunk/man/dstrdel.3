@@ -1,0 +1,46 @@
+.TH "dstrdel" 3 "13 July 2007" "dstrdel" "Dstring Library"
+
+.SH NAME
+dstrdel, dstrndel - Delete individual characters from a string
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrdel(dstring_t str, size_t index);"
+.br
+.B "int dstrndel(dstring_t str, size_t index, size_t n);"
+.br
+
+.SH DESCRIPTION
+
+.B "dstrdel()"
+removes a character from a dstring_t buffer at the specified 0-based index. \
+Note that removing the terminating '\0' is not allowed and will result in \
+dstrerrno being set to DSTR_INVALID_ARGUMENT.
+
+.B "dstrndel()"
+removes n characters from a dstring_t buffer, starting at the specified \
+0-based index.  If n is 0, nothing will be done and dstrerrno will be set to \ DSTR_SUCCESS.  If n is greater than the number of characters beyond the \
+specified index, everything at the index and beyond will be deleted from the \
+string.
+
+dstrerrno will be set to indicate success or the nature of the error.
+
+.SH RETURN VALUE
+
+.B "dstrdel()"
+returns a number less than 0 if an error occured (in which case dstrerrno \
+should be examined.)  If the return value is greater than or equal to 0, \
+the return value is the character that was deleted from the string.
+
+.B "dstrndel()"
+returns the length of the string after n characters have been removed.  If \
+an error occured, or if n was 0, nothing will be removed from the string, and \
+the return value will thus be the original length of the string.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstrinsertc (3),
+.BR dstrgetc (3),
+.BR dstrxchg (3)

@@ -174,7 +174,8 @@ int dstrdel(dstring_t str, size_t index) {
 
 int dstrndel(dstring_t str, size_t index, size_t n) {
 
-   size_t i;
+   size_t i;       /* for loop index */
+   int charcount;  /* number of characters at and beyond the specified index */
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
@@ -194,11 +195,13 @@ int dstrndel(dstring_t str, size_t index, size_t n) {
       return dstrlen(str);
    }
 
-   /* If n is greater than the size of the string, zero it out */
-   if (n > dstrlen(str)) {
-      DSTRBUF(str)[0] = '\0';
-      dstrerrno = DSTR_SUCCESS;
-      return dstrlen(str);
+   /* If n is greater than the number of characters beyond the specified
+      index, we want to set n so that everything at and beyond the
+      specified index will be deleted */
+   for (i = index; '\0' != DSTRBUF(str)[i]; i++)
+      charcount++;
+   if (n > charcount) {
+      n = charcount;
    }
 
    /* starting at index, move each character left n positions */

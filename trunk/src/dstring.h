@@ -792,14 +792,15 @@ int dstrdel(dstring_t str, size_t index);
 
 /* **** dstrndel ***********************************************************
 
-   This function removes n characters from a dstring_t buffer at the
-   specified 0-based index.
+   This function removes n characters from a dstring_t buffer, starting at
+   the specified 0-based index.
 
    dstrerrno will be set to indicate success or type of error.
 
    If n is 0, nothing will be done and dstrerrno will be set to
-   DSTR_SUCCESS.  If n is greater than the size of the string, the string
-   will be emptied.
+   DSTR_SUCCESS.  If n is greater than the number of characters beyond the
+   specified index, everything at the index and beyond will be deleted from
+   the string.
 
    Found in utility.c
 
