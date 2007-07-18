@@ -1,0 +1,43 @@
+.TH "dstrinsertc" 3 "17 July 2007" "dstrinsertc" "Dstring Library"
+
+.SH NAME
+dstrinsertc - Inserts the specified character into a dstring_t object at the \
+specified index
+
+.SH SYNOPSIS
+.B "#include <dstring.h>"
+.br
+
+.B "int dstrinsertc(dstring_t dest, size_t index, char c);"
+
+.SH DESCRIPTION
+
+.B "dstrinsertc()"
+inserts a single character into a dstring object at the specified 0-based \
+index.  If the specified index is out of bounds, the function call will not \
+be successful.  Also, inserting \0's is not allowed and will also result in \
+an unsuccessful function call.
+
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_OUT_OF_BOUNDS
+if the specified index is out of bounds
+.br
+.B DSTR_INVALID_ARGUMENT
+if an attempt is made to insert an invalid character
+.br
+.B DSTR_NOMEM
+if there is not enough memory to add the character to the string
+
+.SH RETURN VALUE
+
+This function returns the status code that dstrerrno is also set to.
+
+.SH SEE ALSO
+.BR <dstring.h> (0),
+.BR dstreplacec (3),
+.BR dstrxchg (3),
+.BR dstrgetc (3)
