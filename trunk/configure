@@ -20605,7 +20605,7 @@ echo "$as_me: error: missing pthread.h" >&2;}
 fi
 
 
-      CFLAGS=CFLAGS:"-DDSTR_PTHREAD"
+      CFLAGS=$CFLAGS" -DDSTR_PTHREAD"
    fi
 fi
 
@@ -20750,7 +20750,7 @@ fi
 
 
    #check functions as well!
-   CFLAGS=CFLAGS:"-DDSTR_WIN32THREAD"
+   CFLAGS=$CFLAGS:"-DDSTR_WIN32THREAD"
 fi
 
 #Library version information

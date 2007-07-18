@@ -41,14 +41,14 @@ if test "x$enable_pthreads" = "xyes"; then
       AC_MSG_ERROR([cannot enable pthreads and win32threads simultaneously!])
    else
       AC_CHECK_HEADER([pthread.h], [], [AC_MSG_ERROR([missing pthread.h])])
-      CFLAGS=CFLAGS:"-DDSTR_PTHREAD"
+      CFLAGS=$CFLAGS" -DDSTR_PTHREAD"
    fi
 fi
 
 if test "x$enable_win32threads" = "xyes"; then
    AC_CHECK_HEADER([windows.h], [], [AC_MSG_ERROR([missing windows.h])])
    #check functions as well!
-   CFLAGS=CFLAGS:"-DDSTR_WIN32THREAD"
+   CFLAGS=$CFLAGS:"-DDSTR_WIN32THREAD"
 fi
 
 #Library version information
