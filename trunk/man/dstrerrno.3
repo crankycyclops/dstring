@@ -1,4 +1,4 @@
-.TH "dstrerrno" 3 "17 July 2007" "dstrerrno" "Dstring Library"
+.TH "dstrerrno" 3 "18 July 2007" "dstrerrno" "Dstring Library"
 
 .SH NAME
 dstrerrno - an external variable (or a macro that acts like a variable) \
@@ -16,19 +16,17 @@ function except for
 .B dstrerrormsg(3)
 and will indicate success or the nature of the error.
 
-On systems that support Win32 or POSIX threads (pthreads), dstrerrno will be \
-implemented as a macro and will be thread-safe. For systems that do not \
-support threads, or for systems that do not support one of these two \
-implementations, dstrerrno will be an ordinary global variable and will not \
-be thread safe.  This shouldn't be a problem unless the library is being \
-used in a threaded program, which is not written using Win32 or POSIX threads. \
-The author does not believe this applies to very many people, but if you're \
-one of those few unlucky people, you may email the author with details \
-regarding the implementation, and he will be happy to investigate the \
-possibility of supporting it in future versions of the dstring library.
+On systems that support Win32 or POSIX threads (pthreads), if built with \
+the proper options, dstrerrno will be implemented as a macro that behaves \
+like a variable of type int and will be thread-safe. For systems that do not \
+support Win32 or POSIX threads, or if the library is built without the proper \
+options, dstrerrno will be an ordinary global variable and will not be thread \
+safe.  If the library does not support your threads implementation, or if it \
+is not built with the proper options, dstrerrno's behavior in multithreaded \
+applications is undefined.
 
 dstrerrno should not be accessed until the first time a dstring function is \
-called.  Doing so will result in undefined behavior, and may result in a \
+called.  Doing so will also result in undefined behavior, and may result in a \
 NULL pointer dereference, depending on implementation specific circumstances.
 
 The possible error codes that dstrerrno can be set to are as follows:

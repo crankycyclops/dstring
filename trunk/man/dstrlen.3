@@ -1,4 +1,4 @@
-.TH "dstrlen" 3 "12 July 2007" "dstrlen" "Dstring Library"
+.TH "dstrlen" 3 "18 July 2007" "dstrlen" "Dstring Library"
 
 .SH NAME
 dstrlen - The strlen() equivalent for dstring_t objects
@@ -16,7 +16,13 @@ dstrlen - The strlen() equivalent for dstring_t objects
 returns the length of the string.  This is the dstring equivalent of strlen \
 in the standard library.
 
-dstrerrno will be set to indicate success or the nature of the error.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call was successful
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 

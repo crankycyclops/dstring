@@ -22,12 +22,35 @@ array, up to one less than size characters (the last space is reserved for \
 If size is 0, an empty string (containing only a NULL terminating character) \
 will be created and dstrerrno will be set to DSTR_SUCCESS.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call was successful
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_NULL_CPTR
+if the pointer to the source C string is NULL
+
 .B "cstrtodstr()"
 copies the string stored in the ordinary character array src into the buffer \
 of a dstring_t object.  The source string overwrites any previous data \
 stored in the object.
 
-dstrerrno will be set to indicate success or the nature of the error.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call was successful
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_NULL_CPTR
+if the pointer to the source C string is NULL
+.br
+.B DSTR_NOMEM
+if there is insufficient memory
 
 .SH RETURN VALUE
 

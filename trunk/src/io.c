@@ -158,12 +158,6 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
       return 0;
    }
 
-   /* make sure size is a valid digit (>= 0) */
-   if (n < 0) {
-      _setdstrerrno(DSTR_INVALID_ARGUMENT);
-      return 0;
-   }
-
    /* if size is 0, return DSTR_SUCCESS without doing anything */
    if (0 == n) {
       _setdstrerrno(DSTR_SUCCESS);

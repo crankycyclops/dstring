@@ -1,4 +1,4 @@
-.TH "dstrview" 3 "11 July 2007" "dstrview" "Dstring Library"
+.TH "dstrview" 3 "18 July 2007" "dstrview" "Dstring Library"
 
 .SH NAME
 dstrview - Returns an ordinary C string representation (read-only) of \
@@ -28,7 +28,13 @@ dereference, which would in turn result in a crash.  Thus, the programmer \
 should either be certain that the dstring_t object is initialized or \
 include an extra step for error-checking.
 
-dstrerrno will be set to indicate success or the nature of the failure.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call was successful
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 

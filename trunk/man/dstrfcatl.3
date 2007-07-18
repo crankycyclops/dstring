@@ -1,4 +1,4 @@
-.TH "dstrfcatl" 3 "12 July 2007" "dstrfcatl" "Dstring Library"
+.TH "dstrfcatl" 3 "18 July 2007" "dstrfcatl" "Dstring Library"
 
 .SH NAME
 dstrfcatl, dstrfcatn, dstrcatl, dstrcatn - Reads ASCII data from a file stream and concatenates it to the end of a dstring_t object
@@ -26,9 +26,42 @@ character (the '\\n' is included as part of the string), and appends it to \
 the buffer of a dstring_t object (does NOT overwrite the previous '\\n' \
 character if there is one.)
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_UNOPENED_FILE
+if the file pointer is NULL
+.br
+.B DSTR_EOF
+if end-of-file is encountered for the file pointed to by *fp
+.br
+.B DSTR_FILE_ERROR
+if there was an error reading the file pointed to by *fp
+.br
+
 .B "dstrcatl()"
 is a macro that calls dstrfcatl() with *fp pointing to stdin.  Thus, this \
 macro is ordinarily used to read n characters of input from the keyboard.
+
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
 
 .B "dstrfcatn()"
 reads up to one less than n characters (not including the NULL terminating \
@@ -39,11 +72,42 @@ If size is 0, nothing will be done and dstrerrno will be set to DSTR_SUCCESS. \
 New data is appended to anything previously stored in the buffer.  In the \
 event of an error, the buffer will be left untouched.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_UNOPENED_FILE
+if the file pointer is NULL
+.br
+.B DSTR_EOF
+if end-of-file is encountered for the file pointed to by *fp
+.br
+.B DSTR_FILE_ERROR
+if there was an error reading the file pointed to by *fp
+.br
+
 .B "dstrcatn()"
 is a macro that calls dstrfcatn() with *fp pointing to stdin.  Thus, this \
 macro is ordinarily used to read a line of input from the keyboard.
 
-dstrerrno will be set to indicate success or the nature of the failure.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
 
 .SH RETURN VALUE
 

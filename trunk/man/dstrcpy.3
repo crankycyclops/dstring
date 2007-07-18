@@ -1,4 +1,4 @@
-.TH "dstrcpy" 3 "12 July 2007" "dstrcpy" "Dstring Library"
+.TH "dstrcpy" 3 "18 July 2007" "dstrcpy" "Dstring Library"
 
 .SH NAME
 dstrcpy, dstrncpy - The strcpy() and strncpy() equivalents for dstring_t \
@@ -21,12 +21,34 @@ the contents of one initialized dstring_t object to another.  Both dstring_t \
 objects must be initialized.  Unlike strcpy(), dstrcpy() is safe, because the \
 destination buffer will grow to accomodate the required size.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+
 .B "dstrncpy()"
 emulates the behavior of the C standard library function strncpy() by copying \
 the contents of one initialized dstring_t object to another, up to n \
 characters.  Both dstring_t objects must be initialized.
 
-dstrerrno will be set to indicate success or the nature of the error.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
 
 .SH RETURN VALUE
 

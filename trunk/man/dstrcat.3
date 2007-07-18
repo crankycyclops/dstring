@@ -1,4 +1,4 @@
-.TH "dstrcat" 3 "12 July 2007" "dstrcat" "Dstring Library"
+.TH "dstrcat" 3 "18 July 2007" "dstrcat" "Dstring Library"
 
 .SH NAME
 dstrcat, dstrncat, dstrcatcs, dstrncatcs - The strcat() and strncat() \
@@ -25,19 +25,71 @@ appending one dstring_t object to another.  dstrcat() is safe, unlike \
 strcat(), because the destination buffer will grow to accomodate the required \
 size.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+
 .B "dstrncat()"
 emulates the behavior of the C standard library function strncat() by \
 appending one dstring_t object to another, up to n chars.
+
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
 
 .B "dstrcatcs()"
 is similiar to dstrcat(), except that it takes as the source an ordinary \
 C string.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_NULL_CPTR
+if the pointer to the C string is NULL
+.br
+
 .B "dstrncatcs()"
 is similiar to dstrncat(), except that, like dstrcatcs(), it takes as the \
 source an ordinary C string.
 
-dstrerrno will be set to indicate success or the nature of the error.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_NULL_CPTR
+if the pointer to the C string is NULL
+.br
 
 .SH RETURN VALUE
 

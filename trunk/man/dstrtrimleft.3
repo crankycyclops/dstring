@@ -1,4 +1,4 @@
-.TH "dstrtrimleft" 3 "12 July 2007" "dstrtrimleft" "Dstring Library"
+.TH "dstrtrimleft" 3 "18 July 2007" "dstrtrimleft" "Dstring Library"
 
 .SH NAME
 dstrtrimleft - Trims n characters from the left side of the string
@@ -17,7 +17,13 @@ trims n characters from the left side of the string.  If n is 0, nothing \
 will be done and dstrerrno will be set to DSTR_SUCCESS.  If n is greater \
 than the length of the string, the string will become an empty (NULL) string.
 
-dstrerrno will be set to indicate success or the nature of the error.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call was successful
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 

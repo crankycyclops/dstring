@@ -1,4 +1,4 @@
-.TH "dstrfreadl" 3 "12 July 2007" "dstrfreadl" "Dstring Library"
+.TH "dstrfreadl" 3 "18 July 2007" "dstrfreadl" "Dstring Library"
 
 .SH NAME
 dstrfreadl, dstrfreadn, dstreadl, dstreadn - Reads ASCII data from a file stream and copies it to a dstring_t object
@@ -30,9 +30,42 @@ If EOF is encountered before any data can be read, the previous string will \
 remain untouched.  Otherwise, the dstring_t object will include all data \
 that was read up to but not including EOF.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_UNOPENED_FILE
+if the file pointer is NULL
+.br
+.B DSTR_EOF
+if end-of-file is encountered for the file pointed to by *fp
+.br
+.B DSTR_FILE_ERROR
+if there was an error reading the file pointed to by *fp
+.br
+
 .B "dstreadl()"
 is a macro that calls dstrfreadl() with *fp pointing to stdin.  Thus, this \
 macro is ordinarily used to read a line of input from the keyboard.
+
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
 
 .B "dstrfreadn()"
 reads up to n characters (the buffer will actually be at least the size of \
@@ -48,11 +81,41 @@ of dest will again be preserved.  If EOF is encountered after data was \
 successfully read from *fp, the contents of the string  will be overwritten \
 by whatever was successfully read from the file, up to but not including EOF.
 
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
+.br
+.B DSTR_UNOPENED_FILE
+if the file pointer is NULL
+.br
+.B DSTR_EOF
+if end-of-file is encountered for the file pointed to by *fp
+.br
+.B DSTR_FILE_ERROR
+if there was an error reading the file pointed to by *fp
+.br
+
 .B "dstreadn()"
 is a macro that calls dstrfreadn() with *fp pointing to stdin.  Thus, this \
 macro is ordinarily used to read a line of input from the keyboard.
 
-dstrerrno will be set to indicate success or the nature of the failure.
+Possible dstrerrno values:
+
+.B DSTR_SUCCESS
+if the function call is successful
+.br
+.B DSTR_NOMEM
+if there is not enough memory
+.br
+.B DSTR_UNINITIALIZED
+if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 
