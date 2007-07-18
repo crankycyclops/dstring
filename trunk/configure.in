@@ -5,6 +5,8 @@ AC_PREREQ(2.61)
 AC_INIT(FULL-PACKAGE-NAME, VERSION, BUG-REPORT-ADDRESS)
 AM_INIT_AUTOMAKE([1.10 foreign])
 
+AC_LANG_C
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_LIBTOOL
@@ -13,7 +15,8 @@ AC_PROG_LIBTOOL
 
 # Checks for header files.
 AC_HEADER_STDC
-AC_CHECK_HEADERS([stddef.h stdlib.h string.h])
+AC_CHECK_HEADER([string.h], [], [AC_MSG_ERROR([missing string.h])])
+AC_CHECK_HEADER([stdlib.h], [], [AC_MSG_ERROR([missing stdlib.h])])
 
 # Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -23,6 +26,30 @@ AC_CHECK_TYPES([ptrdiff_t])
 # Checks for library functions.
 AC_FUNC_REALLOC
 AC_CHECK_FUNCS([fgets calloc free])
+
+#Will we be building a thread-safe version of the library?
+AC_ARG_ENABLE(pthreads, AC_HELP_STRING([--enable-pthreads],
+   [enables support for POSIX threads (default is no)]),
+   [ enable_pthreads=$enableval ], [ enable_pthreads=no ])
+
+AC_ARG_ENABLE(win32threads, AC_HELP_STRING([--enable-win32threads],
+   [enables support for Win32 threads (default is no)]),
+   [ enable_win32threads=$enableval ], [ enable_win32threads=no ])
+
+if test "x$enable_pthreads" = "xyes"; then
+   if test "x$enable_win32threads" = "xyes"; then
+      AC_MSG_ERROR([cannot enable pthreads and win32threads simultaneously!])
+   else
+      AC_CHECK_HEADER([pthread.h], [], [AC_MSG_ERROR([missing pthread.h])])
+      CFLAGS=CFLAGS:"-DDSTR_PTHREAD"
+   fi
+fi
+
+if test "x$enable_win32threads" = "xyes"; then
+   AC_CHECK_HEADER([windows.h], [], [AC_MSG_ERROR([missing windows.h])])
+   #check functions as well!
+   CFLAGS=CFLAGS:"-DDSTR_WIN32THREAD"
+fi
 
 #Library version information
 LIB_CURRENT=0

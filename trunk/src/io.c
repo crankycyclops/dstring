@@ -52,13 +52,13 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
 
    /* make sure dest is initialized */
    if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* make sure fp is an opened file */
    if (NULL == fp) {
-      dstrerrno = DSTR_UNOPENED_FILE;
+      _setdstrerrno(DSTR_UNOPENED_FILE);
       return 0;
    }
 
@@ -86,9 +86,9 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
 
          /* there's nothing to read */
          if (feof(fp)) {
-            dstrerrno = DSTR_EOF;
+            _setdstrerrno(DSTR_EOF);
          } else {
-            dstrerrno = DSTR_FILE_ERROR;
+            _setdstrerrno(DSTR_FILE_ERROR);
          }
 
          dstrfree(&temp);
@@ -134,7 +134,7 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
    }
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    dstrfree(&temp);
    return dstrlen(dest);
 }
@@ -148,25 +148,25 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
   /* make sure dest is initialized */
    if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* make sure fp is an opened file */
    if (NULL == fp) {
-      dstrerrno = DSTR_UNOPENED_FILE;
+      _setdstrerrno(DSTR_UNOPENED_FILE);
       return 0;
    }
 
    /* make sure size is a valid digit (>= 0) */
    if (n < 0) {
-      dstrerrno = DSTR_INVALID_ARGUMENT;
+      _setdstrerrno(DSTR_INVALID_ARGUMENT);
       return 0;
    }
 
    /* if size is 0, return DSTR_SUCCESS without doing anything */
    if (0 == n) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -183,9 +183,9 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
    /* make sure we got something; if not, find out what happened */
    if (0 == count) {
       if (feof(fp)) {
-         dstrerrno = DSTR_EOF;
+         _setdstrerrno(DSTR_EOF);
       } else {
-         dstrerrno = DSTR_FILE_ERROR;
+         _setdstrerrno(DSTR_FILE_ERROR);
       }
       return 0;
    }
@@ -196,7 +196,7 @@ size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
    }
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return dstrlen(dest);
 }
 
@@ -239,7 +239,7 @@ size_t dstrfcatl(dstring_t dest, FILE *fp) {
 
    /* free our temp string and return successfully */
    dstrfree(&temp);
-   dstrerrno = olddstrerrno;
+   _setdstrerrno(olddstrerrno);
    return count;
 }
 
@@ -285,6 +285,6 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
 
    /* free our temp string and return successfully */
    dstrfree(&temp);
-   dstrerrno = olddstrerrno;
+   _setdstrerrno(olddstrerrno);
    return count;
 }

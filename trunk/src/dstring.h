@@ -54,8 +54,23 @@ typedef void * dstring_t;
 
 
 
-/* set by dstring library functions to indicate error codes */
-extern int dstrerrno;
+/* dstrerrno is set by dstring functions to indicate success or error status */
+#ifdef DSTR_WIN32THREAD
+   #include <windows.h>
+   /* declare win32 thread macro for dstrerrno value */
+#endif
+ 
+#ifdef DSTR_PTHREAD
+   #include <pthread.h>
+   extern pthread_key_t _dstrerrno_key;
+   #define dstrerrno *(int *)pthread_getspecific(_dstrerrno_key)
+#endif
+
+#ifndef DSTR_WIN32THREAD
+#ifndef DSTR_PTHREAD
+   extern int dstrerrno;
+#endif
+#endif
 
 
 

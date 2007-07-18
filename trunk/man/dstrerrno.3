@@ -1,8 +1,9 @@
-.TH "dstrerrno" 3 "12 July 2007" "dstrerrno" "Dstring Library"
+.TH "dstrerrno" 3 "17 July 2007" "dstrerrno" "Dstring Library"
 
 .SH NAME
-dstrerrno - external variable of type int, designed to signify success or the \
-nature of the error after a call to a dstring function.
+dstrerrno - an external variable (or a macro that acts like a variable) \
+of type int, designed to signify success or the nature of the error \
+after a call to a dstring function.
 
 .SH SYNOPSIS
 .B "#include <dstring.h>"
@@ -11,14 +12,24 @@ nature of the error after a call to a dstring function.
 
 The dstring.h header file makes the external variable "int dstrerrno" \
 available, which is guaranteed to be set by every call to a dstring \
-function and will indicate success or the nature of the error.
+function except for
+.B dstrerrormsg(3)
+and will indicate success or the nature of the error.
 
-.B "WARNING:"
-dstrerrno is NOT thread safe!  Thus, reliable multithreaded code \
-MUST make effective use of locking in order to ensure that only one thread \
-is granted access to dstrerrno at any one time.  Later versions of this \
-library will employ a thread-safe version of dstrerrno, rendering this extra \
-step unnecessary.
+On systems that support Win32 or POSIX threads (pthreads), dstrerrno will be \
+implemented as a macro and will be thread-safe. For systems that do not \
+support threads, or for systems that do not support one of these two \
+implementations, dstrerrno will be an ordinary global variable and will not \
+be thread safe.  This shouldn't be a problem unless the library is being \
+used in a threaded program, which is not written using Win32 or POSIX threads. \
+The author does not believe this applies to very many people, but if you're \
+one of those few unlucky people, you may email the author with details \
+regarding the implementation, and he will be happy to investigate the \
+possibility of supporting it in future versions of the dstring library.
+
+dstrerrno should not be accessed until the first time a dstring function is \
+called.  Doing so will result in undefined behavior, and may result in a \
+NULL pointer dereference, depending on implementation specific circumstances.
 
 The possible error codes that dstrerrno can be set to are as follows:
 

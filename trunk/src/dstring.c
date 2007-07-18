@@ -34,10 +34,7 @@
 \* ************************************************************************* */
 
 #include "dstring.h"
-
-
-/* used to indicate success or the nature of a failure */
-int dstrerrno;
+#include <stdlib.h>
 
 
 /* error messages to accompany return codes */
@@ -55,6 +52,24 @@ const char *errormsgs[] = {
    "unknown error"
 };
 
+/* Win32 version of our thread-safe dstrerrno */
+#ifdef DSTR_WIN32THREAD
+   /* etc */
+#endif
+
+/* Pthreads version of our thread-safe dstrerrno */
+#ifdef DSTR_PTHREAD
+   pthread_key_t _dstrerrno_key;                      /* key value for TLS */
+   static void _dstrfree_dstrerrno(void *dstrptr);    /* pthread destructor */
+#endif
+
+/* dstrerrno for non-Win32 and non-pthreads systems (not thread-safe) */
+#ifndef DSTR_WIN32THREAD
+#ifndef DSTR_PTHREAD
+   int dstrerrno;
+#endif
+#endif
+
 /* ************************************************************************* */
 
 const char * const dstrerrormsg(int code) {
@@ -65,3 +80,70 @@ const char * const dstrerrormsg(int code) {
       return errormsgs[abs(code)];
    }
 }
+
+/* ************************************************************************* */
+
+/* FOR LIBRARY'S INTERNAL USE ONLY! */
+void _setdstrerrno(int status) {
+
+   /* if we're using threads, once the key is set, this will be 1 */
+   static int iskeyset = 0;
+
+   #ifdef DSTR_WIN32THREAD
+      /* etc */
+   #endif
+
+   #ifdef DSTR_PTHREAD
+      int   keystatus;
+      int  *errvalptr;
+
+      if (0 == iskeyset) {
+
+         /* allocate space for a key and make sure it was successful */
+         keystatus = pthread_key_create(&_dstrerrno_key, _dstrfree_dstrerrno);
+         if (0 != keystatus) {
+            fprintf(stderr, "__FILE__: __LINE__: error: could not allocate");
+            fprintf(stderr, " dstrerrno\n");
+            exit(EXIT_FAILURE);
+         }
+
+         /* allocate space for dstrerrno itself */
+         if (NULL == (errvalptr = calloc(1, sizeof(int)))) {
+            fprintf(stderr, "__FILE__: __LINE__: error: could not allocate");
+            fprintf(stderr, " dstrerrno\n");
+            exit(EXIT_FAILURE);
+         }
+
+         /* associate the key with the data for "dstrerrno" */
+         if (0 != pthread_setspecific(_dstrerrno_key, errvalptr)) {
+            fprintf(stderr, "__FILE__: __LINE__: error: could not allocate");
+            fprintf(stderr, " dstrerrno\n");
+            exit(EXIT_FAILURE);
+         }
+
+         iskeyset = 1;
+      }
+
+      errvalptr = (int *)pthread_getspecific(_dstrerrno_key);
+      *errvalptr = status;
+   #endif
+
+   #ifndef DSTR_WIN32THREAD
+   #ifndef DSTR_PTHREAD
+      dstrerrno = status;
+   #endif
+   #endif
+
+   return;
+}
+
+/* ************************************************************************* */
+
+#ifdef DSTR_PTHREAD
+/* pthread destructor for dstrerrno - FOR INTERNAL USE ONLY! */
+static void _dstrfree_dstrerrno(void *dstrptr) {
+
+   free(dstrptr);
+   return;
+}
+#endif

@@ -48,3 +48,6 @@ typedef dstr * dstrptr;
 #define DSTRREF(X)     ((dstrptr)(X))
 #define DSTRBUF(X)     (DSTRREF(X)->buf)
 #define DSTRBUFLEN(X)  (DSTRREF(X)->buflen)
+
+/* prototype for the internal-only _setdstrerrno function */
+void _setdstrerrno(int status);

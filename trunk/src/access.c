@@ -42,11 +42,11 @@ const char * const dstrview(const dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return NULL;
    }
 
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return (const char * const)DSTRBUF(str);
 }
 
@@ -56,10 +56,10 @@ size_t dstrallocsize(const dstring_t str) {
 
    /* uninitialized dstring_t object */
    if (NULL == str) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return DSTRBUFLEN(str);
 }

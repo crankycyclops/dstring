@@ -54,7 +54,7 @@ size_t dstrlen(const dstring_t str) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
@@ -62,7 +62,7 @@ size_t dstrlen(const dstring_t str) {
    for (count = 0; DSTRBUF(str)[count] != '\0'; count++);
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return count;
 }
 
@@ -75,16 +75,16 @@ int dstrcat(dstring_t dest, const dstring_t src) {
 
    /* make sure dest and src are both initialized */
    if (NULL == src) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    } else if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* nothing to do if the source string is empty */
    if (0 == dstrlen(src)) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -93,7 +93,7 @@ int dstrcat(dstring_t dest, const dstring_t src) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 dstrlen(src) + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
    }
@@ -107,7 +107,7 @@ dstrlen(src) + 1))) {
    DSTRBUF(dest)[i] = '\0';
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return dstrlen(src);
 }
 
@@ -120,16 +120,16 @@ int dstrncat(dstring_t dest, const dstring_t src, size_t n) {
 
    /* make sure dest and src are both initialized */
    if (NULL == src) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    } else if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* nothing to do if the source string is empty or if n is 0 */
    if (0 == dstrlen(src) || 0 == n) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -143,7 +143,7 @@ int dstrncat(dstring_t dest, const dstring_t src, size_t n) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 n + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
    }
@@ -157,7 +157,7 @@ n + 1))) {
    DSTRBUF(dest)[i] = '\0';
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return n;
 }
 
@@ -170,19 +170,19 @@ int dstrcatcs(dstring_t dest, const char *src) {
 
    /* make sure dest is initialized */
    if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* make sure src is not a NULL pointer */
    if (NULL == src) {
-      dstrerrno = DSTR_NULL_CPTR;
+      _setdstrerrno(DSTR_NULL_CPTR);
       return 0;
    }
 
    /* nothing to do if the source string is empty */
    if (0 == strlen(src)) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -191,7 +191,7 @@ int dstrcatcs(dstring_t dest, const char *src) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 strlen(src) + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
    }
@@ -205,7 +205,7 @@ strlen(src) + 1))) {
    DSTRBUF(dest)[i] = '\0';
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return strlen(src);
 }
 
@@ -218,19 +218,19 @@ int dstrncatcs(dstring_t dest, const char *src, size_t n) {
 
    /* make sure dest is initialized */
    if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* make sure src is not a NULL pointer */
    if (NULL == src) {
-      dstrerrno = DSTR_NULL_CPTR;
+      _setdstrerrno(DSTR_NULL_CPTR);
       return 0;
    }
 
    /* nothing to do if the source string is empty or if n is 0 */
    if (0 == strlen(src) || 0 == n) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -244,7 +244,7 @@ int dstrncatcs(dstring_t dest, const char *src, size_t n) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 n + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
    }
@@ -258,7 +258,7 @@ n + 1))) {
    DSTRBUF(dest)[i] = '\0';
 
    /* indicate success and return */
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return n;
 }
 
@@ -271,16 +271,16 @@ int dstrcpy(dstring_t dest, const dstring_t src) {
 
    /* make sure dest and src are both initialized */
    if (NULL == src) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    } else if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
    /* nothing to do */
    if (0 == dstrlen(src)) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -289,7 +289,7 @@ int dstrcpy(dstring_t dest, const dstring_t src) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 dstrlen(src) + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
 
@@ -303,7 +303,7 @@ dstrlen(src) + 1))) {
    /* NULL terminate the copied string */
    DSTRBUF(dest)[count] = '\0';
 
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return count;
 }
 
@@ -316,10 +316,10 @@ int dstrncpy(dstring_t dest, const dstring_t src, size_t n) {
 
    /* make sure dest and src are both initialized */
    if (NULL == src) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    } else if (NULL == dest) {
-      dstrerrno = DSTR_UNINITIALIZED;
+      _setdstrerrno(DSTR_UNINITIALIZED);
       return 0;
    }
 
@@ -330,7 +330,7 @@ int dstrncpy(dstring_t dest, const dstring_t src, size_t n) {
 
    /* nothing to do */
    if (0 == dstrlen(src) || 0 == n) {
-      dstrerrno = DSTR_SUCCESS;
+      _setdstrerrno(DSTR_SUCCESS);
       return 0;
    }
 
@@ -339,7 +339,7 @@ int dstrncpy(dstring_t dest, const dstring_t src, size_t n) {
       if (DSTR_SUCCESS != (retval = dstrealloc(&dest, DSTRBUFLEN(dest) + \
 n + 1))) {
          /* if the allocation was not successful, the string is untouched */
-         dstrerrno = retval;
+         _setdstrerrno(retval);
          return 0;
       }
 
@@ -353,6 +353,6 @@ n + 1))) {
    /* NULL terminate the newly appended string */
    DSTRBUF(dest)[i] = '\0';
 
-   dstrerrno = DSTR_SUCCESS;
+   _setdstrerrno(DSTR_SUCCESS);
    return n;
 }
