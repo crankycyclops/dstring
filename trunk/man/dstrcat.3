@@ -27,15 +27,11 @@ size.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
-.br
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .B "dstrncat()"
 emulates the behavior of the C standard library function strncat() by \
@@ -43,15 +39,11 @@ appending one dstring_t object to another, up to n chars.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
-.br
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .B "dstrcatcs()"
 is similiar to dstrcat(), except that it takes as the source an ordinary \
@@ -59,18 +51,13 @@ C string.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_NULL_CPTR
-if the pointer to the C string is NULL
-.br
+DSTR_NULL_CPTR if the pointer to the C string is NULL
 
 .B "dstrncatcs()"
 is similiar to dstrncat(), except that, like dstrcatcs(), it takes as the \
@@ -78,18 +65,13 @@ source an ordinary C string.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_NULL_CPTR
-if the pointer to the C string is NULL
-.br
+DSTR_NULL_CPTR if the pointer to the C string is NULL
 
 .SH RETURN VALUE
 

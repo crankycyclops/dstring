@@ -24,14 +24,11 @@ will be created and dstrerrno will be set to DSTR_SUCCESS.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call was successful
+DSTR_SUCCESS if the function call was successful
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_NULL_CPTR
-if the pointer to the source C string is NULL
+DSTR_NULL_CPTR if the pointer to the source C string is NULL
 
 .B "cstrtodstr()"
 copies the string stored in the ordinary character array src into the buffer \
@@ -40,17 +37,13 @@ stored in the object.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call was successful
+DSTR_SUCCESS if the function call was successful
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_NULL_CPTR
-if the pointer to the source C string is NULL
+DSTR_NULL_CPTR if the pointer to the source C string is NULL
 .br
-.B DSTR_NOMEM
-if there is insufficient memory
+DSTR_NOMEM if there is insufficient memory
 
 .SH RETURN VALUE
 

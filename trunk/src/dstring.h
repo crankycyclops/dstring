@@ -44,6 +44,14 @@
 /* ************************************************************************* */
 
 
+/* the library's current version */
+#define DSTR_VER_CURRENT  1
+#define DSTR_VER_REVISION 0
+#define DSTR_VER_AGE      0
+
+
+/* ************************************************************************* */
+
 
 /* dstring_t is actually a "black-box" type */
 typedef void * dstring_t;
@@ -1234,6 +1242,98 @@ int dstrright(dstring_t str, size_t len);
 int dstrleft(dstring_t str, size_t len);
 
 
+/* **** dstrtoupper ********************************************************
+
+   This function will convert all lowercase alphabetic characters in a
+   string into uppercase letters, starting at the specified index.
+
+   An index of 0 will tell the function to convert the entire string.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrtoupper(dstring_t str, size_t index);
+
+
+/* **** dstrtolower ********************************************************
+
+   This function will convert all uppercase alphabetic characters in a
+   string into lowercase letters, starting at the specified index.
+
+   An index of 0 will tell the function to convert the entire string.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrtolower(dstring_t str, size_t index);
+
+
+/* **** dstrtoupper ********************************************************
+
+   This function will convert n lowercase alphabetic characters in a
+   string into uppercasecase letters, starting at the specified index.
+
+   If n is greater than the number of characters at and beyond the specified
+   index, everything from the index to the end of the string will be
+   converted.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrntoupper(dstring_t str, size_t index, size_t n);
+
+
+/* **** dstrtolower ********************************************************
+
+   This function will convert n uppercase alphabetic characters in a
+   string into lowercasecasecase letters, starting at the specified index.
+
+   If n is greater than the number of characters at and beyond the specified
+   index, everything from the index to the end of the string will be
+   converted.
+
+   Found in format.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+      size_t (index)
+
+   Output:
+      A status code
+
+   ************************************************************************* */
+int dstrntolower(dstring_t str, size_t index, size_t n);
+
+
 /*********************\
  *  Misc. Functions  *
 \*********************/
@@ -1258,16 +1358,34 @@ int dstrleft(dstring_t str, size_t len);
 const char * const dstrerrormsg(int code);
 
 
+/* **** dstrbuildinfo ******************************************************
+
+   This function takes as input a pointer to an initialized dstring_t
+   object and fills it with a string (which may contain multiple lines)
+   containing build information pertaining to the dstring library.
+
+   dstrerrno will be set to indicate success or the nature of the failure.
+   In the event of an error, the contents of the string is undefined.
+
+   Found in dstring.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t * (pointer to our dstring_t object)
+
+   Output:
+      status code (see enum above)
+
+   ************************************************************************* */
+int dstrbuildinfo(dstring_t str);
+
+
 /* IMPLEMENT! */
 /* Format */
 
 /* fills in n characters starting at a specified index */
 int dstrfill(dstring_t str, size_t index, size_t n, char c); 
-
-int dstrtoupper(dstring_t str);
-int dstrntoupper(dstring_t str, size_t n);
-int dstrtolower(dstring_t str);
-int dstrntolower(dstring_t str, size_t n);
 /* more in format.c that need prototypes to be made */
 
 #endif

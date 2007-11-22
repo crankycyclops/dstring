@@ -23,15 +23,11 @@ destination buffer will grow to accomodate the required size.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
-.br
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .B "dstrncpy()"
 emulates the behavior of the C standard library function strncpy() by copying \
@@ -40,15 +36,11 @@ characters.  Both dstring_t objects must be initialized.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
-.br
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 

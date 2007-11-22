@@ -27,12 +27,9 @@ result in undefined (and most likely undesirable) behavior.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
-.br
+DSTR_NOMEM if there is not enough memory
 
 .B "dstrealloc()"
 grows or shrinks the number of bytes allocated to the buffer of a previously \
@@ -45,12 +42,9 @@ it will be initialized with the specified number of bytes.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
-.br
+DSTR_NOMEM if there is not enough memory
 
 .B "dstrfree()"
 frees all memory dynamically allocated to an object of type dstring_t and \
@@ -59,14 +53,11 @@ the object is now in an uninitialized state.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object is uninitialized
+DSTR_UNINITIALIZED if the dstring_t object is uninitialized
 
 .SH RETURN VALUE
 

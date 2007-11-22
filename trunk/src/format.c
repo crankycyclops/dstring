@@ -34,6 +34,7 @@
 \* ************************************************************************* */
 
 #include <string.h>
+#include <ctype.h>
 
 #include "static.h"
 #include "dstring.h"
@@ -158,4 +159,132 @@ int dstrright(dstring_t str, size_t len) {
 int dstrleft(dstring_t str, size_t len) {
 
 
+}
+
+/* ************************************************************************* */
+
+int dstrtoupper(dstring_t str, size_t index) {
+
+   size_t len;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   len = dstrlen(str);
+
+   /* make sure the index is not invalid */
+   if (index >= len) {
+      _setdstrerrno(DSTR_OUT_OF_BOUNDS);
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* convert the appropriate characters to uppercase letters */
+   for ( ; index < len; index++) {
+      DSTRBUF(str)[index] = toupper(DSTRBUF(str)[index]);
+   }
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrtolower(dstring_t str, size_t index) {
+
+   size_t len;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   len = dstrlen(str);
+
+   /* make sure the index is not invalid */
+   if (index >= len) {
+      _setdstrerrno(DSTR_OUT_OF_BOUNDS);
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* convert the appropriate characters to lowercase letters */
+   for ( ; index < len; index++) {
+      DSTRBUF(str)[index] = tolower(DSTRBUF(str)[index]);
+   }
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrntoupper(dstring_t str, size_t index, size_t n) {
+
+   size_t len;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   len = dstrlen(str);
+
+   /* make sure the index is not invalid */
+   if (index >= len) {
+      _setdstrerrno(DSTR_OUT_OF_BOUNDS);
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* if n is greater than the remaining number of characters, just convert
+      them all */
+   if (n > len - index) {
+      n = len - index;
+   }
+
+   /* convert the appropriate characters to lowercase letters */
+   for ( ; index < len && n > 0; index++, n--) {
+      DSTRBUF(str)[index] = toupper(DSTRBUF(str)[index]);
+   }
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrntolower(dstring_t str, size_t index, size_t n) {
+
+   size_t len;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   len = dstrlen(str);
+
+   /* make sure the index is not invalid */
+   if (index >= len) {
+      _setdstrerrno(DSTR_OUT_OF_BOUNDS);
+      return DSTR_OUT_OF_BOUNDS;
+   }
+
+   /* if n is greater than the remaining number of characters, just convert
+      them all */
+   if (n > len - index) {
+      n = len - index;
+   }
+
+   /* convert the appropriate characters to lowercase letters */
+   for ( ; index < len && n > 0; index++, n--) {
+      DSTRBUF(str)[index] = tolower(DSTRBUF(str)[index]);
+   }
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
 }

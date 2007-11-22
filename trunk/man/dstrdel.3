@@ -20,15 +20,11 @@ Note that removing the terminating '\\0' is not allowed.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call was successful
+DSTR_SUCCESS if the function call was successful
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_OUT_OF_BOUNDS
-if the specified index was out of bounds
-.br
+DSTR_OUT_OF_BOUNDS if the specified index was out of bounds
 
 .B "dstrndel()"
 removes n characters from a dstring_t buffer, starting at the specified \
@@ -39,15 +35,11 @@ string.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call was successful
+DSTR_SUCCESS if the function call was successful
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_OUT_OF_BOUNDS
-if the specified index was out of bounds
-.br
+DSTR_OUT_OF_BOUNDS if the specified index was out of bounds
 
 .SH RETURN VALUE
 
@@ -57,7 +49,7 @@ should be examined.)  If the return value is > 0, the return value is \
 the character that was deleted from the string.  Note that since removing \
 the NULL terminating character is not allowed, the return value should never \
 be 0.  If you ever do get a return value of 0, please be kind enough to \
-report it as bug ;)
+report it as a bug ;)
 
 .B "dstrndel()"
 returns the length of the string after n characters have been removed.  If \

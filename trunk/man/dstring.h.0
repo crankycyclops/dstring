@@ -1,4 +1,4 @@
-.TH "dstring.h" 0 "12 July 2007" "dstring.h" "Dstring Library"
+.TH "dstring.h" 0 "22 July 2007" "dstring.h" "Dstring Library"
 
 .SH NAME
 dstring.h - data types and functions for the C Programming Language that \
@@ -149,6 +149,8 @@ Formatting Functions
 Other Functions
 
 .B "const char * const dstrerrormsg(int code);"
+.br
+.B "void dstrbuildinfo(dstring_t str);"
 .br
 
 .SH SEE ALSO

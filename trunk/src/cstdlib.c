@@ -42,9 +42,11 @@
 \* ************************************************************************* */
 
 #include <string.h>
+#include <stdarg.h>
 
 #include "static.h"
 #include "dstring.h"
+
 
 /* ************************************************************************* */
 
@@ -355,4 +357,121 @@ n + 1))) {
 
    _setdstrerrno(DSTR_SUCCESS);
    return n;
+}
+
+/* ************************************************************************* */
+
+static const char *flags      = "+ -0#";
+static const char *prefixes   = "lh";
+static const char *specifiers = "diuoxXfeEaAgGcsNp";
+
+#define SPFBUFLEN 30
+
+int dstrsprintf(dstring_t dstr, const char *format, ...) {
+
+   va_list args;
+
+   char flag        = 0;
+   char prefix      = 0;
+   char specifier   = 0;
+
+   int doubleprefix = 0;   /* true if prefix is hh or ll */
+
+   int  fw          = 0;
+   int  precision   = 0;
+
+   char *curpos;
+   char *percentpos;
+   char *tmp;
+
+   char buf[SPFBUFLEN];    /* access using macro; not directly */
+
+   /* make sure dstr is initialized */
+   if (NULL == dstr) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return 0;
+   }
+
+   /* make sure format is not a NULL pointer */
+   if (NULL == format) {
+      _setdstrerrno(DSTR_NULL_CPTR);
+      return 0;
+   }
+
+   va_start(args, format);
+   pos = format;
+
+   /* generate the string to store in dstr */
+   while (*pos != '\0') {
+
+      /* check for format specifier */
+      if *pos++ == '%' {
+
+         percentpos = pos;
+
+         /* literal %; not a specifier */
+         if *pos == '%' {
+            copy '%' to buffer (use macro to set/check allocation);
+            increment pos;
+            continue;
+         }
+
+         /* check for presence of a flag */
+         if *pos == flag
+            flag = *pos;
+         pos++;
+
+         /* field width */
+         if isdigit(*pos) {
+            loop through, adding each digit to fw;
+         }
+
+         /* precision */
+         if (*pos == '.') {
+            if (!isdigit(*++pos)) {
+               precision = 0;
+            } else {
+               loop through, adding each digit to precision;
+            }
+         }
+
+         /* prefix */
+         if (*pos is prefix) {
+            prefix = *pos;
+         }
+
+         /* check for double prefix - hh or ll */
+
+         /* specifier */
+         if (*pos is specifier) {
+            specifier = *pos;
+         }
+
+         /* if there's no specifier, we just copy it as part of the string */
+         else {
+            pos = percentpos;
+            copy '%' to buffer and increment pos;
+         }
+
+         /* do the conversion and add to the buffer */
+         switch (specifier) {
+            case 'd';
+               break;
+            case 'i';
+               break;
+            case 'u';
+               break;
+            case 'o';
+               break;
+            default:
+               break;
+         }
+      }
+
+      /* just another character to copy */
+      else {
+         copy pos to buffer;
+         pos++;
+      }
+   }
 }

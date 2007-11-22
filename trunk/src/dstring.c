@@ -34,11 +34,12 @@
 \* ************************************************************************* */
 
 #include "dstring.h"
+#include "static.h"
 #include <stdlib.h>
 
 
 /* error messages to accompany return codes */
-const char *errormsgs[] = {
+static const char *errormsgs[] = {
    "success",
    "out of memory",
    "invalid buffer length",
@@ -79,6 +80,36 @@ const char * const dstrerrormsg(int code) {
    } else {
       return errormsgs[abs(code)];
    }
+}
+
+/* ************************************************************************* */
+
+int dstrbuildinfo(dstring_t str) {
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   dstrcatcs(str, "Version: " "#VERSION" "\nBuild time: " __DATE__
+      ", " __TIME__);
+
+   #ifdef DSTR_PTHREAD
+      dstrcatcs(str, "\nBuilt with POSIX thread support");
+   #endif
+
+   #ifdef DSTR_WIN32THREAD
+      dstrcatcs(str, "\nBuilt with Win32 thread support");
+   #endif
+
+   #ifndef DSTR_WIN32THREAD
+   #ifndef DSTR_PTHREAD
+      dstrcatcs(str, "\nNot built with thread-safe options.");
+   #endif
+   #endif
+
+   return DSTR_SUCCESS;
 }
 
 /* ************************************************************************* */

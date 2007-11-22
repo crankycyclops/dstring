@@ -32,24 +32,17 @@ that was read up to but not including EOF.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_UNOPENED_FILE
-if the file pointer is NULL
+DSTR_UNOPENED_FILE if the file pointer is NULL
 .br
-.B DSTR_EOF
-if end-of-file is encountered for the file pointed to by *fp
+DSTR_EOF if end-of-file is encountered for the file pointed to by *fp
 .br
-.B DSTR_FILE_ERROR
-if there was an error reading the file pointed to by *fp
-.br
+DSTR_FILE_ERROR if there was an error reading the file pointed to by *fp
 
 .B "dstreadl()"
 is a macro that calls dstrfreadl() with *fp pointing to stdin.  Thus, this \
@@ -57,15 +50,11 @@ macro is ordinarily used to read a line of input from the keyboard.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
-.br
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .B "dstrfreadn()"
 reads up to n characters (the buffer will actually be at least the size of \
@@ -83,24 +72,17 @@ by whatever was successfully read from the file, up to but not including EOF.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 .br
-.B DSTR_UNOPENED_FILE
-if the file pointer is NULL
+DSTR_UNOPENED_FILE if the file pointer is NULL
 .br
-.B DSTR_EOF
-if end-of-file is encountered for the file pointed to by *fp
+DSTR_EOF if end-of-file is encountered for the file pointed to by *fp
 .br
-.B DSTR_FILE_ERROR
-if there was an error reading the file pointed to by *fp
-.br
+DSTR_FILE_ERROR if there was an error reading the file pointed to by *fp
 
 .B "dstreadn()"
 is a macro that calls dstrfreadn() with *fp pointing to stdin.  Thus, this \
@@ -108,14 +90,11 @@ macro is ordinarily used to read a line of input from the keyboard.
 
 Possible dstrerrno values:
 
-.B DSTR_SUCCESS
-if the function call is successful
+DSTR_SUCCESS if the function call is successful
 .br
-.B DSTR_NOMEM
-if there is not enough memory
+DSTR_NOMEM if there is not enough memory
 .br
-.B DSTR_UNINITIALIZED
-if the dstring_t object was uninitialized
+DSTR_UNINITIALIZED if the dstring_t object was uninitialized
 
 .SH RETURN VALUE
 

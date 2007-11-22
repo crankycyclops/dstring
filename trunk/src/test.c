@@ -47,6 +47,9 @@ typedef enum {
    PASS, FAIL
 } STAT;
 
+const char *teststr = "How many lines could a hacker hack if a hacker could \
+hack code?";
+
 /* ************************************************************************* */
 
 int main(int argc, char *argv[]) {
@@ -56,11 +59,22 @@ int main(int argc, char *argv[]) {
 
    STAT status = PASS;
 
+   dstring_t buildinfo;
    dstring_t testStr = NULL;
    dstring_t uninitializedStr = NULL;
 
-   printf("\nDString Library Self Validator\n");
-   printf("------------------------------\n\n");
+   printf("\nDString Library Validation\n");
+   printf("--------------------------\n\n");
+
+   if (DSTR_SUCCESS != dstralloc(&buildinfo, 10)) {
+      printf("(Failed to retrieve build information)\n\n");
+   } else {
+      if (DSTR_SUCCESS != dstrbuildinfo(buildinfo)) {
+         printf("(Failed to retrieve build information)\n\n");
+      } else {
+         printf("%s\n\n", dstrview(buildinfo));
+      }
+   }
 
    /**************************************************************************\
     * TIER 1: accessor functions                                             *
