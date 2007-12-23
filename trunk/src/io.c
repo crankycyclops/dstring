@@ -63,7 +63,7 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
    }
 
    /* allocate space for temp */
-   if (DSTR_SUCCESS != dstralloc(&temp, dstrallocsize(dest))) {
+   if (DSTR_SUCCESS != dstrnalloc(&temp, dstrallocsize(dest))) {
       return 0;
    }
 
@@ -204,7 +204,7 @@ size_t dstrfcatl(dstring_t dest, FILE *fp) {
    int olddstrerrno; /* saves dstrerrno value from call to dstrfreadn() */
 
    /* allocate space for our temporary string */
-   if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
+   if (DSTR_SUCCESS != dstrnalloc(&temp, dstrlen(dest))) {
       /* 0 items are successfully read if we can't get the memory ;)
          dstrerrno should have been set by dstralloc() */
       return 0;
@@ -250,7 +250,7 @@ size_t dstrfcatn(dstring_t dest, FILE *fp, size_t n) {
    int olddstrerrno; /* saves dstrerrno value from call to dstrfreadn() */
 
    /* allocate space for our temporary string */
-   if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(dest))) {
+   if (DSTR_SUCCESS != dstrnalloc(&temp, dstrlen(dest))) {
       /* 0 items are successfully read if we can't get the memory ;)
          dstrerrno should have been set by dstralloc() */
       return 0;

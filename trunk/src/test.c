@@ -66,7 +66,7 @@ int main(int argc, char *argv[]) {
    printf("\nDString Library Validation\n");
    printf("--------------------------\n\n");
 
-   if (DSTR_SUCCESS != dstralloc(&buildinfo, 10)) {
+   if (DSTR_SUCCESS != dstrnalloc(&buildinfo, 10)) {
       printf("(Failed to retrieve build information)\n\n");
    } else {
       if (DSTR_SUCCESS != dstrbuildinfo(buildinfo)) {
@@ -111,7 +111,7 @@ int main(int argc, char *argv[]) {
    printf("\tTest 2: Check for correct return of initialized string\n");
    printf("\tExpected return value should be greater than 0\n");
 
-   retval = dstralloc(&testStr, ALLOCSIZE);
+   retval = dstralloc(&testStr);
    if (DSTR_SUCCESS != retval) {
       printf("\terror: dstralloc() could not allocate space for a test string.");
       putchar('\n');

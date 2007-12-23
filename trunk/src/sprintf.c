@@ -340,11 +340,11 @@ char *parsearg(char *format, struct specifier *conversion) {
    }
 
    /* initialize the temporary field width and precision strings */
-   if (DSTR_SUCCESS != dstralloc(&fieldstr, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&fieldstr)) {
       return format;
    }
 
-   if (DSTR_SUCCESS != dstralloc(&precisionstr, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&precisionstr)) {
       dstrfree(&fieldstr);
       return format;
    }
@@ -458,7 +458,7 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    dstring_t tempint;
 
 
-   if (DSTR_SUCCESS != dstralloc(&tempint, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&tempint)) {
       return -1;
    }
 
@@ -550,7 +550,7 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    dstring_t tempint;
 
 
-   if (DSTR_SUCCESS != dstralloc(&tempint, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&tempint)) {
       return -1;
    }
 

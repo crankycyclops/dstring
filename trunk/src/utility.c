@@ -521,7 +521,7 @@ int dstreplaces(dstring_t str, const char *olds, const char *news) {
    }
 
    /* allocate space for temp */
-   if (DSTR_SUCCESS != dstralloc(&temp, dstrlen(str))) {
+   if (DSTR_SUCCESS != dstrnalloc(&temp, dstrlen(str))) {
       _setdstrerrno(DSTR_NOMEM);
       return 0;
    }

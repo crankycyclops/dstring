@@ -39,9 +39,15 @@
 #include "static.h"
 #include "dstring.h"
 
+
+int dstralloc(dstring_t *strptr) {
+
+   return dstrnalloc(strptr, DSTRALLOC_DEFAULT_SIZE);
+}
+
 /* ************************************************************************* */
 
-int dstralloc(dstring_t *strptr, size_t bytes) {
+int dstrnalloc(dstring_t *strptr, size_t bytes) {
 
    /* if a value of 0 is given, we must free the string */
    if (0 == bytes) {

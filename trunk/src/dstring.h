@@ -137,9 +137,33 @@ enum STATUS_CODES {
 /* **** dstralloc **********************************************************
 
    This function initializes a variable of type dstring_t by allocating
-   space for the object as well as an initial buffer for string data.  If
-   passed a size of 0 bytes, it will call dstrfree() to free the object and
-   set it to NULL.
+   space for the object as well as an initial buffer with a default size.
+   If passed a size of 0 bytes, it will call dstrfree() to free the object
+   and set it to NULL.
+
+   In addition to the return value, dstrerrno will be set to indicate
+   success or failure.
+
+   Found in alloc.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t * (points to the object to be allocated)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstralloc(dstring_t *dstrptr);
+
+
+/* **** dstrnalloc *********************************************************
+
+   This function initializes a variable of type dstring_t by allocating
+   space for the object as well as an initial buffer for string data of
+   size 'bytes.'  If passed a size of 0 bytes, it will call dstrfree() to
+   free the object and set it to NULL.
 
    In addition to the return value, dstrerrno will be set to indicate
    success or failure.
@@ -156,7 +180,7 @@ enum STATUS_CODES {
       An integer status (see enum above)
 
    ************************************************************************* */
-int dstralloc(dstring_t *dstrptr, size_t bytes);
+int dstrnalloc(dstring_t *dstrptr, size_t bytes);
 
 
 /* **** dstrealloc **********************************************************

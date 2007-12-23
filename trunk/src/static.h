@@ -36,6 +36,8 @@
 
 #include <stddef.h>
 
+#define DSTRALLOC_DEFAULT_SIZE 20
+
 /* what the opaque datatype dstring_t points to */
 typedef struct {
    char *buf;
