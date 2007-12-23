@@ -230,7 +230,7 @@ int dstrinsertc(dstring_t dest, size_t index, char c) {
    }
 
    /* check to see if the index is out of bounds */
-   if (index >= dstrlen(dest)) {
+   if (index > dstrlen(dest)) {
       _setdstrerrno(DSTR_OUT_OF_BOUNDS);
       return DSTR_OUT_OF_BOUNDS;
    }

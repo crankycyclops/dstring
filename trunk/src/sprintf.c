@@ -98,7 +98,7 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
 
          /* it wasn't a valid specifier */
          if (end == curpos) {
-            dstrinsertc(str, dstrlen(str) - 1, *curpos);
+            dstrinsertc(str, dstrlen(str), *curpos);
             if (dstrerrno != DSTR_SUCCESS) {
                return -1;
             }
@@ -108,6 +108,8 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
 
          /* it was a valid specifier */
          else {
+            /* make sure we update curpos */
+            curpos = end;
             switch(CONVERSIONBITS & conversion.format) {
                case PERCENT:
                   dstrinsertc(str, dstrlen(str) - 1, '%');
@@ -297,14 +299,14 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
             }
             continue;
          }
-
-         /* just another ordinary character to insert into str */
-         dstrinsertc(str, dstrlen(str) - 1, *curpos);
-         if (dstrerrno != DSTR_SUCCESS) {
-            return -1;
-         }
-         curpos++;
       }
+
+      /* just another ordinary character to insert into str */
+      dstrinsertc(str, dstrlen(str), *curpos);
+      if (dstrerrno != DSTR_SUCCESS) {
+         return -1;
+      }
+      curpos++;
    }
 
    _setdstrerrno(DSTR_SUCCESS);
@@ -338,12 +340,12 @@ char *parsearg(char *format, struct specifier *conversion) {
    }
 
    /* initialize the temporary field width and precision strings */
-   if (DSTR_SUCCESS != dstralloc(fieldstr, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&fieldstr, 10)) {
       return format;
    }
 
-   if (DSTR_SUCCESS != dstralloc(precisionstr, 10)) {
-      dstrfree(fieldstr);
+   if (DSTR_SUCCESS != dstralloc(&precisionstr, 10)) {
+      dstrfree(&fieldstr);
       return format;
    }
 
@@ -355,7 +357,7 @@ char *parsearg(char *format, struct specifier *conversion) {
 
          /* make sure it's not a duplicate */
          if (FLAG(flags[i]) == (conversion->format & FLAG(flags[i]))) {
-            dstrfree(fieldstr), dstrfree(precisionstr);
+            dstrfree(&fieldstr), dstrfree(&precisionstr);
             return format;
          } else {
             conversion->format |= FLAG(flags[i]);
@@ -368,25 +370,29 @@ char *parsearg(char *format, struct specifier *conversion) {
 
    /* is there a field width? */
    for (; isdigit(*pos); pos++) {
-      dstrinsertc(fieldstr, dstrlen(fieldstr) - 1, *pos);
+      dstrinsertc(fieldstr, dstrlen(fieldstr), *pos);
       if (DSTR_SUCCESS != dstrerrno) {
-         dstrfree(fieldstr), dstrfree(precisionstr);
+         dstrfree(&fieldstr), dstrfree(&precisionstr);
          return format;
       }
    }
 
    /* we got a field width, so convert it into an integer */
    if (dstrlen(fieldstr) > 0) {
-      conversion->field = //return value of str2int func;
+      conversion->field = str2int(fieldstr);
+      if (conversion->field < 0) {
+         dstrfree(&fieldstr), dstrfree(&precisionstr);
+         return format;
+      }
       conversion->format |= FIELDWIDTH;
    }
 
    /* is there a precision? */
    if ('.' == *pos) {
       for (pos++; isdigit(*pos); pos++) {
-         dstrinsertc(precisionstr, dstrlen(precisionstr) - 1, *pos);
+         dstrinsertc(precisionstr, dstrlen(precisionstr), *pos);
          if (DSTR_SUCCESS != dstrerrno) {
-            dstrfree(fieldstr), dstrfree(precisionstr);
+            dstrfree(&fieldstr), dstrfree(&precisionstr);
             return format;
          }
       }
@@ -394,7 +400,11 @@ char *parsearg(char *format, struct specifier *conversion) {
 
    /* we got a precision, so convert it into an integer */
    if (dstrlen(precisionstr) > 0) {
-      conversion->precision = //return value of str2int func;
+      conversion->precision = str2int(precisionstr);
+      if (conversion->field < 0) {
+         dstrfree(&fieldstr), dstrfree(&precisionstr);
+         return format;
+      }
       conversion->format |= PRECISION;
    }
 
@@ -407,7 +417,7 @@ char *parsearg(char *format, struct specifier *conversion) {
          /* make sure it's not a duplicate */
          /* NOTE: we'll have to make an exception for C99 'll' */
          if (MOD(modifiers[i]) == (conversion->format & MOD(modifiers[i]))) {
-            dstrfree(fieldstr), dstrfree(precisionstr);
+            dstrfree(&fieldstr), dstrfree(&precisionstr);
             return format;
          } else {
             conversion->format |= MOD(modifiers[i]);
@@ -424,14 +434,14 @@ char *parsearg(char *format, struct specifier *conversion) {
       /* we found a conversion specifier */
       if (*pos == conversions[i]) {
             conversion->format |= CONVERSION(conversions[i]);
-            dstrfree(fieldstr), dstrfree(precisionstr);
+            dstrfree(&fieldstr), dstrfree(&precisionstr);
             pos++;
             return pos;
       }
    }
 
    /* there was no conversion specifier, so we did all that for nothing! */
-   dstrfree(fieldstr), dstrfree(precisionstr);
+   dstrfree(&fieldstr), dstrfree(&precisionstr);
    return format;
 }
 
@@ -448,7 +458,7 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    dstring_t tempint;
 
 
-   if (DSTR_SUCCESS != dstralloc(tempint, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&tempint, 10)) {
       return -1;
    }
 
@@ -460,7 +470,7 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    /* is the integer negative? */
    if (arg < 0) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, '-')) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
       index = 1;
@@ -470,7 +480,7 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    /* + flag set, so append the sign even if it's positive */
    else if (conversion.format & FLAG_PLUS) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, '+')) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
       index = 1;
@@ -479,7 +489,7 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    /* space flag set, so if there's no sign, prefix with a space */
    else if (conversion.format & FLAG_SPACE) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, ' ')) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
       index = 1;
@@ -488,9 +498,10 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
    /* insert each digit */
    while ((digit = arg % 10) > 0) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITC(digit))) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
+      arg /= 10;
    }
 
    /* did the user specify a field width? */
@@ -499,9 +510,8 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
 
          /* the user wants to left justify his int in its field */
          if (conversion.format & FLAG_MINUS) {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest) - 1, \
-fillc)) {
-               dstrfree(tempint);
+            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest), fillc)) {
+               dstrfree(&tempint);
                return -1;
             }
          }
@@ -509,7 +519,7 @@ fillc)) {
          /* by default, the int will be right justified in its field */
          else {
             if (DSTR_SUCCESS != dstrinsertc(tempint, index, fillc)) {
-               dstrfree(tempint);
+               dstrfree(&tempint);
                return -1;
             }
          }
@@ -519,11 +529,11 @@ fillc)) {
    /* append the temporary string to the dest string and return */
    dstrcat(dest, tempint);
    if (DSTR_SUCCESS != dstrerrno) {
-      dstrfree(tempint);
+      dstrfree(&tempint);
       return -1;
    }
 
-   dstrfree(tempint);
+   dstrfree(&tempint);
    return 0;
 }
 
@@ -540,7 +550,7 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    dstring_t tempint;
 
 
-   if (DSTR_SUCCESS != dstralloc(tempint, 10)) {
+   if (DSTR_SUCCESS != dstralloc(&tempint, 10)) {
       return -1;
    }
 
@@ -552,7 +562,7 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    /* + flag set, so append the sign even if it's positive */
    if (conversion.format & FLAG_PLUS) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, '+')) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
       index = 1;
@@ -561,7 +571,7 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    /* space flag set, so if there's no sign, prefix with a space */
    else if (conversion.format & FLAG_SPACE) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, ' ')) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
       index = 1;
@@ -570,9 +580,10 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    /* insert each digit */
    while ((digit = arg % 10) > 0) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITC(digit))) {
-         dstrfree(tempint);
+         dstrfree(&tempint);
          return -1;
       }
+      arg /= 10;
    }
 
    /* did the user specify a field width? */
@@ -581,9 +592,8 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
 
          /* the user wants to left justify his int in its field */
          if (conversion.format & FLAG_MINUS) {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest) - 1, \
-fillc)) {
-               dstrfree(tempint);
+            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest), fillc)) {
+               dstrfree(&tempint);
                return -1;
             }
          }
@@ -591,7 +601,7 @@ fillc)) {
          /* by default, the int will be right justified in its field */
          else {
             if (DSTR_SUCCESS != dstrinsertc(tempint, index, fillc)) {
-               dstrfree(tempint);
+               dstrfree(&tempint);
                return -1;
             }
          }
@@ -601,11 +611,11 @@ fillc)) {
    /* append the temporary string to the dest string and return */
    dstrcat(dest, tempint);
    if (DSTR_SUCCESS != dstrerrno) {
-      dstrfree(tempint);
+      dstrfree(&tempint);
       return -1;
    }
 
-   dstrfree(tempint);
+   dstrfree(&tempint);
    return 0;
 }
 
@@ -647,4 +657,22 @@ int appendptr(dstring_t dest, const struct specifier conversion,
    void *ptr) {
 
    return 0;
+}
+
+/* ************************************************************************* */
+
+int str2int(dstring_t intstr) {
+
+   int intval = 0;
+
+   while (dstrlen(intstr) > 0) {
+      intval *= 10;
+      intval += DIGITI(dstrgetc(intstr, dstrlen(intstr) - 1));
+      dstrdel(intstr, dstrlen(intstr) - 1);
+      if (DSTR_SUCCESS != dstrerrno) {
+         return -1;
+      }
+   }
+
+   return intval;
 }

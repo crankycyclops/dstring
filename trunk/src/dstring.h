@@ -845,7 +845,9 @@ int dstrndel(dstring_t str, size_t index, size_t n);
 
    This function inserts a single character into a dstring object at the
    specified 0-based index.  Inserting \0's is not allowed and will result
-   in dstrerrno being set to DSTR_INVALID_ARGUMENT if attempted.
+   in dstrerrno being set to DSTR_INVALID_ARGUMENT if attempted.  The user
+   is allowed to insert at one index beyond the last character in the string
+   (index = dstrlen(str)) in order to append a character to the end.
 
    dstrerrno will be set to indicate success or error type.  This function
    will also return the same status code.

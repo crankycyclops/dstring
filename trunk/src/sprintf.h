@@ -113,6 +113,11 @@ enum {
 ((X) == 3 ? '3' : ((X) == 4 ? '4' : ((X) == 5 ? '5' : ((X) == 6 ? '6' : \
 ((X) == 7 ? '7' : ((X) == 8 ? '8' : '9')))))))))
 
+/* maps digit characters to their corresponding integers */
+#define DIGITI(X) ((X) == '0' ? 0 : ((X) == '1' ? 1 : ((X) == '2' ? 2 : \
+((X) == '3' ? 3 : ((X) == '4' ? 4 : ((X) == '5' ? 5 : ((X) == '6' ? 6 : \
+((X) == '7' ? 7 : ((X) == '8' ? 8 : 9)))))))))
+
 
 /* **** parseargs **********************************************************
 
@@ -297,6 +302,26 @@ int appendfloatexp(dstring_t dest, const struct specifier conversion,
    ************************************************************************* */
 int appendptr(dstring_t dest, const struct specifier conversion,
    void *ptr);
+
+
+/* **** str2int ************************************************************
+
+   This function converts an integer into a dstring_t string.  It is
+   assumed that all the characters in intstr are numbers.
+
+   Found in sprintf.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (the string we want to convert)
+
+   Output:
+      An integer on success
+     >0 if an error occured
+
+   ************************************************************************* */
+int str2int(dstring_t intstr);
 
 
 #endif
