@@ -129,6 +129,11 @@ enum STATUS_CODES {
 
 
 
+/* this is the default number of bytes to allocate to a dstring_t object */
+#define DSTRALLOC_DEFAULT_SIZE 20
+
+
+
 /************************\
  * allocation functions *
 \************************/

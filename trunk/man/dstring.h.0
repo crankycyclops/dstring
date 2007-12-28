@@ -26,7 +26,9 @@ Also note that every function and macro listed below has its own man page.
 
 Allocation Functions
 
-.B "int dstralloc(dstring_t *dstrptr, size_t bytes);"
+.B "int dstralloc(dstring_t *dstrptr);"
+.br
+.B "int dstrnalloc(dstring_t *dstrptr, size_t bytes);"
 .br
 .B "int dstrealloc(dstring_t *dstrptr, size_t bytes);"
 .br

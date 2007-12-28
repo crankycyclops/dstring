@@ -8,7 +8,9 @@ dstring_t objects
 .B "#include <dstring.h>"
 .br
 
-.B "int dstralloc(dstring_t *dstrptr, size_t bytes);"
+.B "int dstralloc(dstring_t *dstrptr);"
+.br
+.B "int dstrnalloc(dstring_t *dstrptr, size_t bytes);"
 .br
 .B "int dstrealloc(dstring_t *dstrptr, size_t bytes);"
 .br
@@ -18,18 +20,24 @@ dstring_t objects
 
 .B "dstralloc()"
 initializes a variable of type dstring_t by allocating memory for the \
-dstring_t object, including the specified number of bytes for the string \
-buffer.  If passed a size of 0 bytes, it will call dstrfree() to free the \
-object and set it to NULL, which signals to other functions in the library \
-that the string is in an uninitialized state.  dstralloc() MUST NOT be \
-called on an object that has already been initialized; doing so will \
-result in undefined (and most likely undesirable) behavior.
+dstring_t object.  The amount of memory allocated to the object \
+depends on the value of the defined constant .B "DSTRALLOC_DEFAULT_SIZE." \
+dstralloc() MUST NOT be called on an object that has already been \
+initialized; doing so will result in undefined (and most likely \
+undesirable) behavior.
 
 Possible dstrerrno values:
 
 DSTR_SUCCESS if the function call is successful
 .br
 DSTR_NOMEM if there is not enough memory
+
+.B "dstrnalloc()"
+is exactly the same as dstralloc(), except that it also takes as input the \
+number of bytes to allocate to the buffer of the dstring_t object.  If passed \
+a size of 0 bytes, it will instead call dstrfree() to free the object and set
+it to NULL, which signals to other functions in the library that the string \
+is in an uninitialized state.
 
 .B "dstrealloc()"
 grows or shrinks the number of bytes allocated to the buffer of a previously \
