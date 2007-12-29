@@ -113,7 +113,14 @@ enum {
 ((X) ==  3 ? '3' : ((X) ==  4 ? '4' : ((X) ==  5 ? '5' : ((X) ==  6 ? '6' : \
 ((X) ==  7 ? '7' : ((X) ==  8 ? '8' : ((X) ==  9 ? '9' : ((X) == 10 ? 'A' : \
 ((X) == 11 ? 'B' : ((X) == 12 ? 'C' : ((X) == 13 ? 'D' : ((X) == 14 ? 'E' : \
-'F'))))))))))))))
+'F')))))))))))))))
+
+/* maps digits to their corresponding lowercase characters */
+#define DIGITCL(X)  ((X) ==  0 ? '0' : ((X) ==  1 ? '1' : ((X) ==  2 ? '2' : \
+((X) ==  3 ? '3' : ((X) ==  4 ? '4' : ((X) ==  5 ? '5' : ((X) ==  6 ? '6' : \
+((X) ==  7 ? '7' : ((X) ==  8 ? '8' : ((X) ==  9 ? '9' : ((X) == 10 ? 'a' : \
+((X) == 11 ? 'b' : ((X) == 12 ? 'c' : ((X) == 13 ? 'd' : ((X) == 14 ? 'e' : \
+'f')))))))))))))))
 
 /* maps digit characters to their corresponding integers */
 #define DIGITI(X)  ((X) == '0' ?  0 : ((X) == '1' ?  1 : ((X) == '2' ?  2 : \
@@ -160,14 +167,15 @@ char *parsearg(char *format, struct specifier *conversion);
       dstring_t (destination)
       const struct specifier * (will contain information about the conversion)
       long int (the integer to format)
+      a number base
 
    Output:
       0 on success
-     >0 if an error occured
+     <0 if an error occured
 
    ************************************************************************* */
 int appendsignedint(dstring_t dest, const struct specifier conversion,
-   long int arg);
+   long int arg, int base);
 
 
 /* **** appendunsignedint **************************************************
@@ -183,60 +191,15 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
       dstring_t (destination)
       const struct specifier * (will contain information about the conversion)
       unsigned long int (the integer to format)
+      a number base
 
    Output:
       0 on success
-     >0 if an error occured
+     <0 if an error occured
 
    ************************************************************************* */
 int appendunsignedint(dstring_t dest, const struct specifier conversion,
-   unsigned long int arg);
-
-
-/* **** appendoctal ********************************************************
-
-   This internal-only function appends the string representation of an
-   unsigned integer to a dstring_t object in octal format.
-
-   Found in sprintf.c
-
-   *************************************************************************
-
-   Input:
-      dstring_t (destination)
-      const struct specifier * (will contain information about the conversion)
-      unsigned long int (the integer to format)
-
-   Output:
-      0 on success
-     >0 if an error occured
-
-   ************************************************************************* */
-int appendoctal(dstring_t dest, const struct specifier conversion,
-   unsigned long int arg);
-
-
-/* **** appendhex **********************************************************
-
-   This internal-only function appends the string representation of an
-   integer to a dstring_t object in hexadecimal format.
-
-   Found in sprintf.c
-
-   *************************************************************************
-
-   Input:
-      dstring_t (destination)
-      const struct specifier * (will contain information about the conversion)
-      long int (the integer to format)
-
-   Output:
-      0 on success
-     >0 if an error occured
-
-   ************************************************************************* */
-int appendhex(dstring_t dest, const struct specifier conversion,
-   long int arg);
+   unsigned long int arg, int base);
 
 
 /* **** appendfloat ********************************************************
@@ -255,7 +218,7 @@ int appendhex(dstring_t dest, const struct specifier conversion,
 
    Output:
       0 on success
-     >0 if an error occured
+     <0 if an error occured
 
    ************************************************************************* */
 int appendfloat(dstring_t dest, const struct specifier conversion,
@@ -278,7 +241,7 @@ int appendfloat(dstring_t dest, const struct specifier conversion,
 
    Output:
       0 on success
-     >0 if an error occured
+     <0 if an error occured
 
    ************************************************************************* */
 int appendfloatexp(dstring_t dest, const struct specifier conversion,
@@ -301,11 +264,32 @@ int appendfloatexp(dstring_t dest, const struct specifier conversion,
 
    Output:
       0 on success
-     >0 if an error occured
+     <0 if an error occured
 
    ************************************************************************* */
 int appendptr(dstring_t dest, const struct specifier conversion,
    void *ptr);
+
+
+/* **** appendintcommon ****************************************************
+
+   This function contains code common to all internal functions that
+   process integers.
+
+   Found in sprintf.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (the string we want to convert)
+
+   Output:
+      0 on success
+     <0 if an error occured
+
+   ************************************************************************* */
+int appendintcommon(dstring_t tempint, int index,
+   const struct specifier conversion, unsigned long int arg, int base);
 
 
 /* **** str2int ************************************************************
@@ -321,8 +305,8 @@ int appendptr(dstring_t dest, const struct specifier conversion,
       dstring_t (the string we want to convert)
 
    Output:
-      An integer on success
-     >0 if an error occured
+      0 on success
+     <0 if an error occured
 
    ************************************************************************* */
 int str2int(dstring_t intstr);

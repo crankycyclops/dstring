@@ -86,7 +86,7 @@ int dstrealloc(dstring_t *strptr, size_t bytes) {
 
    /* if it's an uninitialized string, use dstralloc instead */
    if (NULL == *strptr) {
-      return dstralloc(strptr, bytes);
+      return dstrnalloc(strptr, bytes);
    }
 
    /* if a value of 0 is given, we must free the string */

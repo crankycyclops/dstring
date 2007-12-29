@@ -122,13 +122,13 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
 
                   if (conversion.format & LONG) {
                      r = appendsignedint(str, conversion,
-                            va_arg(args, long int));
+                            va_arg(args, long int), 10);
                   } else if (conversion.format & SHORT) {
                      r = appendsignedint(str, conversion,
-                            (long int)va_arg(args, int));
+                            (long int)va_arg(args, int), 10);
                   } else {
                      r = appendsignedint(str, conversion,
-                            (long int)va_arg(args, int));
+                            (long int)va_arg(args, int), 10);
                   }
 
                   if (r < 0) {
@@ -141,13 +141,13 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
 
                   if (conversion.format & LONG) {
                      r = appendunsignedint(str, conversion,
-                            va_arg(args, unsigned long int));
+                            va_arg(args, unsigned long int), 10);
                   } else if (conversion.format & SHORT) {
                      r = appendsignedint(str, conversion,
-                            (unsigned long)va_arg(args, unsigned int));
+                            (unsigned long)va_arg(args, unsigned int), 10);
                   } else {
                      r = appendsignedint(str, conversion,
-                            (unsigned long)va_arg(args, unsigned int));
+                            (unsigned long)va_arg(args, unsigned int), 10);
                   }
 
                   if (r < 0) {
@@ -159,14 +159,14 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
                case OCTAL:
 
                   if (conversion.format & LONG) {
-                     r = appendoctal(str, conversion,
-                            va_arg(args, unsigned long int));
+                     r = appendunsignedint(str, conversion,
+                            va_arg(args, unsigned long int), 8);
                   } else if (conversion.format & SHORT) {
-                     r = appendoctal(str, conversion,
-                            (unsigned long)va_arg(args, unsigned int));
+                     r = appendunsignedint(str, conversion,
+                            (unsigned long)va_arg(args, unsigned int), 8);
                   } else {
-                     r = appendoctal(str, conversion,
-                            (unsigned long)va_arg(args, unsigned int));
+                     r = appendunsignedint(str, conversion,
+                            (unsigned long)va_arg(args, unsigned int), 8);
                   }
 
                   if (r < 0) {
@@ -179,14 +179,14 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
                case HEX_UPPERCASE:
 
                   if (conversion.format & LONG) {
-                     r = appendhex(str, conversion,
-                            va_arg(args, long int));
+                     r = appendsignedint(str, conversion,
+                            va_arg(args, long int), 16);
                   } else if (conversion.format & SHORT) {
-                     r = appendhex(str, conversion,
-                            (long)va_arg(args, int));
+                     r = appendsignedint(str, conversion,
+                            (long)va_arg(args, int), 16);
                   } else {
-                     r = appendhex(str, conversion,
-                            (long)va_arg(args, int));
+                     r = appendsignedint(str, conversion,
+                            (long)va_arg(args, int), 16);
                   }
 
                   if (r < 0) {
@@ -286,7 +286,7 @@ int dstrvsprintf(dstring_t str, const char *format, va_list args) {
                case NUM_CHARS:
 
                   r = appendunsignedint(str, conversion,
-                         (unsigned long)dstrlen(str));
+                         (unsigned long)dstrlen(str), 10);
 
                   if (r < 0) {
                      return -1;
@@ -448,23 +448,15 @@ char *parsearg(char *format, struct specifier *conversion) {
 /* ************************************************************************* */
 
 int appendsignedint(dstring_t dest, const struct specifier conversion,
-   long int arg) {
+   long int arg, int base) {
 
    /* this is the index in which we insert digits in reverse order */
    int index = 0;
-
-   int digit;
-   char fillc = ' ';
    dstring_t tempint;
 
 
    if (DSTR_SUCCESS != dstralloc(&tempint)) {
       return -1;
-   }
-
-   /* does the user want to pad with 0's instead of spaces? */
-   if (conversion.format & FLAG_0) {
-      fillc = '0';
    }
 
    /* is the integer negative? */
@@ -495,35 +487,10 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
       index = 1;
    }
 
-   /* insert each digit */
-   while ((digit = arg % 10) > 0) {
-      if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITC(digit))) {
-         dstrfree(&tempint);
-         return -1;
-      }
-      arg /= 10;
-   }
-
-   /* did the user specify a field width? */
-   if (conversion.format & FIELDWIDTH) {
-      while (dstrlen(tempint) < conversion.field) {
-
-         /* the user wants to left justify his int in its field */
-         if (conversion.format & FLAG_MINUS) {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest), fillc)) {
-               dstrfree(&tempint);
-               return -1;
-            }
-         }
-
-         /* by default, the int will be right justified in its field */
-         else {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, index, fillc)) {
-               dstrfree(&tempint);
-               return -1;
-            }
-         }
-      }
+   /* append the rest of the number */
+   if (0 != appendintcommon(tempint, index, conversion, (unsigned)arg, base)) {
+      dstrfree(&tempint);
+      return -1;
    }
 
    /* append the temporary string to the dest string and return */
@@ -540,26 +507,17 @@ int appendsignedint(dstring_t dest, const struct specifier conversion,
 /* ************************************************************************* */
 
 int appendunsignedint(dstring_t dest, const struct specifier conversion,
-   unsigned long int arg) {
+   unsigned long int arg, int base) {
 
    /* this is the index in which we insert digits in reverse order */
    int index = 0;
-
-   int digit;
-   char fillc = ' ';
    dstring_t tempint;
-
 
    if (DSTR_SUCCESS != dstralloc(&tempint)) {
       return -1;
    }
 
-   /* does the user want to pad with 0's instead of spaces? */
-   if (conversion.format & FLAG_0) {
-      fillc = '0';
-   }
-
-   /* + flag set, so append the sign even if it's positive */
+   /* + flag set, so append the sign even though it's positive */
    if (conversion.format & FLAG_PLUS) {
       if (DSTR_SUCCESS != dstrinsertc(tempint, 0, '+')) {
          dstrfree(&tempint);
@@ -577,35 +535,10 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
       index = 1;
    }
 
-   /* insert each digit */
-   while ((digit = arg % 10) > 0) {
-      if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITC(digit))) {
-         dstrfree(&tempint);
-         return -1;
-      }
-      arg /= 10;
-   }
-
-   /* did the user specify a field width? */
-   if (conversion.format & FIELDWIDTH) {
-      while (dstrlen(tempint) < conversion.field) {
-
-         /* the user wants to left justify his int in its field */
-         if (conversion.format & FLAG_MINUS) {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(dest), fillc)) {
-               dstrfree(&tempint);
-               return -1;
-            }
-         }
-
-         /* by default, the int will be right justified in its field */
-         else {
-            if (DSTR_SUCCESS != dstrinsertc(tempint, index, fillc)) {
-               dstrfree(&tempint);
-               return -1;
-            }
-         }
-      }
+   /* append the rest of the number */
+   if (0 != appendintcommon(tempint, index, conversion, arg, base)) {
+      dstrfree(&tempint);
+      return -1;
    }
 
    /* append the temporary string to the dest string and return */
@@ -616,22 +549,6 @@ int appendunsignedint(dstring_t dest, const struct specifier conversion,
    }
 
    dstrfree(&tempint);
-   return 0;
-}
-
-/* ************************************************************************* */
-
-int appendoctal(dstring_t dest, const struct specifier conversion,
-   unsigned long int arg) {
-
-   return 0;
-}
-
-/* ************************************************************************* */
-
-int appendhex(dstring_t dest, const struct specifier conversion,
-   long int arg) {
-
    return 0;
 }
 
@@ -655,6 +572,57 @@ int appendfloatexp(dstring_t dest, const struct specifier conversion,
 
 int appendptr(dstring_t dest, const struct specifier conversion,
    void *ptr) {
+
+   return 0;
+}
+
+/* ************************************************************************* */
+
+int appendintcommon(dstring_t tempint, int index,
+   const struct specifier conversion, unsigned long int arg, int base) {
+
+   int digit;
+   char fillc = ' ';
+
+   /* does the user want to pad with 0's instead of spaces? */
+   if (conversion.format & FLAG_0) {
+      fillc = '0';
+   }
+
+   /* insert each digit */
+   do {
+      digit = arg % base;
+      if (conversion.format & HEX_LOWERCASE) {
+         if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITCL(digit))) {
+            return -1;
+         }
+      } else {
+         if (DSTR_SUCCESS != dstrinsertc(tempint, index, DIGITC(digit))) {
+            return -1;
+         }
+      }
+      arg /= base;
+   } while (arg > 0);
+
+   /* did the user specify a field width? */
+   if (conversion.format & FIELDWIDTH) {
+      while (dstrlen(tempint) < conversion.field) {
+
+         /* the user wants to left justify his int in its field */
+         if (conversion.format & FLAG_MINUS) {
+            if (DSTR_SUCCESS != dstrinsertc(tempint, dstrlen(tempint), fillc)) {
+               return -1;
+            }
+         }
+
+         /* by default, the int will be right justified in its field */
+         else {
+            if (DSTR_SUCCESS != dstrinsertc(tempint, index, fillc)) {
+               return -1;
+            }
+         }
+      }
+   }
 
    return 0;
 }
