@@ -120,7 +120,10 @@ enum STATUS_CODES {
    DSTR_INVALID_ARGUMENT = -8,
 
    /* when a NULL char * is passed to a function that expects a string */
-   DSTR_NULL_CPTR = -9
+   DSTR_NULL_CPTR = -9,
+
+   /* when a dstring_t object is empty, but a non-empty string is expected */
+   DSTR_EMPTY_STRING = -10
 };
 
 
@@ -1049,9 +1052,8 @@ int dstrxchg(dstring_t str, size_t index, char c);
 /* **** dstrgetc ***********************************************************
 
    This function returns the character found at the specified index in the
-   passed dstring_t object.  If the index is less than 0, a return value of
-   DSTR_INVALID_ARGUMENT will be returned.  If the index is out of bounds,
-   a value of DSTR_OUT_OF_BOUNDS will be returned.
+   passed dstring_t object.  If the index is less than 0, or if the index
+   is out of bounds, '\0' will be returned to indicate failure.
 
    dstrerrno will be set to indicate success or type of error.
 
@@ -1067,11 +1069,59 @@ int dstrxchg(dstring_t str, size_t index, char c);
       size_t (index)
 
    Output:
-      > 0: a character
-      < 0: status code indicating error (see enum above)
+      Not NULL: a character
+          NULL: an error occured (dstrerrno will be set)
 
    ************************************************************************* */
-int dstrgetc(dstring_t str, size_t index);
+char dstrgetc(dstring_t str, size_t index);
+
+
+/* **** dstrpopc ***********************************************************
+
+   This function returns the last character in the string, afterwhich it
+   is removed.  This behavior treats the string like a stack, where the
+   last value is popped from the top.  If the string is empty, '\0' will be
+   returned.
+
+   dstrerrno will be set to indicate success or type of error.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+
+   Output:
+      Not NULL: a character
+          NULL: there was an error (dstrerrno will be set)
+
+   ************************************************************************* */
+char dstrpopc(dstring_t str);
+
+
+/* **** dstrdequeuec *******************************************************
+
+   This function returns the first character in the string, afterwhich it
+   is removed.  This behavior treats the string like a queue, where the
+   first value is "dequeued."  If the string is empty, '\0' will be
+   returned.
+
+   dstrerrno will be set to indicate success or type of error.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t
+
+   Output:
+      Not NULL: a character
+          NULL: there was an error (dstrerrno will be set)
+
+   ************************************************************************* */
+char dstrdequeuec(dstring_t str);
 
 
 /* **** dstrreplacec *******************************************************

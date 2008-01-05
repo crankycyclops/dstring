@@ -448,23 +448,71 @@ int dstrxchg(dstring_t str, size_t index, char c) {
 
 /* ************************************************************************* */
 
-int dstrgetc(dstring_t str, size_t index) {
+char dstrgetc(dstring_t str, size_t index) {
 
    /* make sure we're not dealing with an uninitialized string */
    if (NULL == str) {
       _setdstrerrno(DSTR_UNINITIALIZED);
-      return DSTR_UNINITIALIZED;
+      return '\0';
    }
 
    /* check to see if the index is out of bounds */
    if (index >= dstrlen(str)) {
       _setdstrerrno(DSTR_OUT_OF_BOUNDS);
-      return DSTR_OUT_OF_BOUNDS;
+      return '\0';
    }
 
    /* indicate success and return the character */
    _setdstrerrno(DSTR_SUCCESS);
    return DSTRBUF(str)[index];
+}
+
+/* ************************************************************************* */
+
+char dstrpopc(dstring_t str) {
+
+   int c;
+
+   /* make sure the string is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return '\0';
+   }
+
+   /* make sure the string isn't empty */
+   if (0 == dstrlen(str)) {
+      _setdstrerrno(DSTR_EMPTY_STRING);
+      return '\0';
+   }
+
+   c = DSTRBUF(str)[dstrlen(str) - 1];
+   DSTRBUF(str)[dstrlen(str) - 1] = '\0';
+
+   return c;
+}
+
+/* ************************************************************************* */
+
+char dstrdequeuec(dstring_t str) {
+
+   int c;
+
+   /* make sure the string is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return '\0';
+   }
+
+   /* make sure the string isn't empty */
+   if (0 == dstrlen(str)) {
+      _setdstrerrno(DSTR_EMPTY_STRING);
+      return '\0';
+   }
+
+   c = DSTRBUF(str)[0];
+   dstrdel(str, 0);
+
+   return c;
 }
 
 /* ************************************************************************* */

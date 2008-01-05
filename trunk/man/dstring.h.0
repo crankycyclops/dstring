@@ -115,7 +115,11 @@ size_t n);"
 .br
 .B "int dstrxchg(dstring_t str, size_t index, char c);"
 .br
-.B "int dstrgetc(dstring_t str, size_t index);"
+.B "char dstrgetc(dstring_t str, size_t index);"
+.br
+.B "char dstrpopc(dstring_t str);"
+.br
+.B "char dstrdequeuec(dstring_t str);"
 .br
 .B "int dstreplacec(dstring_t str, char oldc, char newc);"
 .br

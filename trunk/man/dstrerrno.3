@@ -64,6 +64,9 @@ An invalid argument was passed to a dstring.h function
 .B "DSTR_NULL_CPTR"
 a NULL character pointer was discovered where a C string was expected
 
+.B "DSTR_EMPTY_STRING"
+a dstring object is empty when a non-empty string is expected
+
 The function
 .B "dstrerrormsg(3)"
 can be called with the current value of dstrerrno to return a constant C \

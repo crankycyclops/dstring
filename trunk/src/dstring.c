@@ -50,6 +50,7 @@ static const char *errormsgs[] = {
    "out of bounds",
    "invalid argument",
    "pointer to char is NULL",
+   "expected non-empty dstring object",
    "unknown error"
 };
 
@@ -75,8 +76,8 @@ static const char *errormsgs[] = {
 
 const char * const dstrerrormsg(int code) {
 
-   if (abs(code) > 9) {
-      return errormsgs[10];
+   if (abs(code) > 10) {
+      return errormsgs[11];
    } else {
       return errormsgs[abs(code)];
    }
