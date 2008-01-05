@@ -144,7 +144,6 @@ size_t dstrfreadl(dstring_t dest, FILE *fp) {
 size_t dstrfreadn(dstring_t dest, FILE *fp, size_t n) {
 
    int   count;      /* number of characters read from fp */
-   int   c;          /* temporary storage for a character */
 
   /* make sure dest is initialized */
    if (NULL == dest) {

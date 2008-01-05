@@ -553,7 +553,6 @@ int dstreplaces(dstring_t str, const char *olds, const char *news) {
    dstring_t temp;          /* temporary string */
    char *match;             /* points to next occurence of olds in str */
 
-   int i, j;                /* for loop indices */
    int replacements = 0;    /* number of replacements made */
 
    /* make sure str is initialized */

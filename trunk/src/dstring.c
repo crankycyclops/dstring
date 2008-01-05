@@ -118,14 +118,15 @@ int dstrbuildinfo(dstring_t str) {
 /* FOR LIBRARY'S INTERNAL USE ONLY! */
 void _setdstrerrno(int status) {
 
-   /* if we're using threads, once the key is set, this will be 1 */
-   static int iskeyset = 0;
-
    #ifdef DSTR_WIN32THREAD
-      /* etc */
+      /* if we're using threads, once the key is set, this will be 1 */
+      static int iskeyset = 0;
    #endif
 
    #ifdef DSTR_PTHREAD
+      /* if we're using threads, once the key is set, this will be 1 */
+      static int iskeyset = 0;
+
       int   keystatus;
       int  *errvalptr;
 

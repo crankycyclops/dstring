@@ -33,6 +33,7 @@
 #define DSTRING_H_INCLUDED
 
 #include <stdio.h>
+#include <stdarg.h>
 
 /* HINT: it's a VERY good idea to set newly declared and uninitialized
    dstring_t variables to NULL.  If you do so, and you later accidentally
@@ -739,6 +740,62 @@ int dstrcpy(dstring_t dest, const dstring_t src);
 
    ************************************************************************* */
 int dstrncpy(dstring_t dest, const dstring_t src, size_t n);
+
+
+/* **** dstrsprintf ********************************************************
+
+   An implementation of sprintf() that supports writing to dstring_t
+   objects.  This function supports every aspect of the standard library
+   function it aims to replace, and like its counterpart, returns the
+   number of characters written to the dstring_t object on success, or
+   a negative value on error (in the case of an error, the return value
+   will match the value of dstrerrno.)
+
+   dstrerrno will be set to indicate status or the type of error.
+
+   Found in sprintf.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (format string)
+      possible variable list of arguments
+
+   Output:
+      number of characters successfully copied to dest or a status code
+      on error
+
+   ************************************************************************* */
+int dstrsprintf(dstring_t str, const char *format, ...);
+
+
+/* **** dstrvsprintf *******************************************************
+
+   An implementation of vsprintf() that supports writing to dstring_t
+   objects.  This function supports every aspect of the standard library
+   function it aims to replace, and like its counterpart, returns the
+   number of characters written to the dstring_t object on success, or
+   a negative value on error (in the case of an error, the return value
+   will match the value of dstrerrno.)
+
+   dstrerrno will be set to indicate status or the type of error.
+
+   Found in sprintf.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (destination)
+      const char * (format string)
+      va_list containing possible additional arguments
+
+   Output:
+      number of characters successfully copied to dest or a status code
+      on error
+
+   ************************************************************************* */
+int dstrvsprintf(dstring_t str, const char *format, va_list args);
 
 
 /*********************\
