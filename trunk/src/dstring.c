@@ -110,6 +110,7 @@ int dstrbuildinfo(dstring_t str) {
    #endif
    #endif
 
+   _setdstrerrno(DSTR_SUCCESS);
    return DSTR_SUCCESS;
 }
 

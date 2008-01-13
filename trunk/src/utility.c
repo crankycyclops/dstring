@@ -159,7 +159,7 @@ int dstrdel(dstring_t str, size_t index) {
    }
 
    /* save the character we're going to delete so we can return it */
-   c = DSTRBUF(str)[i];
+   c = DSTRBUF(str)[index];
 
    /* starting at index, move each character left one position */
    for (i = index; '\0' != DSTRBUF(str)[i]; i++) {

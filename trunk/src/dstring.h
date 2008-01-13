@@ -54,6 +54,17 @@
 /* ************************************************************************* */
 
 
+/* does the build environment support IEEE-754 floating point arithmetic? */
+#ifdef __STDC_VERSION__
+   #if __STDC_VERSION__ >= 199901
+      #define DSTR_IEEE-754
+   #endif
+#endif
+
+
+/* ************************************************************************* */
+
+
 /* dstring_t is actually a "black-box" type */
 typedef void * dstring_t;
 
