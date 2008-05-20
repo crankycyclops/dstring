@@ -130,7 +130,7 @@ enum {
 15)))))))))))))))
 
 
-/* **** parseargs **********************************************************
+/* **** parsearg ***********************************************************
 
    This function parses a single format specifier and fills in a structure
    containing the appropriate information.  It is intended only for
