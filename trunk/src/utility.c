@@ -325,7 +325,7 @@ srclen + 1))) {
 
 int dstrinserts(dstring_t dest, const dstring_t src, size_t index) {
 
-   /* dstrcinsert() will check to make sure dest is initialized, but we must
+   /* dstrinsertcs() will check to make sure dest is initialized, but we must
       first make sure that src is also initialized! */
    if (NULL == src) {
       _setdstrerrno(DSTR_UNINITIALIZED);
