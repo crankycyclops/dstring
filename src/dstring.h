@@ -752,6 +752,45 @@ int dstrcpy(dstring_t dest, const dstring_t src);
 int dstrncpy(dstring_t dest, const dstring_t src, size_t n);
 
 
+/* **** dstrcmp ************************************************************
+
+   A replacement for strcmp() that compares two dstring_t objects.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (first string)
+      dstring_t (second string)
+
+   Output:
+      What the output of strcmp() would be on two equivalent C-strings.
+
+   ************************************************************************* */
+int dstrcmp(dstring_t str1, dstring_t str2);
+
+
+/* **** dstrcmpcs **********************************************************
+
+   A replacement for strcmp() that compares a dstring_t object and a C-style
+   string.
+
+   Found in cstdlib.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (first string)
+      const char * (second string)
+
+   Output:
+      What the output of strcmp() would be on two equivalent C-strings.
+
+   ************************************************************************* */
+int dstrcmpcs(dstring_t str1, const char *str2);
+
+
 /* **** dstrsprintf ********************************************************
 
    An implementation of sprintf() that supports writing to dstring_t
