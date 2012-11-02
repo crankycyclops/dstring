@@ -864,9 +864,9 @@ int dstrboundscheck(dstring_t str, size_t index);
 int dstrtrunc(dstring_t str, size_t size);
 
 
-/* **** dstrtrimleft *******************************************************
+/* **** dstrtruncleft ******************************************************
 
-   This function trims n characters off the left of a string.
+   This function cuts n characters off the left of a string.
 
    If n is 0, nothing will be done and dstrerrno will be set to
    DSTR_SUCCESS.  If n is greater than the length of the string, the string
@@ -881,10 +881,64 @@ int dstrtrunc(dstring_t str, size_t size);
       size_t (number of characters to keep in the string)
 
    Output:
-      size of the trimmed string
+      size of the newly truncated string
 
    ************************************************************************* */
-int dstrtrimleft(dstring_t str, size_t n);
+int dstrtruncleft(dstring_t str, size_t n);
+
+
+/* **** dstrltrim **********************************************************
+
+   This function trims whitespace from the left of a string.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrltrim(dstring_t str);
+
+
+/* **** dstrrtrim **********************************************************
+
+   This function trims whitespace from the right of a string.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrrtrim(dstring_t str);
+
+
+/* **** dstrtrim **********************************************************
+
+   This function trims whitespace from the left and right of a string.
+
+   Found in utility.c
+
+   *************************************************************************
+
+   Input:
+      dstring_t (string to truncate)
+
+   Output:
+      An integer status (see enum above)
+
+   ************************************************************************* */
+int dstrtrim(dstring_t str);
 
 
 /* **** dstrdel ************************************************************

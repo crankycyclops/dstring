@@ -99,7 +99,7 @@ int dstrtrunc(dstring_t str, size_t size) {
 
 /* ************************************************************************* */
 
-int dstrtrimleft(dstring_t str, size_t n) {
+int dstrtruncleft(dstring_t str, size_t n) {
 
    size_t i;
    size_t length;
@@ -605,3 +605,62 @@ int dstreplaces(dstring_t str, const char *olds, const char *news) {
    _setdstrerrno(DSTR_SUCCESS);
    return replacements;
 }
+
+/* ************************************************************************* */
+
+int dstrltrim(dstring_t str) {
+
+   char *p;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   for (p = DSTRBUF(str); *p != '\0' && isspace(*p); p++);
+   memmove(str, p, strlen(p) + 1);
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrrtrim(dstring_t str) {
+
+   char *p;
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   for (p = DSTRBUF(str) + strlen(DSTRBUF(str)) - 1;
+      p >= DSTRBUF(str) && isspace(*p); p--);
+
+   p++;
+   *p = '\0';
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
+/* ************************************************************************* */
+
+int dstrtrim(dstring_t str) {
+
+   /* make sure str is initialized */
+   if (NULL == str) {
+      _setdstrerrno(DSTR_UNINITIALIZED);
+      return DSTR_UNINITIALIZED;
+   }
+
+   dstrltrim(str);
+   dstrrtrim(str);
+
+   _setdstrerrno(DSTR_SUCCESS);
+   return DSTR_SUCCESS;
+}
+
