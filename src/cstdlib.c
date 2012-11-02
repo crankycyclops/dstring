@@ -358,17 +358,3 @@ n + 1))) {
    return n;
 }
 
-/* ************************************************************************* */
-
-int dstrcmp(dstring_t str1, dstring_t str2) {
-
-   return strcmp(DSTRBUF(str1), DSTRBUF(str2));
-}
-
-/* ************************************************************************* */
-
-int dstrcmpcs(dstring_t str1, const char *str2) {
-
-   return strcmp(DSTRBUF(str1), str2);
-}
-
