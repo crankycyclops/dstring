@@ -1,4 +1,5 @@
-#!/bin/sh
-aclocal
-automake
-autoconf
+#! /bin/sh
+
+aclocal \
+&& automake --add-missing \
+&& autoconf
