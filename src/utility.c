@@ -619,7 +619,7 @@ int dstrltrim(dstring_t str) {
    }
 
    for (p = DSTRBUF(str); *p != '\0' && isspace(*p); p++);
-   memmove(str, p, strlen(p) + 1);
+   memmove(DSTRBUF(str), p, strlen(p) + 1);
 
    _setdstrerrno(DSTR_SUCCESS);
    return DSTR_SUCCESS;
