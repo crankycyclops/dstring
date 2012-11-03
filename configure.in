@@ -37,6 +37,12 @@ AC_ARG_ENABLE(win32threads, AC_HELP_STRING([--enable-win32threads],
    [enables support for Win32 threads (default is no)]),
    [ enable_win32threads=$enableval ], [ enable_win32threads=no ])
 
+# Do we want to build debugging symbols?
+AC_ARG_ENABLE(debug, AC_HELP_STRING([--enable-debug],
+   [builds debugging symbols (default is no)]),
+   [ enable_debug=$enableval ], [ enable_debug=no ])
+
+
 if test "x$enable_pthreads" = "xyes"; then
    if test "x$enable_win32threads" = "xyes"; then
       AC_MSG_ERROR([cannot enable pthreads and win32threads simultaneously!])
@@ -50,6 +56,10 @@ if test "x$enable_win32threads" = "xyes"; then
    AC_CHECK_HEADER([windows.h], [], [AC_MSG_ERROR([missing windows.h])])
    #check functions as well!
    CFLAGS=$CFLAGS:"-DDSTR_WIN32THREAD"
+fi
+
+if test "x$enable_debug" = "xyes"; then
+   CFLAGS=$CFLAGS:"-g"
 fi
 
 #Library version information
