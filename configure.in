@@ -59,7 +59,7 @@ if test "x$enable_win32threads" = "xyes"; then
 fi
 
 if test "x$enable_debug" = "xyes"; then
-   CFLAGS=$CFLAGS:"-g"
+   LDFLAGS=$LDFLAGS:"-g"
 fi
 
 #Library version information
