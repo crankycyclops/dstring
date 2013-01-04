@@ -99,11 +99,15 @@ int cstrtodstr(dstring_t dest, const char *src) {
             _setdstrerrno(status);
             return status;
          }
+         /* we may have gotten a new pointer, so start over */
+         else {
+            i = 0;
+         }
       }
       DSTRBUF(dest)[i] = src[i];
    }
 
-   DSTRBUF(dest)[++i] = '\0';
+   DSTRBUF(dest)[i] = '\0';
    _setdstrerrno(DSTR_SUCCESS);
    return DSTR_SUCCESS;
 }
